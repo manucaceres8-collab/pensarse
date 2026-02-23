@@ -1,83 +1,53 @@
+// app/page.tsx
+import Image from "next/image";
 import ChatWidget from "./components/ChatWidget";
 
 export default function Home() {
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        background:
-          "radial-gradient(1200px 600px at 20% 10%, rgba(15, 118, 110, 0.12), transparent 55%)," +
-          "radial-gradient(900px 500px at 80% 30%, rgba(59, 130, 246, 0.10), transparent 50%)," +
-          "#f6f3ee",
-        color: "#1f2937",
-        padding: "44px 18px",
-      }}
-    >
-      <div style={{ maxWidth: 920, margin: "0 auto" }}>
-        {/* HEADER */}
-        <header style={{ textAlign: "center", marginBottom: 26 }}>
-          {/* LOGO */}
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <img
-              src="logopensar-se.png"
-              alt="Pensar(SE)"
-              style={{
-                height: 56,
-                width: "auto",
-                marginBottom: 14,
-                filter: "drop-shadow(0 10px 20px rgba(0,0,0,0.10))",
-              }}
+    <main className="min-h-screen bg-black text-white">
+      {/* Fondo sutil */}
+      <div className="pointer-events-none fixed inset-0 -z-10">
+        <div className="absolute inset-0 bg-gradient-to-b from-zinc-950 via-black to-black" />
+        <div className="absolute -top-40 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-white/5 blur-3xl" />
+        <div className="absolute bottom-[-220px] left-1/3 h-[520px] w-[520px] rounded-full bg-white/3 blur-3xl" />
+      </div>
+
+      <div className="mx-auto flex max-w-4xl flex-col items-center px-6 pb-10 pt-14">
+        {/* Logo + marca */}
+        <div className="flex flex-col items-center text-center">
+          <div className="mb-5">
+            <Image
+              src="/logopensar-se.png" // asegúrate de que esté en /public
+              alt="Logo Pensar(SE)"
+              width={170}
+              height={170}
+              priority
+              className="opacity-90 drop-shadow-[0_10px_22px_rgba(0,0,0,0.45)]"
             />
           </div>
 
-          <h1
-            style={{
-              fontSize: 54,
-              margin: 0,
-              letterSpacing: "-1px",
-              color: "#0f172a",
-            }}
-          >
+          <h1 className="text-5xl font-light tracking-tight sm:text-6xl">
             Pensar(SE)
           </h1>
 
-          <p
-            style={{
-              marginTop: 10,
-              fontSize: 18,
-              lineHeight: 1.5,
-              color: "rgba(15, 23, 42, 0.78)",
-            }}
-          >
+          <p className="mt-4 max-w-xl text-base leading-relaxed text-zinc-300 sm:text-lg">
             Entrenamiento psicológico basado en evidencia.
           </p>
 
-          <p
-            style={{
-              marginTop: 14,
-              fontSize: 13,
-              color: "rgba(15, 23, 42, 0.55)",
-            }}
-          >
-            Prueba el asistente abajo. Responde con calma y estructura.
+          <p className="mt-6 text-sm text-zinc-400">
+            Prueba el asistente abajo 👇
           </p>
-        </header>
+        </div>
 
-        {/* CHAT */}
-        <section>
-          <ChatWidget />
+        {/* Chat abajo */}
+        <section className="mt-10 w-full">
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-[0_18px_50px_rgba(0,0,0,0.55)] backdrop-blur-md">
+            <ChatWidget />
+          </div>
         </section>
 
-        {/* FOOTER MINI */}
-        <footer
-          style={{
-            marginTop: 18,
-            textAlign: "center",
-            fontSize: 12,
-            color: "rgba(15, 23, 42, 0.55)",
-          }}
-        >
-          *Demo. No sustituye atención profesional. Si hay riesgo, pide ayuda inmediata.*
+        <footer className="mt-10 text-center text-xs text-zinc-500">
+          Demo · Pensar(SE)
         </footer>
       </div>
     </main>
