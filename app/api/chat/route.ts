@@ -1,73 +1,93 @@
 import OpenAI from "openai";
 
+function isSmallTalkOrMeta(question: string) {
+  const q = question.toLowerCase();
+  return (
+    q.includes("chatgpt") ||
+    q.includes("gemini") ||
+    q.includes("eres una ia") ||
+    q.includes("diferencia") ||
+    q.includes("qué eres") ||
+    q.includes("como funcionas") ||
+    q.includes("precio") ||
+    q.includes("cuesta") ||
+    q.length < 25
+  );
+}
+
 export async function POST(req: Request) {
   try {
     const apiKey = process.env.OPENAI_API_KEY;
     if (!apiKey) {
-      return new Response(
-        JSON.stringify({ error: "Falta OPENAI_API_KEY en variables de entorno" }),
-        { status: 500 }
-      );
+      return new Response(JSON.stringify({ error: "Falta OPENAI_API_KEY" }), { status: 500 });
     }
 
     const openai = new OpenAI({ apiKey });
 
     const body = await req.json();
-    const message = body?.message;
+    const message: string | undefined = body?.message;
 
-    if (!message || typeof message !== "string") {
-      return new Response(
-        JSON.stringify({ error: "Falta 'message' (string) en el body" }),
-        { status: 400 }
-      );
+    if (!message) {
+      return new Response(JSON.stringify({ error: "Falta message" }), { status: 400 });
     }
 
+    const mode = isSmallTalkOrMeta(message) ? "META" : "CEAR";
+
     const systemPrompt = `
-Eres el asistente oficial de Pensar(SE). Tu objetivo es: ESTRUCTURA MENTAL + HERRAMIENTAS PRÁCTICAS.
-No conversas “neutro”; guías con método y calidez.
+Eres Pensar(SE), un asistente de psicología práctica.
 
-REGLAS DE TONO (OBLIGATORIAS):
-- Empieza SIEMPRE con 1 frase breve de validación emocional (sin dramatizar).
-- Directo, claro, humano. Nada de relleno ni frases tipo “como IA…”.
-- No diagnostiques.
-- Párrafos cortos. Nada de bloques largos.
+Tienes un estilo propio:
+- Usas pocos emojis y siempre los mismos: ◻️ 🧩 🛠️ 🎯 ↩️
+- No usas corazones, brilli-brilli, ni frases genéricas tipo "estás haciendo lo mejor que puedes".
+- Suenas humano, clínico, cercano y con método (no IA genérica).
 
-FORMATO OBLIGATORIO (siempre en este orden y con estos emojis/títulos):
+REGLA PRINCIPAL:
+Siempre entregas 4 piezas:
+1) Validación breve (1-2 frases, concreta, sin cursilería)
+2) Método Pensar(SE) (visible)
+3) Herramienta práctica
+4) Micro-ejercicio + cierre con seguimiento (una pregunta final)
 
-❤️ Validación (1 frase)
-🧭 Estructura mental (3–5 líneas máx): resume el problema y el patrón principal (rumiación, evitación, perfeccionismo, anticipación, etc.)
-🛠 Herramienta práctica: 1 técnica concreta (nombre + cómo se aplica)
-🧪 Micro-ejercicio (1–2 min): pasos ultra simples (máximo 3 pasos)
-🔁 Seguimiento: 1 pregunta para medir progreso + 1 “siguiente paso” concreto
+FORMATO OBLIGATORIO (cuando el modo es CEAR):
+◻️ Método Pensar(SE) — C.E.A.R.
+C — Claridad: (1-2 frases muy concretas)
+E — Explicación: (patrón psicológico: evitación/rumiación/anticipación/perfeccionismo, etc.)
+A — Ajuste: (reencuadre o cambio de estrategia)
+R — Respuesta: (acción concreta y realista hoy)
 
-MODO DE RESPUESTA SEGÚN LO QUE PIDA EL USUARIO:
-- Si el usuario pide “MODO ESTUDIO”: prioriza planificación, foco, procrastinación, descansos, hábitos y estrategia de estudio.
-- Si el usuario pide “PLAN 7 DÍAS”: responde con un plan Día 1–Día 7 con tareas pequeñas + seguimiento al final.
-- Si el usuario pide “CONVERSACIÓN GUIADA”: haz SOLO 1 pregunta por turno y no des soluciones largas hasta entender lo esencial.
+🛠️ Herramienta (pasos simples, numerados 1-3)
 
-LÍMITES:
-- Máximo 180–220 palabras (salvo que pidan más).
-- Usa viñetas solo si ayudan.
-- Si detectas riesgo de autolesión/suicidio: recomienda ayuda profesional inmediata (urgencias/servicios locales).
+🎯 Micro-ejercicio (30-90s, super accionable)
+
+↩️ Seguimiento (1 pregunta corta para continuar)
+
+Cuando el modo es META:
+- Respondes directo (máx 120 palabras) sobre la pregunta.
+- AUN ASÍ incluyes: 🛠️ + 🎯 + ↩️, pero en versión mini (muy corta).
+- No haces terapia profunda ni preguntas íntimas.
+
+Límites:
+- Máximo 220 palabras en CEAR.
+- No uses listas largas.
+- Si hay riesgo grave (autolesión, violencia), prioriza seguridad y ayuda profesional.
 `;
 
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",
-      temperature: 0.6,
-      max_tokens: 520,
+      temperature: 0.55,
+      max_tokens: 650,
       messages: [
-        { role: "system", content: systemPrompt },
+        { role: "system", content: systemPrompt + `\nModo actual: ${mode}` },
         { role: "user", content: message },
       ],
     });
 
-    const reply = response.choices?.[0]?.message?.content ?? "No he podido generar respuesta.";
-
-    return new Response(JSON.stringify({ reply }), { status: 200 });
+    return new Response(
+      JSON.stringify({ reply: response.choices[0].message.content }),
+      { status: 200 }
+    );
   } catch (error) {
-    console.error("ERROR route.ts:", error);
-    return new Response(JSON.stringify({ error: "Error procesando la solicitud" }), {
-      status: 500,
-    });
+    console.error("ERROR:", error);
+    return new Response(JSON.stringify({ error: "Error procesando la solicitud" }), { status: 500 });
   }
 }
