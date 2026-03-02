@@ -1,55 +1,84 @@
-// app/page.tsx
 import Image from "next/image";
 import ChatWidget from "./components/ChatWidget";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-black text-white">
-      {/* Fondo sutil */}
+    <main className="min-h-screen bg-[#f6f7fb] text-slate-900">
+      {/* Fondo claro premium */}
       <div className="pointer-events-none fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-b from-zinc-950 via-black to-black" />
-        <div className="absolute -top-40 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-white/5 blur-3xl" />
-        <div className="absolute bottom-[-220px] left-1/3 h-[520px] w-[520px] rounded-full bg-white/3 blur-3xl" />
+        {/* Gradientes suaves */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(56,189,248,0.18),transparent_45%),radial-gradient(circle_at_80%_20%,rgba(34,197,94,0.14),transparent_45%),radial-gradient(circle_at_50%_90%,rgba(99,102,241,0.10),transparent_55%)]" />
+        {/* Grano sutil */}
+        <div className="absolute inset-0 opacity-[0.06] [background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22120%22 height=%22120%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22 numOctaves=%222%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22120%22 height=%22120%22 filter=%22url(%23n)%22 opacity=%220.35%22/%3E%3C/svg%3E')]"></div>
       </div>
 
-      <div className="mx-auto flex max-w-4xl flex-col items-center px-6 pb-10 pt-14">
-        {/* Logo + marca */}
-        <div className="flex flex-col items-center text-center">
-          <div className="mb-5">
+      <div className="mx-auto max-w-5xl px-6 py-10 md:py-14">
+        {/* HERO */}
+        <section className="relative overflow-hidden rounded-3xl border border-black/5 bg-white/55 p-8 shadow-[0_10px_30px_rgba(2,6,23,0.08)] backdrop-blur-xl md:p-12">
+          {/* Marca de agua con tu logo (no pegatina) */}
+          <div className="pointer-events-none absolute -right-10 -top-8 opacity-[0.10] blur-[0.2px]">
             <Image
-              src="/logopensar-se.png" // asegúrate de que esté en /public
-              alt="Logo Pensar(SE)"
-              width={170}
-              height={170}
+              src="/logopensar-se.png"
+              alt="Pensar(SE)"
+              width={520}
+              height={520}
               priority
-              className="opacity-90 drop-shadow-[0_10px_22px_rgba(0,0,0,0.45)]"
             />
           </div>
 
-          <h1 className="text-5xl font-light tracking-tight sm:text-6xl">
-            Pensar(SE)
+          {/* Logo pequeño integrado (opcional) */}
+          <div className="mb-6 flex items-center gap-3">
+            <div className="relative h-9 w-9 overflow-hidden rounded-xl border border-black/5 bg-white shadow-sm">
+              <Image
+                src="/logopensar-se.png"
+                alt="Pensar(SE)"
+                fill
+                className="object-contain p-1"
+              />
+            </div>
+            <span className="text-sm font-medium tracking-wide text-slate-600">
+              Pensar(SE)
+            </span>
+          </div>
+
+          <h1 className="text-4xl font-semibold tracking-tight md:text-6xl">
+            Pensar<span className="text-slate-500">(SE)</span>
           </h1>
-
-          <p className="mt-4 max-w-xl text-base leading-relaxed text-zinc-300 sm:text-lg">
-            Entrenamiento psicológico basado en evidencia.
+          <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-600 md:text-lg">
+            Entrenamiento psicológico basado en evidencia. Un enfoque claro, práctico y
+            con estructura — sin ruido.
           </p>
 
-          <p className="mt-6 text-sm text-zinc-400">
-            Prueba el asistente abajo 👇
-          </p>
-        </div>
-
-        {/* Chat abajo */}
-        <section className="mt-10 w-full">
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-[0_18px_50px_rgba(0,0,0,0.55)] backdrop-blur-md">
-            <ChatWidget />
+          <div className="mt-8 flex flex-wrap items-center gap-2">
+            <span className="rounded-full border border-black/5 bg-white/70 px-3 py-1 text-xs text-slate-600 shadow-sm">
+              Calma + estructura
+            </span>
+            <span className="rounded-full border border-black/5 bg-white/70 px-3 py-1 text-xs text-slate-600 shadow-sm">
+              Micro-ejercicios
+            </span>
+            <span className="rounded-full border border-black/5 bg-white/70 px-3 py-1 text-xs text-slate-600 shadow-sm">
+              Seguimiento
+            </span>
           </div>
         </section>
 
-        <footer className="mt-10 text-center text-xs text-zinc-500">
-          Demo · Pensar(SE)
-        </footer>
+        {/* CHAT ABAJO */}
+        <section className="mt-8 rounded-3xl border border-black/5 bg-white/60 p-4 shadow-[0_10px_30px_rgba(2,6,23,0.08)] backdrop-blur-xl md:p-6">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <div>
+              <h2 className="text-base font-semibold text-slate-800">
+                Asistente Pensar(SE)
+              </h2>
+              <p className="text-sm text-slate-500">
+                Responde con calma y estructura. Elige un modo y empieza.
+              </p>
+            </div>
+          </div>
+
+          <ChatWidget />
+        </section>
       </div>
     </main>
   );
 }
+
