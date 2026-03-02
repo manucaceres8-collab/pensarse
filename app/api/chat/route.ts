@@ -14,7 +14,6 @@ type ReqBody = {
   message: string;
   mode?: Mode;
   guided?: GuidedState;
-  // info opcional que tú guardes en el front (nombre, objetivo, etc.)
   profile?: {
     name?: string;
     goal?: string;
@@ -56,10 +55,14 @@ const GUIDED_QUESTIONS = [
 
 export async function POST(req: Request) {
   try {
-    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
     if (!process.env.OPENAI_API_KEY) {
-      return json({ error: "Falta OPENAI_API_KEY en variables de entorno." }, 500);
+      return json(
+        { error: "Falta OPENAI_API_KEY en variables de entorno (Vercel / .env.local)." },
+        500
+      );
     }
+
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
     const body = (await req.json()) as ReqBody;
     const message = safeStr(body?.message).trim();
@@ -75,17 +78,21 @@ export async function POST(req: Request) {
       const answers = body?.guided?.answers ?? {};
       const nextAnswers = { ...answers, [`q${step}`]: message };
 
-      // Si AÚN NO hemos terminado -> devolvemos la siguiente pregunta fija (sin llamar al modelo)
+      // Si AÚN NO hemos terminado -> devolvemos la siguiente pregunta fija
+      // ✅ Importante: devolvemos TAMBIÉN "reply" para que el front no muestre "Sin respuesta"
       if (step < 7) {
         const nextStep = step + 1;
+        const question = GUIDED_QUESTIONS[nextStep];
+
         return json({
           mode: "guided",
           guided: { step: nextStep, answers: nextAnswers },
           ui: {
             type: "question",
-            question: GUIDED_QUESTIONS[nextStep],
+            question,
             progress: { current: nextStep + 1, total: 8 },
           },
+          reply: question, // ✅ clave
         });
       }
 
@@ -96,18 +103,21 @@ export async function POST(req: Request) {
       // - cierre con seguimiento
       const system = `
 Eres Pensar(SE), un asistente de psicología práctica con estilo propio.
-Objetivo: NO sonar como ChatGPT. Estilo: humano, claro, sin emojis "tipo IA" repetitivos.
+Objetivo: NO sonar como ChatGPT. Estilo: humano, claro, con personalidad; evita "plantillas" genéricas.
+
 Reglas:
 - NO uses listas largas genéricas.
 - NO uses más de 2 emojis en toda la respuesta.
-- NO digas "como IA" ni "no puedo diagnosticar" a no ser que el usuario lo pida.
+- NO digas "como IA".
 - NO uses la palabra "diagnóstico". Usa: "formulación", "hipótesis", "patrón".
-- Estructura obligatoria EXACTA con estos títulos:
-  1) Validación breve (1–2 frases)
-  2) Formulación Pensar(SE) (3–5 líneas, concreta)
-  3) Herramienta (pasos concretos, 3 bullets máximo)
-  4) Micro-ejercicio (60–120s, 2 pasos máximo)
-  5) Seguimiento (1 pregunta final + propuesta de siguiente paso)
+- Sé concreto y personalizado según las respuestas del usuario.
+
+Estructura obligatoria EXACTA con estos títulos:
+1) Validación breve (1–2 frases)
+2) Formulación Pensar(SE) (3–5 líneas, concreta)
+3) Herramienta (3 bullets máximo)
+4) Micro-ejercicio (60–120s, 2 pasos máximo)
+5) Seguimiento (1 pregunta final + siguiente paso sugerido)
 `;
 
       const user = `
@@ -121,7 +131,7 @@ Resumen de la entrevista guiada (8 respuestas):
 7) ${safeStr(nextAnswers.q6)}
 8) ${safeStr(nextAnswers.q7)}
 
-Ahora genera la respuesta final siguiendo la estructura.
+Ahora genera la respuesta final siguiendo la estructura exacta.
 `;
 
       const completion = await openai.chat.completions.create({
@@ -133,7 +143,8 @@ Ahora genera la respuesta final siguiendo la estructura.
         ],
       });
 
-      const reply = completion.choices?.[0]?.message?.content ?? "No he podido generar respuesta.";
+      const reply =
+        completion.choices?.[0]?.message?.content ?? "No he podido generar respuesta.";
 
       return json({
         mode: "guided",
@@ -148,11 +159,12 @@ Ahora genera la respuesta final siguiendo la estructura.
     // -----------------------
     if (mode === "plan7") {
       const system = `
-Eres Pensar(SE). Haz planes de 7 días, muy concretos y realistas.
+Eres Pensar(SE). Haces planes de 7 días concretos y realistas.
 Reglas:
 - Máximo 1 emoji.
 - Evita texto plano largo; usa bloques cortos.
 - Si falta info mínima (objetivo + dificultad), pregunta 2 cosas y para.
+
 Estructura:
 A) Validación breve
 B) Preguntas (solo si falta info) o Plan 7 días (si hay info)
@@ -175,7 +187,7 @@ C) Cierre de seguimiento (1 pregunta)
     }
 
     // -----------------------
-    // MODO FREE (con estilo, pero no “plantilla” siempre)
+    // MODO FREE (natural)
     // -----------------------
     const systemFree = `
 Eres Pensar(SE). Conversación natural con estilo propio.
