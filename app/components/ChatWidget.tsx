@@ -10,6 +10,11 @@ type Msg = {
   content: string;
 };
 
+type GuidedState = {
+  step: number; // 0..7
+  answers: Record<string, string>;
+};
+
 const MODE_LABEL: Record<Mode, string> = {
   free: "Free",
   guided: "Guided",
@@ -24,6 +29,7 @@ const MODE_DESC: Record<Mode, string> = {
 
 export default function ChatWidget() {
   const [mode, setMode] = useState<Mode>("free");
+
   const [messages, setMessages] = useState<Msg[]>([
     {
       role: "assistant",
@@ -32,36 +38,86 @@ export default function ChatWidget() {
     },
   ]);
 
+  // ✅ estado del modo guiado (se queda en el front)
+  const [guided, setGuided] = useState<GuidedState>({
+    step: 0,
+    answers: {},
+  });
+
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const listRef = useRef<HTMLDivElement | null>(null);
 
+  // auto-scroll
   useEffect(() => {
     if (listRef.current) listRef.current.scrollTop = listRef.current.scrollHeight;
   }, [messages, loading]);
+
+  // ✅ cuando cambias de modo, resetea el guiado (y pone un mensaje de arranque)
+  useEffect(() => {
+    if (mode !== "guided") return;
+
+    setGuided({ step: 0, answers: {} });
+
+    setMessages([
+      {
+        role: "assistant",
+        content:
+          "Modo Guided activado. Empezamos con 6–8 preguntas. ¿Qué te gustaría conseguir con esto? (una frase)",
+      },
+    ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode]);
 
   async function send(text: string) {
     const clean = text.trim();
     if (!clean || loading) return;
 
-    // ✅ Forzamos role literal (no string genérico)
     const userMsg: Msg = { role: "user", content: clean };
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
     setLoading(true);
 
+    // ✅ historial para que NO se reinicie el chat (últimos 16 turnos)
+    const history = [...messages, userMsg]
+      .filter((m) => m.role === "user" || m.role === "assistant")
+      .slice(-16)
+      .map((m) => ({ role: m.role, content: m.content }));
+
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: clean, mode }),
+        body: JSON.stringify({
+          mode,
+          message: clean,
+          messages: history, // ✅ clave
+          guided: mode === "guided" ? guided : undefined, // ✅ clave (pasamos step/answers)
+        }),
       });
 
       const data = await res.json();
 
+      // ✅ si el backend devuelve un update del guided, lo guardamos
+      if (mode === "guided" && data?.guided) {
+        setGuided({
+          step: typeof data.guided.step === "number" ? data.guided.step : guided.step,
+          answers: data.guided.answers ?? guided.answers,
+        });
+      }
+
+      // ✅ qué texto mostrar:
+      // - normal: data.reply
+      // - guiado en progreso: data.ui.question (si lo usas)
+      const replyText =
+        data?.reply ??
+        data?.ui?.question ??
+        data?.ui?.message ??
+        "Sin respuesta.";
+
       const assistantMsg: Msg = {
         role: "assistant",
-        content: data.reply || "Sin respuesta.",
+        content: replyText,
       };
 
       setMessages((prev) => [...prev, assistantMsg]);
