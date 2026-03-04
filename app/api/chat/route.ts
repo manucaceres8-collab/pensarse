@@ -1,13 +1,13 @@
 import OpenAI from "openai";
 
-export const runtime = "nodejs"; // importante para Vercel (server runtime)
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 type Mode = "guided" | "free" | "plan7";
 
 type GuidedState = {
-  step: number; // 0..7 (máx 8 pasos)
-  answers?: Record<string, string>;
+  step: number; // 0..7 (máx 8)
+  answers: Record<string, string>;
 };
 
 type ReqBody = {
@@ -31,17 +31,6 @@ function safeStr(v: unknown) {
   return typeof v === "string" ? v : "";
 }
 
-/**
- * GUIADO 6–8 pasos (máx 8):
- * 0 objetivo
- * 1 cuándo / frecuencia
- * 2 intensidad + impacto
- * 3 disparadores (situación)
- * 4 pensamiento/imagen (cognición)
- * 5 emoción + cuerpo
- * 6 conductas (qué haces)
- * 7 recursos/qué te ha servido + cierre con formulación + plan + micro
- */
 const GUIDED_QUESTIONS = [
   "Para empezar: ¿qué te gustaría conseguir exactamente con esto? (una frase)",
   "¿Desde cuándo te pasa y con qué frecuencia aparece? (días/semana)",
@@ -62,7 +51,8 @@ export async function POST(req: Request) {
       );
     }
 
-    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    // ✅ clave para que TS no marque rojo
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
 
     const body = (await req.json()) as ReqBody;
     const message = safeStr(body?.message).trim();
@@ -71,15 +61,16 @@ export async function POST(req: Request) {
     if (!message) return json({ error: "Falta 'message' en el body." }, 400);
 
     // -----------------------
-    // MODO GUIADO (6–8)
+    // MODO GUIADO (8 pasos)
     // -----------------------
     if (mode === "guided") {
-      const step = Math.max(0, Math.min(7, body?.guided?.step ?? 0));
-      const answers = body?.guided?.answers ?? {};
-      const nextAnswers = { ...answers, [`q${step}`]: message };
+      const incomingStep = Number(body?.guided?.step ?? 0);
+      const step = Math.max(0, Math.min(7, incomingStep));
 
-      // Si AÚN NO hemos terminado -> devolvemos la siguiente pregunta fija
-      // ✅ Importante: devolvemos TAMBIÉN "reply" para que el front no muestre "Sin respuesta"
+      const answers = (body?.guided?.answers ?? {}) as Record<string, string>;
+      const nextAnswers: Record<string, string> = { ...answers, [`q${step}`]: message };
+
+      // Si no hemos terminado -> devolvemos la siguiente pregunta fija
       if (step < 7) {
         const nextStep = step + 1;
         const question = GUIDED_QUESTIONS[nextStep];
@@ -92,15 +83,11 @@ export async function POST(req: Request) {
             question,
             progress: { current: nextStep + 1, total: 8 },
           },
-          reply: question, // ✅ clave
+          reply: question, // ✅ para que el front no ponga "Sin respuesta"
         });
       }
 
-      // Si step == 7 -> ya tenemos todo, ahora sí llamamos al modelo para:
-      // - formulación breve (no "diagnóstico" clínico)
-      // - 1 micro-ejercicio
-      // - 1 herramienta práctica
-      // - cierre con seguimiento
+      // step == 7 -> generamos respuesta final con el modelo
       const system = `
 Eres Pensar(SE), un asistente de psicología práctica con estilo propio.
 Objetivo: NO sonar como ChatGPT. Estilo: humano, claro, con personalidad; evita "plantillas" genéricas.
@@ -148,7 +135,7 @@ Ahora genera la respuesta final siguiendo la estructura exacta.
 
       return json({
         mode: "guided",
-        guided: { step: 0, answers: {} }, // resetea para otra sesión guiada si quieres
+        guided: { step: 0, answers: {} },
         ui: { type: "final" },
         reply,
       });

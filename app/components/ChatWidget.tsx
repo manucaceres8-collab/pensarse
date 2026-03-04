@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type Mode = "free" | "guided" | "plan7";
 type Role = "user" | "assistant";
 
-type Msg = {
+type ChatMsg = {
   role: Role;
   content: string;
 };
@@ -30,15 +30,14 @@ const MODE_DESC: Record<Mode, string> = {
 export default function ChatWidget() {
   const [mode, setMode] = useState<Mode>("free");
 
-  const [messages, setMessages] = useState<Msg[]>([
+  const [messages, setMessages] = useState<ChatMsg[]>([
     {
       role: "assistant",
-      content:
-        "Hola 👋 Soy el asistente de Pensar(SE). Elige un modo y dime qué quieres trabajar.",
+      content: "Hola 👋 Soy el asistente de Pensar(SE). Elige un modo y dime qué quieres trabajar.",
     },
   ]);
 
-  // ✅ estado del modo guiado (se queda en el front)
+  // ✅ estado para modo guided
   const [guided, setGuided] = useState<GuidedState>({
     step: 0,
     answers: {},
@@ -46,82 +45,79 @@ export default function ChatWidget() {
 
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+
   const listRef = useRef<HTMLDivElement | null>(null);
 
-  // auto-scroll
   useEffect(() => {
     if (listRef.current) listRef.current.scrollTop = listRef.current.scrollHeight;
   }, [messages, loading]);
 
-  // ✅ cuando cambias de modo, resetea el guiado (y pone un mensaje de arranque)
-  useEffect(() => {
-    if (mode !== "guided") return;
+  // Si cambias de modo, no mezcles conversaciones
+  function changeMode(m: Mode) {
+    setMode(m);
+    setInput("");
+    setLoading(false);
 
+    // resetea guided al cambiar modo
     setGuided({ step: 0, answers: {} });
 
     setMessages([
       {
         role: "assistant",
         content:
-          "Modo Guided activado. Empezamos con 6–8 preguntas. ¿Qué te gustaría conseguir con esto? (una frase)",
+          m === "guided"
+            ? "Modo Guided activado. Cuéntame qué te gustaría conseguir con esto (una frase)."
+            : "Hola 👋 Soy el asistente de Pensar(SE). Dime qué quieres trabajar.",
       },
     ]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode]);
+  }
 
   async function send(text: string) {
     const clean = text.trim();
     if (!clean || loading) return;
 
-    const userMsg: Msg = { role: "user", content: clean };
+    const userMsg: ChatMsg = { role: "user", content: clean };
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
     setLoading(true);
 
-    // ✅ historial para que NO se reinicie el chat (últimos 16 turnos)
-    const history = [...messages, userMsg]
-      .filter((m) => m.role === "user" || m.role === "assistant")
-      .slice(-16)
-      .map((m) => ({ role: m.role, content: m.content }));
-
     try {
+      const payload =
+        mode === "guided"
+          ? {
+              message: clean,
+              mode,
+              guided, // ✅ enviamos step + answers al backend
+            }
+          : {
+              message: clean,
+              mode,
+            };
+
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          mode,
-          message: clean,
-          messages: history, // ✅ clave
-          guided: mode === "guided" ? guided : undefined, // ✅ clave (pasamos step/answers)
-        }),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
 
-      // ✅ si el backend devuelve un update del guided, lo guardamos
+      // ✅ si guided devuelve estado, lo guardamos para la siguiente pregunta
       if (mode === "guided" && data?.guided) {
         setGuided({
-          step: typeof data.guided.step === "number" ? data.guided.step : guided.step,
-          answers: data.guided.answers ?? guided.answers,
+          step: Number(data.guided.step ?? 0),
+          answers: (data.guided.answers ?? {}) as Record<string, string>,
         });
       }
 
-      // ✅ qué texto mostrar:
-      // - normal: data.reply
-      // - guiado en progreso: data.ui.question (si lo usas)
       const replyText =
-        data?.reply ??
-        data?.ui?.question ??
-        data?.ui?.message ??
-        "Sin respuesta.";
+        typeof data?.reply === "string" && data.reply.trim().length > 0
+          ? data.reply
+          : "Sin respuesta.";
 
-      const assistantMsg: Msg = {
-        role: "assistant",
-        content: replyText,
-      };
-
+      const assistantMsg: ChatMsg = { role: "assistant", content: replyText };
       setMessages((prev) => [...prev, assistantMsg]);
-    } catch {
+    } catch (e) {
       setMessages((prev) => [
         ...prev,
         { role: "assistant", content: "⚠️ Error al conectar con el servidor." },
@@ -134,28 +130,26 @@ export default function ChatWidget() {
   return (
     <div className="w-full rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden">
       {/* HEADER */}
-      <div className="p-4 border-b border-slate-200 flex flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="font-semibold text-slate-900">Asistente Pensar(SE)</div>
-            <div className="text-sm text-slate-500">{MODE_DESC[mode]}</div>
-          </div>
+      <div className="p-4 border-b border-slate-200 flex items-center justify-between gap-3">
+        <div>
+          <div className="font-semibold text-slate-900">Asistente Pensar(SE)</div>
+          <div className="text-sm text-slate-500">{MODE_DESC[mode]}</div>
+        </div>
 
-          <div className="flex gap-2">
-            {(["free", "guided", "plan7"] as Mode[]).map((m) => (
-              <button
-                key={m}
-                onClick={() => setMode(m)}
-                className={`px-3 py-1.5 text-sm rounded-full border transition ${
-                  mode === m
-                    ? "bg-slate-900 text-white border-slate-900"
-                    : "bg-white text-slate-600 border-slate-300 hover:bg-slate-100"
-                }`}
-              >
-                {MODE_LABEL[m]}
-              </button>
-            ))}
-          </div>
+        <div className="flex gap-2">
+          {(Object.keys(MODE_LABEL) as Mode[]).map((m) => (
+            <button
+              key={m}
+              onClick={() => changeMode(m)}
+              className={`px-3 py-1.5 text-sm rounded-full border transition ${
+                mode === m
+                  ? "bg-slate-900 text-white border-slate-900"
+                  : "bg-white text-slate-700 border-slate-300 hover:bg-slate-100"
+              }`}
+            >
+              {MODE_LABEL[m]}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -188,7 +182,9 @@ export default function ChatWidget() {
           onChange={(e) => setInput(e.target.value)}
           placeholder="Escribe aquí… (Enter para enviar)"
           className="flex-1 px-4 py-3 rounded-xl border border-slate-300 text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-slate-300"
-          onKeyDown={(e) => e.key === "Enter" && send(input)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") send(input);
+          }}
         />
         <button
           onClick={() => send(input)}
