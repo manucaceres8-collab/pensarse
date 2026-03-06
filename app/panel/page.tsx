@@ -1,55 +1,131 @@
+const pacientes = [
+  { id: "maria", nombre: "María", ultimo: "Hoy", estado: "🙂" },
+  { id: "juan", nombre: "Juan", ultimo: "Ayer", estado: "😔" },
+  { id: "carlos", nombre: "Carlos", ultimo: "Hoy", estado: "😐" },
+];
+
+const actividad = [
+  { nombre: "María", texto: "Completó check-in + nota" },
+  { nombre: "Juan", texto: "Realizó registro ABC" },
+  { nombre: "Carlos", texto: "Guardó una nota personal" },
+];
+
+const informes = [
+  { nombre: "María" },
+  { nombre: "Juan" },
+  { nombre: "Carlos" },
+];
+
 export default function PanelPage() {
   return (
-    <div>
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
-            Dashboard
-          </h1>
-          <p className="mt-1 text-sm text-slate-500">
-            Acceso rápido a pacientes y acciones principales.
-          </p>
-        </div>
-
-        <div className="flex gap-2">
-          <a href="/panel/pacientes">
-            <button className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm shadow-sm hover:bg-slate-50">
-              Ver pacientes
-            </button>
-          </a>
-          <a href="/panel/pacientes/nuevo">
-            <button className="rounded-xl bg-slate-900 px-4 py-2 text-sm text-white shadow hover:bg-slate-800">
-              Añadir paciente
-            </button>
-          </a>
-        </div>
+    <div className="space-y-6">
+      {/* CABECERA */}
+      <div>
+        <div className="text-sm text-slate-500">Panel psicólogo</div>
+        <h1 className="mt-1 text-2xl font-semibold text-slate-900">
+          Dashboard
+        </h1>
       </div>
 
-      <div className="mt-8 grid gap-4 md:grid-cols-3">
-        <div className="rounded-2xl border border-black/5 bg-white/70 p-5 shadow-sm">
-          <div className="text-xs font-semibold text-slate-500">Hoy</div>
-          <div className="mt-2 text-3xl font-semibold">3</div>
-          <div className="mt-1 text-sm text-slate-600">
-            check-ins recibidos (demo)
+      {/* PACIENTES VISTA RÁPIDA */}
+      <section className="rounded-3xl border border-black/5 bg-white/70 p-6 shadow-sm">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <h2 className="text-lg font-semibold text-slate-900">
+              Pacientes (vista rápida)
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Estado general y último registro.
+            </p>
+          </div>
+
+          <a
+            href="/panel/pacientes"
+            className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs shadow-sm hover:bg-slate-50"
+          >
+            Ver todos
+          </a>
+        </div>
+
+        <div className="mt-5 space-y-3">
+          {pacientes.map((p) => (
+            <a
+              key={p.id}
+              href={`/panel/pacientes/${p.id}`}
+              className="block rounded-2xl border border-slate-200 bg-white p-4 hover:bg-slate-50"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <div className="text-lg font-semibold text-slate-900">
+                    {p.nombre}
+                  </div>
+                  <div className="mt-1 text-sm text-slate-500">
+                    Último registro: {p.ultimo}
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-2xl shadow-sm">
+                  {p.estado}
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      {/* FILA INFERIOR */}
+      <section className="grid gap-4 md:grid-cols-2">
+        {/* ACTIVIDAD RECIENTE */}
+        <div className="rounded-3xl border border-black/5 bg-white/70 p-6 shadow-sm">
+          <h2 className="text-lg font-semibold text-slate-900">
+            Actividad reciente
+          </h2>
+
+          <div className="mt-5 space-y-3">
+            {actividad.map((item, i) => (
+              <div
+                key={i}
+                className="rounded-2xl border border-slate-200 bg-white p-4"
+              >
+                <div className="text-sm font-semibold text-slate-900">
+                  {item.nombre}
+                </div>
+                <div className="mt-1 text-sm text-slate-600">
+                  {item.texto}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
-        <div className="rounded-2xl border border-black/5 bg-white/70 p-5 shadow-sm">
-          <div className="text-xs font-semibold text-slate-500">Semana</div>
-          <div className="mt-2 text-3xl font-semibold">12</div>
-          <div className="mt-1 text-sm text-slate-600">
-            tareas completadas (demo)
-          </div>
-        </div>
+        {/* INFORMES */}
+        <div className="rounded-3xl border border-black/5 bg-white/70 p-6 shadow-sm">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-lg font-semibold text-slate-900">Informes</h2>
 
-        <div className="rounded-2xl border border-black/5 bg-white/70 p-5 shadow-sm">
-          <div className="text-xs font-semibold text-slate-500">Pacientes</div>
-          <div className="mt-2 text-3xl font-semibold">2</div>
-          <div className="mt-1 text-sm text-slate-600">
-            activos en seguimiento (demo)
+            <a
+              href="/panel/informes"
+              className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs shadow-sm hover:bg-slate-50"
+            >
+              Ver informes
+            </a>
+          </div>
+
+          <div className="mt-5 space-y-3">
+            {informes.map((item, i) => (
+              <a
+                key={i}
+                href="/panel/informes"
+                className="block rounded-2xl border border-slate-200 bg-white p-4 hover:bg-slate-50"
+              >
+                <div className="text-sm font-semibold text-slate-900">
+                  {item.nombre}
+                </div>
+              </a>
+            ))}
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

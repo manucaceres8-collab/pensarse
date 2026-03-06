@@ -1,34 +1,25 @@
 import Image from "next/image";
-import ChatWidget from "./components/ChatWidget";
+import FloatingChat from "./components/FloatingChat";
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-[#f6f7fb] text-slate-900">
-      {/* Fondo claro premium */}
+      {/* Fondo */}
       <div className="pointer-events-none fixed inset-0 -z-10">
-        {/* Gradientes suaves */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(56,189,248,0.18),transparent_45%),radial-gradient(circle_at_80%_20%,rgba(34,197,94,0.14),transparent_45%),radial-gradient(circle_at_50%_90%,rgba(99,102,241,0.10),transparent_55%)]" />
-        {/* Grano sutil */}
-        <div className="absolute inset-0 opacity-[0.06] [background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22120%22 height=%22120%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22 numOctaves=%222%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22120%22 height=%22120%22 filter=%22url(%23n)%22 opacity=%220.35%22/%3E%3C/svg%3E')]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(56,189,248,0.12),transparent_45%),radial-gradient(circle_at_80%_20%,rgba(34,197,94,0.08),transparent_45%),radial-gradient(circle_at_50%_90%,rgba(99,102,241,0.08),transparent_55%)]" />
       </div>
 
-      <div className="mx-auto max-w-5xl px-6 py-10 md:py-14">
-        {/* HERO */}
-        <section className="relative overflow-hidden rounded-3xl border border-black/5 bg-white/55 p-8 shadow-[0_10px_30px_rgba(2,6,23,0.08)] backdrop-blur-xl md:p-12">
-          {/* Marca de agua con tu logo (no pegatina) */}
-          <div className="pointer-events-none absolute -right-10 -top-8 opacity-[0.10] blur-[0.2px]">
-            <Image
-              src="/logopensar-sbe.png"
-              alt="Pensar(SE)"
-              width={520}
-              height={520}
-              priority
-            />
-          </div>
+      <div className="mx-auto max-w-6xl px-6 py-8 md:py-12">
+        {/* BARRA SUPERIOR */}
+        <header className="rounded-3xl border border-black/5 bg-white/70 px-6 py-4 shadow-sm backdrop-blur-xl">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <div className="text-2xl font-semibold tracking-tight">
+                Pensar<span className="text-slate-500">(SE)</span>
+              </div>
+            </div>
 
-          {/* Logo pequeño integrado (opcional) */}
-          <div className="mb-6 flex items-center gap-3">
-            <div className="relative h-9 w-9 overflow-hidden rounded-xl border border-black/5 bg-white shadow-sm">
+            <div className="relative h-16 w-16 overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm">
               <Image
                 src="/logopensar-se.png"
                 alt="Pensar(SE)"
@@ -36,206 +27,182 @@ export default function Home() {
                 className="object-contain p-1"
               />
             </div>
-            <span className="text-sm font-medium tracking-wide text-slate-600">
-              Pensar(SE)
-            </span>
           </div>
+        </header>
 
+        {/* HERO */}
+        <section className="mt-8 rounded-3xl border border-black/5 bg-white/55 p-8 shadow-[0_10px_30px_rgba(2,6,23,0.08)] backdrop-blur-xl md:p-12">
           <h1 className="text-4xl font-semibold tracking-tight md:text-6xl">
-            Pensar<span className="text-slate-500">(SE)</span>
+            Terapia entre sesiones,{" "}
+            <span className="text-slate-500">simple y útil.</span>
           </h1>
-          <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-600 md:text-lg">
-            Entrenamiento psicológico basado en evidencia. Un enfoque claro, práctico y
-            con estructura — sin ruido.
+
+          <p className="mt-4 max-w-3xl text-base leading-relaxed text-slate-600 md:text-lg">
+            Seguimiento terapéutico entre sesiones.
           </p>
 
-          <div className="mt-8 flex flex-wrap items-center gap-2">
-{/* BOTONES PRINCIPALES */}
-<div className="mt-8 flex flex-wrap gap-4">
-  <a href="/login">
-    <button className="rounded-xl bg-slate-900 px-5 py-2 text-sm text-white shadow hover:bg-slate-800">
-      Entrar
-    </button>
-  </a>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <a href="/mi">
+              <button className="rounded-2xl bg-slate-900 px-6 py-3 text-sm text-white shadow hover:bg-slate-800">
+                Paciente
+              </button>
+            </a>
 
-  <a href="#chatbot">
-    <button className="rounded-xl border border-slate-300 bg-white px-5 py-2 text-sm shadow hover:bg-slate-50">
-      Probar chatbot
-    </button>
-  </a>
-
-  <a href="/panel">
-    <button className="rounded-xl border border-slate-200 bg-white px-5 py-2 text-sm shadow hover:bg-slate-50">
-      Demo psicólogo
-    </button>
-  </a>
-
-  <a href="/mi">
-    <button className="rounded-xl border border-slate-200 bg-white px-5 py-2 text-sm shadow hover:bg-slate-50">
-      Demo paciente
-    </button>
-  </a>
-</div>
-            <span className="rounded-full border border-black/5 bg-white/70 px-3 py-1 text-xs text-slate-600 shadow-sm">
-              Calma + estructura
-            </span>
-            <span className="rounded-full border border-black/5 bg-white/70 px-3 py-1 text-xs text-slate-600 shadow-sm">
-              Micro-ejercicios
-            </span>
-            <span className="rounded-full border border-black/5 bg-white/70 px-3 py-1 text-xs text-slate-600 shadow-sm">
-              Seguimiento
-            </span>
+            <a href="/panel">
+              <button className="rounded-2xl border border-slate-200 bg-white px-6 py-3 text-sm shadow-sm hover:bg-slate-50">
+                Psicólogo
+              </button>
+            </a>
           </div>
         </section>
-{/* CÓMO FUNCIONA */}
-<section className="mt-10 rounded-3xl border border-black/5 bg-white/55 p-6 shadow-[0_10px_30px_rgba(2,6,23,0.06)] backdrop-blur-xl md:p-10">
-  <h2 className="text-xl font-semibold text-slate-900 md:text-2xl">
-    Cómo funciona
-  </h2>
-  <p className="mt-2 max-w-3xl text-sm text-slate-600 md:text-base">
-    Pensar(SE) te ayuda a trabajar entre sesiones con micro-registros y ejercicios
-    guiados. El psicólogo llega a la sesión con información útil, clara y ordenada.
-  </p>
 
-  <div className="mt-8 grid gap-4 md:grid-cols-3">
-    <div className="rounded-2xl border border-black/5 bg-white/70 p-5 shadow-sm">
-      <div className="text-xs font-semibold text-slate-500">Paso 1</div>
-      <h3 className="mt-1 text-base font-semibold text-slate-900">
-        El psicólogo invita al paciente
-      </h3>
-      <p className="mt-2 text-sm text-slate-600">
-        Crea un paciente en tu panel y envía el acceso con un clic.
-      </p>
-    </div>
+        {/* TRES BLOQUES VISUALES */}
+        <section className="mt-8 grid gap-4 md:grid-cols-3">
+          {/* REGISTRO DIARIO */}
+          <div className="rounded-3xl border border-black/5 bg-white/70 p-6 shadow-sm">
+            <div className="flex items-center justify-between gap-3">
+              <div className="text-sm font-semibold text-slate-900">
+                Registro diario
+              </div>
+              <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] text-slate-500">
+                20s
+              </span>
+            </div>
 
-    <div className="rounded-2xl border border-black/5 bg-white/70 p-5 shadow-sm">
-      <div className="text-xs font-semibold text-slate-500">Paso 2</div>
-      <h3 className="mt-1 text-base font-semibold text-slate-900">
-        Check-in de 20 segundos
-      </h3>
-      <p className="mt-2 text-sm text-slate-600">
-        El paciente registra cómo se siente (y opcionalmente añade una nota).
-      </p>
-    </div>
+            <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div className="text-xs font-medium text-slate-500">
+                ¿Cómo te sientes hoy?
+              </div>
 
-    <div className="rounded-2xl border border-black/5 bg-white/70 p-5 shadow-sm">
-      <div className="text-xs font-semibold text-slate-500">Paso 3</div>
-      <h3 className="mt-1 text-base font-semibold text-slate-900">
-        Sesión con foco y claridad
-      </h3>
-      <p className="mt-2 text-sm text-slate-600">
-        El psicólogo revisa la evolución y las tareas antes de la sesión.
-      </p>
-    </div>
-  </div>
-</section>
-{/* CHECK-IN EMOCIONAL */}
-<section className="mt-8 rounded-3xl border border-black/5 bg-white/55 p-6 shadow-[0_10px_30px_rgba(2,6,23,0.06)] backdrop-blur-xl md:p-10">
-  <h2 className="text-xl font-semibold text-slate-900 md:text-2xl">
-    Check-in emocional (20 segundos)
-  </h2>
+              <div className="mt-3 flex flex-wrap gap-2 text-xl">
+                <span className="rounded-xl border border-slate-200 bg-slate-900 px-3 py-2 text-white">
+                  🙂
+                </span>
+                <span className="rounded-xl border border-slate-200 bg-white px-3 py-2">
+                  😐
+                </span>
+                <span className="rounded-xl border border-slate-200 bg-white px-3 py-2">
+                  😔
+                </span>
+                <span className="rounded-xl border border-slate-200 bg-white px-3 py-2">
+                  😣
+                </span>
+              </div>
 
-  <p className="mt-2 max-w-3xl text-sm text-slate-600 md:text-base">
-    Así de simple es registrar cómo te sientes entre sesiones.
-  </p>
+              <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm text-slate-500">
+                “Hoy me he sentido más tranquilo que ayer...”
+              </div>
 
-  {/* EMOCIONES */}
-  <div className="mt-6 flex flex-wrap gap-3 text-2xl">
-    <button className="rounded-xl border px-4 py-2 hover:bg-slate-50">😄</button>
-    <button className="rounded-xl border px-4 py-2 hover:bg-slate-50">🙂</button>
-    <button className="rounded-xl border px-4 py-2 hover:bg-slate-50">😐</button>
-    <button className="rounded-xl border px-4 py-2 hover:bg-slate-50">😔</button>
-    <button className="rounded-xl border px-4 py-2 hover:bg-slate-50">😣</button>
-  </div>
-
-  {/* TEXTO OPCIONAL */}
-  <div className="mt-6">
-    <label className="text-sm text-slate-600">
-      ¿Qué ha pasado hoy? (opcional)
-    </label>
-
-    <textarea
-      className="mt-2 w-full rounded-xl border border-slate-200 p-3 text-sm"
-      rows={3}
-      placeholder="Escribe aquí si quieres añadir algo..."
-    />
-  </div>
-
-  <div className="mt-6">
-    <button className="rounded-xl bg-slate-900 px-5 py-2 text-sm text-white hover:bg-slate-800">
-      Guardar check-in
-    </button>
-  </div>
-</section>
-{/* BENEFICIOS */}
-<section className="mt-8 grid gap-4 md:grid-cols-2">
-  <div className="rounded-3xl border border-black/5 bg-white/55 p-6 shadow-[0_10px_30px_rgba(2,6,23,0.06)] backdrop-blur-xl md:p-10">
-    <h2 className="text-xl font-semibold text-slate-900 md:text-2xl">
-      Para psicólogos
-    </h2>
-    <ul className="mt-4 space-y-3 text-sm text-slate-600 md:text-base">
-      <li>• Llegas a sesión con un resumen del proceso entre sesiones.</li>
-      <li>• Menos tiempo “poniéndote al día”, más tiempo interviniendo.</li>
-      <li>• Ejercicios y tareas con seguimiento sencillo.</li>
-      <li>• Una experiencia clara, sin complejidad innecesaria.</li>
-    </ul>
-  </div>
-
-  <div className="rounded-3xl border border-black/5 bg-white/55 p-6 shadow-[0_10px_30px_rgba(2,6,23,0.06)] backdrop-blur-xl md:p-10">
-    <h2 className="text-xl font-semibold text-slate-900 md:text-2xl">
-      Para pacientes
-    </h2>
-    <ul className="mt-4 space-y-3 text-sm text-slate-600 md:text-base">
-      <li>• Entiendes tu evolución con registros simples y constantes.</li>
-      <li>• Tareas claras para avanzar entre sesiones.</li>
-      <li>• Menos olvido: lo importante queda registrado.</li>
-      <li>• Proceso terapéutico más continuo y acompañado.</li>
-    </ul>
-  </div>
-</section>
-
-{/* CTA FINAL */}
-<section className="mt-8 rounded-3xl border border-black/5 bg-slate-900 p-6 text-white shadow-[0_10px_30px_rgba(2,6,23,0.18)] md:p-10">
-  <h2 className="text-xl font-semibold md:text-2xl">
-    ¿Quieres verlo en acción?
-  </h2>
-  <p className="mt-2 max-w-2xl text-sm text-white/80 md:text-base">
-    Entra en la demo o prueba el chatbot. (Más adelante el acceso estará protegido con login real.)
-  </p>
-
-  <div className="mt-6 flex flex-wrap gap-3">
-    <a href="/login">
-      <button className="rounded-xl bg-white px-5 py-2 text-sm font-medium text-slate-900 shadow hover:bg-white/90">
-        Entrar a la demo
-      </button>
-    </a>
-
-    <a href="#chatbot">
-      <button className="rounded-xl border border-white/25 bg-white/0 px-5 py-2 text-sm font-medium text-white shadow hover:bg-white/10">
-        Probar chatbot
-      </button>
-    </a>
-  </div>
-</section>
-        {/* CHAT ABAJO */}
-        <section 
-        id="chatbot"
-        className="mt-8 rounded-3xl border border-black/5 bg-white/60 p-4 shadow-[0_10px_30px_rgba(2,6,23,0.08)] backdrop-blur-xl md:p-6">
-          <div className="mb-4 flex items-center justify-between gap-3">
-            <div>
-              <h2 className="text-base font-semibold text-slate-800">
-                Asistente Pensar(SE)
-              </h2>
-              <p className="text-sm text-slate-500">
-                Responde con calma y estructura. Elige un modo y empieza.
-              </p>
+              <div className="mt-4 flex items-center justify-between">
+                <span className="text-xs text-slate-500">Nota opcional</span>
+                <span className="rounded-full bg-emerald-50 px-2 py-1 text-[11px] text-emerald-700">
+                  guardado
+                </span>
+              </div>
             </div>
           </div>
 
-          <ChatWidget />
+          {/* TAREAS TERAPÉUTICAS */}
+          <div className="rounded-3xl border border-black/5 bg-white/70 p-6 shadow-sm">
+            <div className="flex items-center justify-between gap-3">
+              <div className="text-sm font-semibold text-slate-900">
+                Tareas terapéuticas
+              </div>
+              <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] text-slate-500">
+                3 activas
+              </span>
+            </div>
+
+            <div className="mt-4 space-y-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div className="rounded-xl border border-slate-200 p-3">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="text-sm font-medium text-slate-800">
+                    Registro ABC
+                  </div>
+                  <span className="rounded-full border border-amber-200 bg-amber-50 px-2 py-1 text-[11px] text-amber-700">
+                    pendiente
+                  </span>
+                </div>
+              </div>
+
+              <div className="rounded-xl border border-slate-200 p-3">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="text-sm font-medium text-slate-800">
+                    Reestructuración cognitiva
+                  </div>
+                  <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-1 text-[11px] text-emerald-700">
+                    hecha
+                  </span>
+                </div>
+              </div>
+
+              <div className="rounded-xl border border-slate-200 p-3">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="text-sm font-medium text-slate-800">
+                    Registro diario breve
+                  </div>
+                  <span className="rounded-full border border-sky-200 bg-sky-50 px-2 py-1 text-[11px] text-sky-700">
+                    en curso
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* INFORMES */}
+          <div className="rounded-3xl border border-black/5 bg-white/70 p-6 shadow-sm">
+            <div className="flex items-center justify-between gap-3">
+              <div className="text-sm font-semibold text-slate-900">
+                Informes evolución
+              </div>
+              <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] text-slate-500">
+                semanal
+              </span>
+            </div>
+
+            <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <div className="text-base font-semibold text-slate-900">
+                    María
+                  </div>
+                  <div className="text-xs text-slate-500">
+                    Últimos 5 días
+                  </div>
+                </div>
+
+                <span className="rounded-full border border-black/5 bg-slate-50 px-3 py-1 text-[11px] text-slate-600">
+                  media 6.0
+                </span>
+              </div>
+
+              <div className="mt-5 flex h-32 items-end justify-between gap-2">
+                {[4, 6, 5, 7, 8].map((n, i) => (
+                  <div key={i} className="flex flex-1 flex-col items-center gap-2">
+                    <div className="flex h-24 items-end">
+                      <div
+                        className="w-8 rounded-t-2xl bg-gradient-to-t from-slate-900 to-sky-400 shadow-sm"
+                        style={{ height: `${n * 10}px` }}
+                      />
+                    </div>
+                    <span className="text-[11px] text-slate-500">
+                      {["L", "M", "X", "J", "V"][i]}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-4 flex items-center justify-between text-xs text-slate-500">
+                <span>Mejor día: Viernes</span>
+                <span>8/10</span>
+              </div>
+            </div>
+          </div>
         </section>
       </div>
+
+      {/* CHAT FLOTANTE */}
+      <FloatingChat />
     </main>
   );
 }
-
