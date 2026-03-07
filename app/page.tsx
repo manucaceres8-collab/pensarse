@@ -1,207 +1,143 @@
 import Image from "next/image";
+import Link from "next/link";
+import ProfileAvatar from "./components/ProfileAvatar";
 import FloatingChat from "./components/FloatingChat";
+
+const metricas = [
+  { label: "Check-in diario", value: "20 s" },
+  { label: "Tareas guiadas", value: "3-5 min" },
+  { label: "Informe semanal", value: "Listo para sesion" },
+];
+
+const perfilesPaciente = [
+  { nombre: "Maria Lopez", src: "/profiles/paciente-1.jpg" },
+  { nombre: "Laura M.", src: "/profiles/paciente-2.jpg" },
+  { nombre: "Andres R.", src: "/profiles/paciente-3.jpg" },
+];
+
+const perfilesPsicologo = [
+  { nombre: "Dra. Sofia Martin", src: "/profiles/psicologo-1.jpg" },
+  { nombre: "Dr. Daniel Ruiz", src: "/profiles/psicologo-2.jpg" },
+  { nombre: "Dra. Elena Solis", src: "/profiles/psicologo-3.jpg" },
+];
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#f6f7fb] text-slate-900">
-      {/* Fondo */}
+    <main className="min-h-screen bg-[#f3f8ff] text-[#0f172a]">
       <div className="pointer-events-none fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(56,189,248,0.12),transparent_45%),radial-gradient(circle_at_80%_20%,rgba(34,197,94,0.08),transparent_45%),radial-gradient(circle_at_50%_90%,rgba(99,102,241,0.08),transparent_55%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_8%,rgba(79,127,191,0.10),transparent_42%),radial-gradient(circle_at_88%_12%,rgba(147,197,253,0.10),transparent_40%),radial-gradient(circle_at_50%_92%,rgba(79,127,191,0.08),transparent_55%)]" />
       </div>
 
       <div className="mx-auto max-w-6xl px-6 py-8 md:py-12">
-        {/* BARRA SUPERIOR */}
-        <header className="rounded-3xl border border-black/5 bg-white/70 px-6 py-4 shadow-sm backdrop-blur-xl">
+        <header className="rounded-3xl border border-[#dbeafe] bg-white px-6 py-4 shadow-sm">
           <div className="flex items-center justify-between gap-4">
-            <div>
-              <div className="text-2xl font-semibold tracking-tight">
-                Pensar<span className="text-slate-500">(SE)</span>
+            <div className="flex items-center gap-4">
+              <div className="relative h-14 w-14 overflow-hidden rounded-2xl border border-[#dbeafe] bg-[#f8fbff] p-1">
+                <Image src="/logo-pensarse-sinergia.svg" alt="Logo Pensar(SE)" fill className="object-contain" priority />
+              </div>
+              <div>
+                <p className="text-2xl font-semibold tracking-tight text-[#0f172a]">
+                  Pensar<span className="text-[#4f7fbf]">(SE)</span>
+                </p>
+                <p className="text-sm text-[#64748b]">Terapia entre sesiones, simple y util</p>
               </div>
             </div>
-
-            <div className="relative h-16 w-16 overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm">
-              <Image
-                src="/logopensar-se.png"
-                alt="Pensar(SE)"
-                fill
-                className="object-contain p-1"
-              />
-            </div>
+            <span className="rounded-full border border-[#dbeafe] bg-[#eff6ff] px-3 py-1 text-xs text-[#4f7fbf]">Demo</span>
           </div>
         </header>
 
-        {/* HERO */}
-        <section className="mt-8 rounded-3xl border border-black/5 bg-white/55 p-8 shadow-[0_10px_30px_rgba(2,6,23,0.08)] backdrop-blur-xl md:p-12">
-          <h1 className="text-4xl font-semibold tracking-tight md:text-6xl">
-            Terapia entre sesiones,{" "}
-            <span className="text-slate-500">simple y útil.</span>
-          </h1>
+        <section className="mt-8 rounded-3xl border border-[#dbeafe] bg-white p-8 shadow-sm md:p-10">
+          <div className="grid gap-8 md:grid-cols-[1.2fr_0.8fr] md:items-end">
+            <div>
+              <h1 className="text-4xl font-semibold tracking-tight text-[#0f172a] md:text-5xl">
+                Continuidad terapeutica para psicologos y pacientes,
+                <span className="text-[#4f7fbf]"> sin complejidad.</span>
+              </h1>
+              <p className="mt-4 max-w-2xl text-base leading-relaxed text-[#64748b] md:text-lg">
+                Pensar(SE) organiza el trabajo entre sesiones con un flujo claro: el paciente registra, el psicologo revisa y ambos llegan mejor preparados a la sesion.
+              </p>
+            </div>
 
-          <p className="mt-4 max-w-3xl text-base leading-relaxed text-slate-600 md:text-lg">
-            Seguimiento terapéutico entre sesiones.
-          </p>
+            <div className="grid gap-3">
+              {metricas.map((item) => (
+                <div key={item.label} className="rounded-2xl border border-[#e6efff] bg-[#f8fbff] px-4 py-3">
+                  <p className="text-xs text-[#64748b]">{item.label}</p>
+                  <p className="mt-1 text-lg font-semibold text-[#0f172a]">{item.value}</p>
+                </div>
+              ))}
+            </div>
+          </div>
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <a href="/mi">
-              <button className="rounded-2xl bg-slate-900 px-6 py-3 text-sm text-white shadow hover:bg-slate-800">
-                Paciente
-              </button>
-            </a>
-
-            <a href="/panel">
-              <button className="rounded-2xl border border-slate-200 bg-white px-6 py-3 text-sm shadow-sm hover:bg-slate-50">
-                Psicólogo
-              </button>
-            </a>
+            <Link href="/login?rol=psicologo" className="rounded-2xl bg-[#4f7fbf] px-6 py-3 text-sm font-medium text-white shadow hover:bg-[#3e6ea8]">
+              Entrar como psicologo
+            </Link>
+            <Link href="/login?rol=paciente" className="rounded-2xl border border-[#dbeafe] bg-[#eff6ff] px-6 py-3 text-sm font-medium text-[#4f7fbf] shadow-sm hover:bg-[#e0edff]">
+              Entrar como paciente
+            </Link>
           </div>
         </section>
 
-        {/* TRES BLOQUES VISUALES */}
-        <section className="mt-8 grid gap-4 md:grid-cols-3">
-          {/* REGISTRO DIARIO */}
-          <div className="rounded-3xl border border-black/5 bg-white/70 p-6 shadow-sm">
-            <div className="flex items-center justify-between gap-3">
-              <div className="text-sm font-semibold text-slate-900">
-                Registro diario
-              </div>
-              <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] text-slate-500">
-                20s
-              </span>
+        <section className="mt-8 grid gap-4 md:grid-cols-2">
+          <article className="rounded-3xl border border-[#dbeafe] bg-white p-6 shadow-sm">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-[#0f172a]">Vista del psicologo</h2>
+              <span className="rounded-full border border-[#dbeafe] bg-[#eff6ff] px-3 py-1 text-xs text-[#4f7fbf]">Panel clinico</span>
             </div>
+            <ul className="mt-4 space-y-2 text-sm text-[#64748b]">
+              <li>- Seguimiento por paciente con tareas y notas.</li>
+              <li>- Lectura rapida de evolucion semanal.</li>
+              <li>- Informes listos para preparar sesion.</li>
+            </ul>
 
-            <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-              <div className="text-xs font-medium text-slate-500">
-                ¿Cómo te sientes hoy?
-              </div>
-
-              <div className="mt-3 flex flex-wrap gap-2 text-xl">
-                <span className="rounded-xl border border-slate-200 bg-slate-900 px-3 py-2 text-white">
-                  🙂
-                </span>
-                <span className="rounded-xl border border-slate-200 bg-white px-3 py-2">
-                  😐
-                </span>
-                <span className="rounded-xl border border-slate-200 bg-white px-3 py-2">
-                  😔
-                </span>
-                <span className="rounded-xl border border-slate-200 bg-white px-3 py-2">
-                  😣
-                </span>
-              </div>
-
-              <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm text-slate-500">
-                “Hoy me he sentido más tranquilo que ayer...”
-              </div>
-
-              <div className="mt-4 flex items-center justify-between">
-                <span className="text-xs text-slate-500">Nota opcional</span>
-                <span className="rounded-full bg-emerald-50 px-2 py-1 text-[11px] text-emerald-700">
-                  guardado
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* TAREAS TERAPÉUTICAS */}
-          <div className="rounded-3xl border border-black/5 bg-white/70 p-6 shadow-sm">
-            <div className="flex items-center justify-between gap-3">
-              <div className="text-sm font-semibold text-slate-900">
-                Tareas terapéuticas
-              </div>
-              <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] text-slate-500">
-                3 activas
-              </span>
-            </div>
-
-            <div className="mt-4 space-y-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-              <div className="rounded-xl border border-slate-200 p-3">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="text-sm font-medium text-slate-800">
-                    Registro ABC
-                  </div>
-                  <span className="rounded-full border border-amber-200 bg-amber-50 px-2 py-1 text-[11px] text-amber-700">
-                    pendiente
-                  </span>
+            <div className="mt-5 grid grid-cols-3 gap-3">
+              {perfilesPsicologo.map((item) => (
+                <div key={item.nombre} className="rounded-2xl border border-[#e6efff] bg-[#f8fbff] p-3 text-center">
+                  <ProfileAvatar
+                    src={item.src}
+                    fallbackSrc="/paciente-maria.svg"
+                    alt={item.nombre}
+                    className="mx-auto h-12 w-12 rounded-full border border-blue-100 object-cover"
+                  />
+                  <p className="mt-2 text-[11px] font-medium text-[#334155]">{item.nombre}</p>
                 </div>
-              </div>
-
-              <div className="rounded-xl border border-slate-200 p-3">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="text-sm font-medium text-slate-800">
-                    Reestructuración cognitiva
-                  </div>
-                  <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-1 text-[11px] text-emerald-700">
-                    hecha
-                  </span>
-                </div>
-              </div>
-
-              <div className="rounded-xl border border-slate-200 p-3">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="text-sm font-medium text-slate-800">
-                    Registro diario breve
-                  </div>
-                  <span className="rounded-full border border-sky-200 bg-sky-50 px-2 py-1 text-[11px] text-sky-700">
-                    en curso
-                  </span>
-                </div>
-              </div>
+              ))}
             </div>
-          </div>
+          </article>
 
-          {/* INFORMES */}
-          <div className="rounded-3xl border border-black/5 bg-white/70 p-6 shadow-sm">
-            <div className="flex items-center justify-between gap-3">
-              <div className="text-sm font-semibold text-slate-900">
-                Informes evolución
-              </div>
-              <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] text-slate-500">
-                semanal
-              </span>
+          <article className="rounded-3xl border border-[#dbeafe] bg-white p-6 shadow-sm">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-[#0f172a]">Vista del paciente</h2>
+              <span className="rounded-full border border-[#dbeafe] bg-[#eff6ff] px-3 py-1 text-xs text-[#4f7fbf]">Mi espacio</span>
             </div>
+            <ul className="mt-4 space-y-2 text-sm text-[#64748b]">
+              <li>- Check-in diario en menos de un minuto.</li>
+              <li>- Tareas terapeuticas con pasos simples.</li>
+              <li>- Evolucion visual para autoconsciencia.</li>
+            </ul>
 
-            <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <div className="text-base font-semibold text-slate-900">
-                    María
-                  </div>
-                  <div className="text-xs text-slate-500">
-                    Últimos 5 días
-                  </div>
+            <div className="mt-5 grid grid-cols-3 gap-3">
+              {perfilesPaciente.map((item) => (
+                <div key={item.nombre} className="rounded-2xl border border-[#e6efff] bg-[#f8fbff] p-3 text-center">
+                  <ProfileAvatar
+                    src={item.src}
+                    fallbackSrc="/paciente-maria.svg"
+                    alt={item.nombre}
+                    className="mx-auto h-12 w-12 rounded-full border border-blue-100 object-cover"
+                  />
+                  <p className="mt-2 text-[11px] font-medium text-[#334155]">{item.nombre}</p>
                 </div>
-
-                <span className="rounded-full border border-black/5 bg-slate-50 px-3 py-1 text-[11px] text-slate-600">
-                  media 6.0
-                </span>
-              </div>
-
-              <div className="mt-5 flex h-32 items-end justify-between gap-2">
-                {[4, 6, 5, 7, 8].map((n, i) => (
-                  <div key={i} className="flex flex-1 flex-col items-center gap-2">
-                    <div className="flex h-24 items-end">
-                      <div
-                        className="w-8 rounded-t-2xl bg-gradient-to-t from-slate-900 to-sky-400 shadow-sm"
-                        style={{ height: `${n * 10}px` }}
-                      />
-                    </div>
-                    <span className="text-[11px] text-slate-500">
-                      {["L", "M", "X", "J", "V"][i]}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-4 flex items-center justify-between text-xs text-slate-500">
-                <span>Mejor día: Viernes</span>
-                <span>8/10</span>
-              </div>
+              ))}
             </div>
-          </div>
+          </article>
+        </section>
+
+        <section className="mt-6 rounded-3xl border border-[#dbeafe] bg-white p-5 text-xs text-[#64748b] shadow-sm">
+          Para usar tus fotos: guarda los archivos en `public/profiles/` con estos nombres:
+          `paciente-1.jpg`, `paciente-2.jpg`, `paciente-3.jpg`, `psicologo-1.jpg`, `psicologo-2.jpg`, `psicologo-3.jpg`.
         </section>
       </div>
 
-      {/* CHAT FLOTANTE */}
       <FloatingChat />
     </main>
   );

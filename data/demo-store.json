@@ -1,0 +1,116 @@
+{
+  "patients": [
+    {
+      "id": "eva-cabrera",
+      "name": "Eva Cabrera",
+      "email": "eva@gmail.com",
+      "objective": "",
+      "avatar": "/profiles/paciente-1.jpg",
+      "status": "Nuevo",
+      "lastCheckinAt": "2026-03-07T13:08:33.905Z",
+      "tasks": [
+        {
+          "id": "abc",
+          "title": "Registro ABC",
+          "description": "Situacion, pensamiento, emocion y conducta.",
+          "status": "Pendiente",
+          "createdAt": "2026-03-07T13:08:57.353Z",
+          "updatedAt": "2026-03-07T13:08:57.353Z",
+          "lastAnswer": ""
+        }
+      ],
+      "checkins": [],
+      "notes": []
+    },
+    {
+      "id": "maria",
+      "name": "Maria Lopez",
+      "email": "maria@pensarse.demo",
+      "objective": "Reducir ansiedad cotidiana y mejorar descanso.",
+      "avatar": "/profiles/paciente-1.jpg",
+      "status": "Variable",
+      "lastCheckinAt": "2026-03-07T13:12:27.862Z",
+      "tasks": [
+        {
+          "id": "registro",
+          "title": "Registro diario breve",
+          "description": "Escribe en 1-2 frases como ha ido el dia.",
+          "status": "Completada",
+          "createdAt": "2026-03-06T10:00:00.000Z",
+          "updatedAt": "2026-03-07T13:12:40.652Z",
+          "lastAnswer": "Estoy bien"
+        },
+        {
+          "id": "abc",
+          "title": "Registro ABC",
+          "description": "Situacion, pensamiento, emocion y conducta.",
+          "status": "Completada",
+          "createdAt": "2026-03-06T10:00:00.000Z",
+          "updatedAt": "2026-03-07T13:11:19.357Z",
+          "lastAnswer": "hola\n---\nj\n---\na\n---\na"
+        },
+        {
+          "id": "reestructuracion",
+          "title": "Reestructuracion cognitiva",
+          "description": "Busca un pensamiento alternativo equilibrado.",
+          "status": "Completada",
+          "createdAt": "2026-03-05T10:00:00.000Z",
+          "updatedAt": "2026-03-07T09:00:00.000Z",
+          "lastAnswer": "Podria ser que este pensamiento no sea del todo realista."
+        }
+      ],
+      "checkins": [
+        {
+          "id": "checkin-add9089d",
+          "mood": "Neutro",
+          "text": "Estoy ni fu ni fa",
+          "createdAt": "2026-03-07T13:12:27.862Z"
+        },
+        {
+          "id": "checkin-ac419d63",
+          "mood": "Muy bajo",
+          "text": "Estoy algo cansada",
+          "createdAt": "2026-03-07T13:11:06.466Z"
+        },
+        {
+          "id": "c1",
+          "mood": "Bien",
+          "text": "Semana mas tranquila y mejor descanso.",
+          "createdAt": "2026-03-07T10:00:00.000Z"
+        }
+      ],
+      "notes": [
+        {
+          "id": "n1",
+          "text": "Quiero trabajar la rumiacion nocturna.",
+          "author": "paciente",
+          "createdAt": "2026-03-07T10:20:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "juan",
+      "name": "Juan Perez",
+      "email": "juan@pensarse.demo",
+      "objective": "Gestionar estres laboral.",
+      "avatar": "/profiles/paciente-2.jpg",
+      "status": "Variable",
+      "lastCheckinAt": "2026-03-06T18:00:00.000Z",
+      "tasks": [],
+      "checkins": [],
+      "notes": []
+    },
+    {
+      "id": "carlos",
+      "name": "Carlos Gomez",
+      "email": "carlos@pensarse.demo",
+      "objective": "Regular activacion en examenes.",
+      "avatar": "/profiles/paciente-3.jpg",
+      "status": "Variable",
+      "lastCheckinAt": "2026-03-06T17:00:00.000Z",
+      "tasks": [],
+      "checkins": [],
+      "notes": []
+    }
+  ]
+}

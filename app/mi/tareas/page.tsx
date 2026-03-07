@@ -1,130 +1,123 @@
-const tareas = [
-  {
-    id: "registro",
-    titulo: "Registro diario breve",
-    descripcion: "Escribe en 1–2 frases cómo ha ido el día.",
-    estado: "Pendiente",
-    tiempo: "2 min",
-  },
-  {
-    id: "abc",
-    titulo: "Registro ABC",
-    descripcion: "Situación, pensamiento, emoción y conducta.",
-    estado: "Pendiente",
-    tiempo: "5 min",
-  },
-  {
-    id: "reestructuracion",
-    titulo: "Reestructuración cognitiva simple",
-    descripcion: "Busca un pensamiento alternativo más equilibrado.",
-    estado: "Hecha",
-    tiempo: "4 min",
-  },
-];
+"use client";
+
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+
+type DemoTask = {
+  id: string;
+  title: string;
+  description: string;
+  status: "Pendiente" | "Completada";
+};
+
+type DemoPatient = {
+  tasks: DemoTask[];
+};
 
 export default function TareasPage() {
-  const pendientes = tareas.filter((t) => t.estado === "Pendiente").length;
-  const hechas = tareas.filter((t) => t.estado === "Hecha").length;
-  const total = tareas.length;
+  const [tasks, setTasks] = useState<DemoTask[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadTasks() {
+      try {
+        const res = await fetch("/api/demo/patients/maria", { cache: "no-store" });
+        const data = (await res.json()) as { patient: DemoPatient };
+        if (mounted) {
+          setTasks(data.patient?.tasks ?? []);
+        }
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadTasks();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const pendientes = useMemo(
+    () => tasks.filter((t) => t.status === "Pendiente").length,
+    [tasks]
+  );
+  const hechas = useMemo(
+    () => tasks.filter((t) => t.status === "Completada").length,
+    [tasks]
+  );
 
   return (
     <div className="space-y-6">
-      {/* CABECERA */}
-      <div>
+      <section className="rounded-3xl border border-[var(--border)] bg-[var(--surface-soft)] p-6">
         <h1 className="text-2xl font-semibold text-slate-900">Tareas</h1>
-        <p className="mt-1 text-sm text-slate-500">
-          Aquí tienes los ejercicios enviados por tu psicólogo.
+        <p className="mt-2 text-sm text-slate-600">
+          Estas tareas llegan desde el panel del psicologo y se guardan con tu progreso.
         </p>
-      </div>
+      </section>
 
-      {/* RESUMEN */}
       <section className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-3xl border border-black/5 bg-white/70 p-5 shadow-sm">
-          <div className="text-xs font-semibold text-slate-500">Pendientes</div>
-          <div className="mt-2 text-3xl font-semibold text-slate-900">
-            {pendientes}
-          </div>
-          <div className="mt-1 text-sm text-slate-600">
-            tareas por completar
-          </div>
+        <div className="rounded-2xl border border-[var(--border)] bg-white p-5">
+          <p className="text-xs text-slate-500">Pendientes</p>
+          <p className="mt-2 text-3xl font-semibold text-slate-900">{pendientes}</p>
         </div>
-
-        <div className="rounded-3xl border border-black/5 bg-white/70 p-5 shadow-sm">
-          <div className="text-xs font-semibold text-slate-500">Hechas</div>
-          <div className="mt-2 text-3xl font-semibold text-slate-900">
-            {hechas}
-          </div>
-          <div className="mt-1 text-sm text-slate-600">
-            tareas completadas
-          </div>
+        <div className="rounded-2xl border border-[var(--border)] bg-white p-5">
+          <p className="text-xs text-slate-500">Hechas</p>
+          <p className="mt-2 text-3xl font-semibold text-slate-900">{hechas}</p>
         </div>
-
-        <div className="rounded-3xl border border-black/5 bg-white/70 p-5 shadow-sm">
-          <div className="text-xs font-semibold text-slate-500">Total</div>
-          <div className="mt-2 text-3xl font-semibold text-slate-900">
-            {total}
-          </div>
-          <div className="mt-1 text-sm text-slate-600">
-            ejercicios asignados
-          </div>
+        <div className="rounded-2xl border border-[var(--border)] bg-white p-5">
+          <p className="text-xs text-slate-500">Total</p>
+          <p className="mt-2 text-3xl font-semibold text-slate-900">{tasks.length}</p>
         </div>
       </section>
 
-      {/* LISTA DE TAREAS */}
-      <section className="space-y-4">
-        {tareas.map((tarea) => (
-          <a
-            key={tarea.id}
-            href={`/mi/tareas/${tarea.id}`}
-            className="block rounded-3xl border border-black/5 bg-white/70 p-6 shadow-sm hover:bg-slate-50"
-          >
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-3">
-                  <h2 className="text-lg font-semibold text-slate-900">
-                    {tarea.titulo}
-                  </h2>
+      <section className="space-y-3">
+        {loading && (
+          <div className="rounded-3xl border border-[var(--border)] bg-white p-6 text-sm text-slate-500">
+            Cargando tareas...
+          </div>
+        )}
 
-                  <span
-                    className={[
-                      "rounded-full border px-3 py-1 text-xs",
-                      tarea.estado === "Hecha"
-                        ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-                        : "border-amber-200 bg-amber-50 text-amber-700",
-                    ].join(" ")}
-                  >
-                    {tarea.estado}
-                  </span>
+        {!loading && tasks.length === 0 && (
+          <div className="rounded-3xl border border-[var(--border)] bg-white p-6 text-sm text-slate-500">
+            Aun no tienes tareas asignadas.
+          </div>
+        )}
+
+        {!loading &&
+          tasks.map((task) => (
+            <Link
+              key={task.id}
+              href={`/mi/tareas/${task.id}`}
+              className="block rounded-3xl border border-[var(--border)] bg-white p-6 transition hover:bg-blue-50"
+            >
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h2 className="text-lg font-semibold text-slate-900">{task.title}</h2>
+                    <span
+                      className={[
+                        "rounded-full border px-3 py-1 text-xs",
+                        task.status === "Completada"
+                          ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                          : "border-amber-200 bg-amber-50 text-amber-700",
+                      ].join(" ")}
+                    >
+                      {task.status}
+                    </span>
+                  </div>
+                  <p className="mt-2 text-sm text-slate-600">{task.description}</p>
                 </div>
-
-                <p className="mt-2 text-sm text-slate-600">
-                  {tarea.descripcion}
-                </p>
-
-                <div className="mt-3 text-xs text-slate-500">
-                  Duración aproximada: {tarea.tiempo}
-                </div>
-              </div>
-
-              <div className="shrink-0">
-                <span className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-medium text-slate-700 shadow-sm">
-                  Abrir tarea →
+                <span className="rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-medium text-blue-700">
+                  Abrir tarea
                 </span>
               </div>
-            </div>
-          </a>
-        ))}
-      </section>
-
-      {/* BLOQUE FINAL */}
-      <section className="rounded-3xl border border-black/5 bg-slate-900 p-6 text-white shadow-[0_10px_30px_rgba(2,6,23,0.18)]">
-        <h2 className="text-lg font-semibold">
-          Consejo
-        </h2>
-        <p className="mt-2 text-sm text-white/80">
-          No hace falta hacer todo de golpe. Completa una tarea pequeña y mantén
-          la constancia.
-        </p>
+            </Link>
+          ))}
       </section>
     </div>
   );

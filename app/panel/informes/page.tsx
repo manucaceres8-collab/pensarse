@@ -1,17 +1,19 @@
+import Link from "next/link";
+
 const informes = [
   {
-    nombre: "María López",
-    resumen: "Semana estable, check-ins regulares y 2 tareas completadas.",
+    nombre: "Maria Lopez",
+    resumen: "Semana estable, 2 tareas completadas y mejor descanso.",
     fecha: "Actualizado hoy",
   },
   {
-    nombre: "Juan Pérez",
-    resumen: "Descenso emocional a mitad de semana, una nota relevante registrada.",
+    nombre: "Juan Perez",
+    resumen: "Pico de rumiacion nocturna, pero mayor adherencia al registro.",
     fecha: "Actualizado ayer",
   },
   {
-    nombre: "Carlos Gómez",
-    resumen: "Mayor variabilidad emocional y 1 tarea pendiente.",
+    nombre: "Carlos Gomez",
+    resumen: "Variabilidad emocional por examenes, requiere seguimiento cercano.",
     fecha: "Actualizado ayer",
   },
 ];
@@ -19,54 +21,40 @@ const informes = [
 export default function InformesPage() {
   return (
     <div className="space-y-6">
-      {/* CABECERA */}
-      <div>
-        <div className="text-sm text-slate-500">Panel psicólogo</div>
-        <h1 className="mt-1 text-2xl font-semibold text-slate-900">
-          Informes
-        </h1>
-        <p className="mt-1 text-sm text-slate-500">
-          Resumen rápido del seguimiento de tus pacientes.
+      <section className="rounded-3xl border border-[var(--border)] bg-[var(--surface-soft)] p-6">
+        <h1 className="text-2xl font-semibold text-slate-900">Informes</h1>
+        <p className="mt-2 text-sm text-slate-600">
+          Resumen visual de evolucion para apoyar la preparacion de la siguiente sesion.
         </p>
-      </div>
+      </section>
 
-      {/* TARJETAS DE INFORME */}
-      <div className="space-y-4">
-        {informes.map((item, i) => (
-          <div
-            key={i}
-            className="rounded-3xl border border-black/5 bg-white/70 p-6 shadow-sm"
-          >
+      <section className="space-y-4">
+        {informes.map((item) => (
+          <article key={item.nombre} className="rounded-3xl border border-[var(--border)] bg-white p-6">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <h2 className="text-lg font-semibold text-slate-900">
-                  {item.nombre}
-                </h2>
-                <p className="mt-2 text-sm text-slate-600">
-                  {item.resumen}
-                </p>
+                <h2 className="text-lg font-semibold text-slate-900">{item.nombre}</h2>
+                <p className="mt-2 text-sm text-slate-600">{item.resumen}</p>
               </div>
-
-              <span className="rounded-full border border-black/5 bg-white px-3 py-1 text-xs text-slate-600 shadow-sm">
+              <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-600">
                 {item.fecha}
               </span>
             </div>
 
             <div className="mt-4 flex flex-wrap gap-2">
-              <a
+              <Link
                 href="/panel/pacientes/maria"
-                className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs shadow-sm hover:bg-slate-50"
+                className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-2 text-xs font-medium text-blue-700"
               >
                 Ver ficha
-              </a>
-
-              <button className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs shadow-sm hover:bg-slate-50">
+              </Link>
+              <button className="rounded-xl border border-[var(--border)] bg-white px-4 py-2 text-xs text-slate-700">
                 Exportar PDF (demo)
               </button>
             </div>
-          </div>
+          </article>
         ))}
-      </div>
+      </section>
     </div>
   );
 }

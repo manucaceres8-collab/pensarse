@@ -1,176 +1,295 @@
+"use client";
+
+import ProfileAvatar from "../../../components/ProfileAvatar";
+import { useParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+
+type DemoTask = {
+  id: string;
+  title: string;
+  description: string;
+  status: "Pendiente" | "Completada";
+  updatedAt: string;
+};
+
+type DemoNote = {
+  id: string;
+  text: string;
+  author: "paciente" | "psicologo";
+  createdAt: string;
+};
+
+type DemoCheckin = {
+  id: string;
+  mood: string;
+  text: string;
+  createdAt: string;
+};
+
+type DemoPatient = {
+  id: string;
+  name: string;
+  avatar: string;
+  status: string;
+  lastCheckinAt: string;
+  tasks: DemoTask[];
+  notes: DemoNote[];
+  checkins: DemoCheckin[];
+};
+
+type TareaRepo = {
+  id: string;
+  titulo: string;
+  descripcion: string;
+};
+
+const repositorio: TareaRepo[] = [
+  {
+    id: "abc",
+    titulo: "Registro ABC",
+    descripcion: "Situacion, pensamiento, emocion y conducta.",
+  },
+  {
+    id: "registro",
+    titulo: "Registro diario breve",
+    descripcion: "Sintesis rapida de como ha ido el dia.",
+  },
+  {
+    id: "reestructuracion",
+    titulo: "Reestructuracion cognitiva",
+    descripcion: "Crear pensamiento alternativo equilibrado.",
+  },
+  {
+    id: "respiracion",
+    titulo: "Respiracion 2 minutos",
+    descripcion: "Respiracion lenta para bajar activacion.",
+  },
+];
+
+function formatDate(value: string) {
+  if (!value) return "Sin actividad";
+  return new Date(value).toLocaleString("es-ES", {
+    day: "2-digit",
+    month: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 export default function PacienteDetalle() {
-  const emociones = ["😔", "😐", "🙂"];
+  const params = useParams();
+  const patientId = String(params.id ?? "maria");
 
-  const dias = [
-    { d: "Lunes", e: "😔" },
-    { d: "Martes", e: "😐" },
-    { d: "Miércoles", e: "🙂" },
-    { d: "Jueves", e: "🙂" },
-    { d: "Viernes", e: "😄" },
-  ];
+  const [patient, setPatient] = useState<DemoPatient | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [savingTask, setSavingTask] = useState<string | null>(null);
+  const [mostrarRepositorio, setMostrarRepositorio] = useState(false);
 
-  const notas = [
-    "Día intenso en el trabajo",
-    "Mejor sueño esta semana",
-    "Más claridad con la toma de decisiones",
-  ];
+  async function loadPatient() {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/demo/patients/${patientId}`, { cache: "no-store" });
+      if (!res.ok) {
+        setPatient(null);
+        return;
+      }
+      const data = (await res.json()) as { patient: DemoPatient };
+      setPatient(data.patient);
+    } finally {
+      setLoading(false);
+    }
+  }
 
-  const tareas = [
-    {
-      titulo: "Respiración 2 minutos",
-      descripcion: "Antes de dormir, respiración lenta 2 min.",
-      estado: "Pendiente",
-      fecha: "Hoy",
-    },
-    {
-      titulo: "Registro de pensamientos",
-      descripcion: "Anota pensamiento automático + emoción + alternativa.",
-      estado: "Completada",
-      fecha: "Ayer",
-    },
-    {
-      titulo: "Exposición gradual",
-      descripcion: "Dar el primer paso pequeño hacia la situación evitada.",
-      estado: "Pendiente",
-      fecha: "Esta semana",
-    },
-  ];
+  useEffect(() => {
+    loadPatient();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [patientId]);
 
-  const badge = (estado: string) =>
-    estado === "Completada"
-      ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-      : "bg-amber-50 text-amber-700 border-amber-200";
+  async function asignarTarea(item: TareaRepo) {
+    setSavingTask(item.id);
+    try {
+      await fetch(`/api/demo/patients/${patientId}/tasks`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          taskId: item.id,
+          title: item.titulo,
+          description: item.descripcion,
+        }),
+      });
+      await loadPatient();
+    } finally {
+      setSavingTask(null);
+    }
+  }
+
+  const pendientes = useMemo(
+    () => patient?.tasks.filter((t) => t.status === "Pendiente").length ?? 0,
+    [patient]
+  );
+
+  if (loading) {
+    return (
+      <div className="rounded-3xl border border-[var(--border)] bg-white p-6 text-sm text-slate-500">
+        Cargando ficha del paciente...
+      </div>
+    );
+  }
+
+  if (!patient) {
+    return (
+      <div className="rounded-3xl border border-[var(--border)] bg-white p-6 text-sm text-slate-500">
+        Paciente no encontrado.
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
-      {/* HEADER */}
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold text-slate-900">María López</h1>
-          <p className="text-sm text-slate-500">Seguimiento del paciente</p>
-        </div>
+      <section className="rounded-3xl border border-[var(--border)] bg-[var(--surface-soft)] p-6">
+        <div className="grid gap-4 md:grid-cols-[1fr_220px] md:items-center">
+          <div>
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <h1 className="text-2xl font-semibold text-slate-900">{patient.name}</h1>
+                <p className="mt-1 text-sm text-slate-500">Seguimiento individual del paciente</p>
+              </div>
 
-        <button className="rounded-xl bg-slate-900 px-4 py-2 text-sm text-white shadow hover:bg-slate-800">
-          + Asignar tarea (demo)
-        </button>
-      </div>
-
-      {/* EMOCIONES */}
-      <div className="rounded-2xl border border-black/5 bg-white/70 p-6 shadow-sm">
-        <h2 className="text-sm font-semibold text-slate-800">
-          Estado emocional reciente
-        </h2>
-
-        <div className="mt-4 flex gap-3 text-2xl">
-          {emociones.map((e, i) => (
-            <div
-              key={i}
-              className="rounded-xl border border-slate-200 bg-white px-4 py-2"
-            >
-              {e}
+              <button
+                onClick={() => setMostrarRepositorio((v) => !v)}
+                className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
+              >
+                {mostrarRepositorio ? "Cerrar repositorio" : "Asignar tarea"}
+              </button>
             </div>
-          ))}
-        </div>
-      </div>
 
-      {/* EVOLUCIÓN */}
-      <div className="rounded-2xl border border-black/5 bg-white/70 p-6 shadow-sm">
-        <h2 className="text-sm font-semibold text-slate-800">
-          Evolución emocional (últimos días)
-        </h2>
-
-        <div className="mt-6 space-y-4">
-          {dias.map((dia, i) => (
-            <div
-              key={i}
-              className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3"
-            >
-              <span className="text-sm text-slate-500">{dia.d}</span>
-
-              <div className="flex items-center gap-3">
-                <div className="h-2 w-40 rounded-full bg-slate-200">
-                  <div
-                    className="h-2 rounded-full bg-slate-900"
-                    style={{
-                      width: `${20 + i * 15}%`,
-                    }}
-                  />
-                </div>
-
-                <span className="text-lg">{dia.e}</span>
+            <div className="mt-5 grid gap-3 sm:grid-cols-3">
+              <div className="rounded-xl border border-[var(--border)] bg-white p-3">
+                <p className="text-xs text-slate-500">Ultimo check-in</p>
+                <p className="mt-1 text-sm font-semibold text-slate-900">
+                  {formatDate(patient.lastCheckinAt)}
+                </p>
+              </div>
+              <div className="rounded-xl border border-[var(--border)] bg-white p-3">
+                <p className="text-xs text-slate-500">Estado actual</p>
+                <p className="mt-1 text-sm font-semibold text-slate-900">{patient.status}</p>
+              </div>
+              <div className="rounded-xl border border-[var(--border)] bg-white p-3">
+                <p className="text-xs text-slate-500">Tareas pendientes</p>
+                <p className="mt-1 text-sm font-semibold text-slate-900">{pendientes}</p>
               </div>
             </div>
-          ))}
+          </div>
+
+          <div className="rounded-2xl border border-[var(--border)] bg-white p-4 text-center">
+            <ProfileAvatar
+              src={patient.avatar}
+              fallbackSrc="/paciente-maria.svg"
+              alt={`Foto de ${patient.name}`}
+              className="mx-auto h-28 w-28 rounded-full border border-blue-100 bg-blue-50 object-cover"
+            />
+            <p className="mt-3 text-sm font-semibold text-slate-900">{patient.name}</p>
+            <p className="text-xs text-slate-500">Plan activo</p>
+          </div>
         </div>
-      </div>
+      </section>
 
-      {/* TAREAS */}
-      <div className="rounded-2xl border border-black/5 bg-white/70 p-6 shadow-sm">
-        <div className="flex items-center justify-between gap-3">
-          <h2 className="text-sm font-semibold text-slate-800">
-            Tareas terapéuticas
-          </h2>
-          <span className="text-xs text-slate-500">Asignadas (demo)</span>
-        </div>
+      {mostrarRepositorio && (
+        <section className="rounded-3xl border border-[var(--border)] bg-white p-6">
+          <h2 className="text-lg font-semibold text-slate-900">Repositorio de tareas</h2>
+          <p className="mt-1 text-sm text-slate-500">Al asignar, aparece en la zona del paciente.</p>
 
-        <div className="mt-4 space-y-3">
-          {tareas.map((t, i) => (
-            <div
-              key={i}
-              className="rounded-xl border border-slate-200 bg-white p-4"
-            >
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <div className="text-sm font-semibold text-slate-900">
-                    {t.titulo}
-                  </div>
-                  <div className="mt-1 text-sm text-slate-600">
-                    {t.descripcion}
-                  </div>
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            {repositorio.map((item) => {
+              const yaAsignada = patient.tasks.some((t) => t.id === item.id);
+              const busy = savingTask === item.id;
 
-                  <div className="mt-3 text-xs text-slate-500">
-                    Fecha: {t.fecha}
-                  </div>
+              return (
+                <div key={item.id} className="rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-4">
+                  <p className="text-sm font-semibold text-slate-900">{item.titulo}</p>
+                  <p className="mt-2 text-sm text-slate-600">{item.descripcion}</p>
+                  <button
+                    onClick={() => asignarTarea(item)}
+                    disabled={yaAsignada || busy}
+                    className={[
+                      "mt-4 rounded-xl px-3 py-2 text-xs font-medium",
+                      yaAsignada || busy
+                        ? "cursor-not-allowed border border-slate-200 bg-slate-100 text-slate-400"
+                        : "border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100",
+                    ].join(" ")}
+                  >
+                    {yaAsignada ? "Ya asignada" : busy ? "Asignando..." : "Asignar"}
+                  </button>
                 </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
+      <section className="grid gap-4 md:grid-cols-2">
+        <div className="rounded-3xl border border-[var(--border)] bg-white p-6">
+          <h2 className="text-lg font-semibold text-slate-900">Ultimos check-ins</h2>
+          <div className="mt-4 space-y-2">
+            {patient.checkins.length === 0 && (
+              <p className="text-sm text-slate-500">Aun no hay check-ins.</p>
+            )}
+            {patient.checkins.slice(0, 4).map((checkin) => (
+              <div key={checkin.id} className="rounded-xl border border-[var(--border)] bg-[var(--surface-soft)] p-3">
+                <p className="text-xs text-slate-500">{formatDate(checkin.createdAt)} · {checkin.mood}</p>
+                <p className="mt-1 text-sm text-slate-700">{checkin.text || "Sin texto"}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-3xl border border-[var(--border)] bg-white p-6">
+          <h2 className="text-lg font-semibold text-slate-900">Notas recientes</h2>
+          <div className="mt-4 space-y-2">
+            {patient.notes.length === 0 && (
+              <p className="text-sm text-slate-500">Aun no hay notas.</p>
+            )}
+            {patient.notes.slice(0, 4).map((note) => (
+              <div key={note.id} className="rounded-xl border border-[var(--border)] bg-[var(--surface-soft)] p-3 text-sm text-slate-600">
+                <p className="text-xs text-slate-500">
+                  {formatDate(note.createdAt)} · {note.author}
+                </p>
+                <p className="mt-1">{note.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="rounded-3xl border border-[var(--border)] bg-white p-6">
+        <h2 className="text-lg font-semibold text-slate-900">Tareas terapeuticas</h2>
+        <div className="mt-4 space-y-3">
+          {patient.tasks.length === 0 && (
+            <p className="text-sm text-slate-500">No hay tareas asignadas.</p>
+          )}
+          {patient.tasks.map((task) => (
+            <div key={task.id} className="rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="text-sm font-semibold text-slate-900">{task.title}</p>
+                  <p className="mt-1 text-sm text-slate-600">{task.description}</p>
+                  <p className="mt-2 text-xs text-slate-500">Actualizado: {formatDate(task.updatedAt)}</p>
+                </div>
                 <span
-                  className={`shrink-0 rounded-full border px-3 py-1 text-xs font-medium ${badge(
-                    t.estado
-                  )}`}
+                  className={[
+                    "rounded-full border px-3 py-1 text-xs",
+                    task.status === "Completada"
+                      ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                      : "border-amber-200 bg-amber-50 text-amber-700",
+                  ].join(" ")}
                 >
-                  {t.estado}
+                  {task.status}
                 </span>
               </div>
-
-              <div className="mt-4 flex flex-wrap gap-2">
-                <button className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs shadow-sm hover:bg-slate-50">
-                  Marcar como completada (demo)
-                </button>
-
-                <button className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs shadow-sm hover:bg-slate-50">
-                  Ver detalle (demo)
-                </button>
-              </div>
             </div>
           ))}
         </div>
-      </div>
-
-      {/* NOTAS */}
-      <div className="rounded-2xl border border-black/5 bg-white/70 p-6 shadow-sm">
-        <h2 className="text-sm font-semibold text-slate-800">Notas recientes</h2>
-
-        <div className="mt-4 space-y-3">
-          {notas.map((n, i) => (
-            <div
-              key={i}
-              className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600"
-            >
-              {n}
-            </div>
-          ))}
-        </div>
-      </div>
+      </section>
     </div>
   );
 }
