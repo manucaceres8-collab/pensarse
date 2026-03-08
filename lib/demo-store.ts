@@ -226,28 +226,16 @@ export function getScaleValues(scale: TrackingScale) {
 }
 
 export function isTaskResponseType(value: unknown): value is DemoTaskTemplateResponseType {
-  return [
-    "texto corto",
-    "escala 1-5",
-    "escala 1-10",
-    "selección emoji",
-    "formulario breve",
-    // compatibilidad con versiones anteriores
-    "escala",
-    "selección",
-  ].includes(String(value));
+  return ["texto corto", "escala 1-5", "escala 1-10", "selección emoji", "formulario breve"].includes(
+    String(value)
+  );
 }
 
 function normalizeResponseType(value: unknown, fallback: DemoTaskTemplateResponseType): DemoTaskTemplateResponseType {
   const raw = String(value ?? "");
   if (raw === "escala") return "escala 1-5";
   if (raw === "selección") return "selección emoji";
-  if (isTaskResponseType(raw)) {
-    if (raw === "escala" || raw === "selección") {
-      return fallback;
-    }
-    return raw as DemoTaskTemplateResponseType;
-  }
+  if (isTaskResponseType(raw)) return raw;
   return fallback;
 }
 
