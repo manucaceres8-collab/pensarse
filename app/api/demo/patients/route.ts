@@ -19,15 +19,23 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Nombre requerido" }, { status: 400 });
   }
 
-  if (body.trackingScale && !isTrackingScale(body.trackingScale)) {
-    return NextResponse.json({ error: "Escala de seguimiento no válida" }, { status: 400 });
+  const trackingScale =
+    body.trackingScale && isTrackingScale(body.trackingScale)
+      ? body.trackingScale
+      : undefined;
+
+  if (body.trackingScale && !trackingScale) {
+    return NextResponse.json(
+      { error: "Escala de seguimiento no válida" },
+      { status: 400 }
+    );
   }
 
   const patient = await addPatient({
     name,
     email: body.email?.trim() || "",
     objective: body.objective?.trim() || "",
-    trackingScale: body.trackingScale,
+    trackingScale,
   });
 
   return NextResponse.json({ patient }, { status: 201 });
