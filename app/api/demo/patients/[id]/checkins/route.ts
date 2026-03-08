@@ -9,7 +9,7 @@ export async function POST(
   const body = (await req.json()) as { mood?: string; text?: string };
 
   if (!body.mood) {
-    return NextResponse.json({ error: "Mood requerido" }, { status: 400 });
+    return NextResponse.json({ error: "Registro requerido" }, { status: 400 });
   }
 
   const checkin = await addPatientCheckin(id, {
@@ -18,7 +18,10 @@ export async function POST(
   });
 
   if (!checkin) {
-    return NextResponse.json({ error: "Paciente no encontrado" }, { status: 404 });
+    return NextResponse.json(
+      { error: "No se pudo guardar el check-in. Revisa paciente y escala." },
+      { status: 400 }
+    );
   }
 
   return NextResponse.json({ checkin }, { status: 201 });

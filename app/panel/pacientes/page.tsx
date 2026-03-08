@@ -65,38 +65,38 @@ export default function PacientesPage() {
     <div className="space-y-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold text-slate-900">Pacientes</h1>
-          <p className="mt-1 text-sm text-slate-500">
-            Lista viva: nuevos pacientes y actividad se reflejan automaticamente.
+          <h1 className="text-4xl font-semibold tracking-tight text-[#0f172a]">Pacientes</h1>
+          <p className="mt-1 text-sm text-[#4f617b]">
+            Alta, seguimiento y actividad en vivo entre paciente y psicólogo.
           </p>
         </div>
 
         <Link
           href="/panel/pacientes/nuevo"
-          className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
+          className="rounded-2xl !bg-[#0f1f3f] px-5 py-3 text-sm font-medium !text-white shadow-[0_6px_14px_rgba(15,31,63,0.24)] transition hover:!bg-[#1b2b4d]"
         >
           Nuevo paciente
         </Link>
       </div>
 
-      <section className="rounded-2xl border border-[var(--border)] bg-white p-4">
+      <section className="rounded-[22px] border border-[#d7deea] bg-white p-4">
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full rounded-xl border border-[var(--border)] bg-[var(--surface-soft)] px-3 py-2 text-sm outline-none focus:border-blue-300"
+          className="w-full rounded-xl border border-[#d9e1ee] bg-[#f8fbff] px-3 py-2 text-sm outline-none focus:border-[#b8c8de]"
           placeholder="Buscar paciente..."
         />
       </section>
 
       <section className="space-y-3">
         {loading && (
-          <div className="rounded-2xl border border-[var(--border)] bg-white p-5 text-sm text-slate-500">
+          <div className="rounded-[24px] border border-[#d7deea] bg-white p-5 text-sm text-[#4f617b]">
             Cargando pacientes...
           </div>
         )}
 
         {!loading && patients.length === 0 && (
-          <div className="rounded-2xl border border-[var(--border)] bg-white p-5 text-sm text-slate-500">
+          <div className="rounded-[24px] border border-[#d7deea] bg-white p-5 text-sm text-[#4f617b]">
             No hay pacientes para ese filtro.
           </div>
         )}
@@ -106,24 +106,24 @@ export default function PacientesPage() {
             <Link
               key={patient.id}
               href={`/panel/pacientes/${patient.id}`}
-              className="block rounded-2xl border border-[var(--border)] bg-white p-5 transition hover:bg-blue-50"
+              className="block rounded-[24px] border border-[#d7deea] bg-white p-5 transition hover:bg-[#f8fbff]"
             >
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <p className="text-base font-semibold text-slate-900">{patient.name}</p>
-                  <p className="mt-1 text-xs text-slate-500">
-                    Ultimo check-in: {formatDate(patient.lastCheckinAt)}
+                  <p className="text-2xl font-semibold text-[#1f2d45]">{patient.name}</p>
+                  <p className="mt-1 text-xs text-[#607794]">
+                    Último check-in: {formatDate(patient.lastCheckinAt)}
                   </p>
-                  <p className="mt-2 text-sm text-slate-600">
-                    {patient.checkins[0]?.text || "Sin notas de check-in todavia."}
+                  <p className="mt-2 text-sm text-[#4f617b]">
+                    {patient.checkins[0]?.text || "Sin notas de check-in todavía."}
                   </p>
                 </div>
 
                 <div className="flex gap-2">
-                  <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-600">
+                  <span className="rounded-full border border-[#cbd8ea] bg-[#edf4ff] px-3 py-1 text-xs font-medium text-[#1f304b]">
                     {patient.status}
                   </span>
-                  <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-600">
+                  <span className="rounded-full border border-[#d5deea] bg-[#f6f9ff] px-3 py-1 text-xs text-[#1f304b]">
                     {patient.tasks.length} tareas
                   </span>
                 </div>

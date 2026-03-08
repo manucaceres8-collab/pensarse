@@ -1,6 +1,40 @@
 {
   "patients": [
     {
+      "id": "carmen-sm",
+      "name": "Carmen SM",
+      "email": "carmen@sm.com",
+      "objective": "",
+      "avatar": "/profiles/paciente-1.jpg",
+      "status": "Nuevo",
+      "lastCheckinAt": "2026-03-08T18:32:32.137Z",
+      "tasks": [
+        {
+          "id": "respiracion-7ddd961a",
+          "templateId": "respiracion",
+          "title": "Respiración 2 minutos",
+          "description": "Respiración lenta para bajar activación.",
+          "status": "Pendiente",
+          "createdAt": "2026-03-08T18:32:40.563Z",
+          "updatedAt": "2026-03-08T18:32:40.563Z",
+          "lastAnswer": ""
+        },
+        {
+          "id": "abc-642ba5c4",
+          "templateId": "abc",
+          "title": "Registro ABC",
+          "description": "Situación, pensamiento, emoción y conducta.",
+          "status": "Pendiente",
+          "createdAt": "2026-03-08T18:32:38.408Z",
+          "updatedAt": "2026-03-08T18:32:38.408Z",
+          "lastAnswer": ""
+        }
+      ],
+      "checkins": [],
+      "notes": [],
+      "trackingScale": "anxiety_text"
+    },
+    {
       "id": "eva-cabrera",
       "name": "Eva Cabrera",
       "email": "eva@gmail.com",
@@ -10,17 +44,29 @@
       "lastCheckinAt": "2026-03-07T13:08:33.905Z",
       "tasks": [
         {
+          "id": "abc-96b66403",
+          "templateId": "abc",
+          "title": "Registro ABC",
+          "description": "Situación, pensamiento, emoción y conducta.",
+          "status": "Pendiente",
+          "createdAt": "2026-03-08T18:07:23.067Z",
+          "updatedAt": "2026-03-08T18:07:23.067Z",
+          "lastAnswer": ""
+        },
+        {
           "id": "abc",
           "title": "Registro ABC",
           "description": "Situacion, pensamiento, emocion y conducta.",
           "status": "Pendiente",
           "createdAt": "2026-03-07T13:08:57.353Z",
           "updatedAt": "2026-03-07T13:08:57.353Z",
-          "lastAnswer": ""
+          "lastAnswer": "",
+          "templateId": "abc"
         }
       ],
       "checkins": [],
-      "notes": []
+      "notes": [],
+      "trackingScale": "emoji"
     },
     {
       "id": "maria",
@@ -28,17 +74,38 @@
       "email": "maria@pensarse.demo",
       "objective": "Reducir ansiedad cotidiana y mejorar descanso.",
       "avatar": "/profiles/paciente-1.jpg",
-      "status": "Variable",
-      "lastCheckinAt": "2026-03-07T13:12:27.862Z",
+      "status": "Estable",
+      "lastCheckinAt": "2026-03-08T17:53:34.932Z",
       "tasks": [
+        {
+          "id": "evaluacion-del-control-c7ed7152",
+          "templateId": "evaluacion-del-control",
+          "title": "Evaluación del control",
+          "description": "Indica en que situaciones pierdes el control",
+          "status": "Completada",
+          "createdAt": "2026-03-08T19:01:00.171Z",
+          "updatedAt": "2026-03-08T19:07:35.247Z",
+          "lastAnswer": "kjcbñkjsbcñkj"
+        },
+        {
+          "id": "registro-5bf56beb",
+          "templateId": "registro",
+          "title": "Registro diario breve",
+          "description": "Síntesis rápida de cómo ha ido el día.",
+          "status": "Completada",
+          "createdAt": "2026-03-08T18:19:32.852Z",
+          "updatedAt": "2026-03-08T18:31:30.550Z",
+          "lastAnswer": "hoy mal"
+        },
         {
           "id": "registro",
           "title": "Registro diario breve",
           "description": "Escribe en 1-2 frases como ha ido el dia.",
           "status": "Completada",
           "createdAt": "2026-03-06T10:00:00.000Z",
-          "updatedAt": "2026-03-07T13:12:40.652Z",
-          "lastAnswer": "Estoy bien"
+          "updatedAt": "2026-03-08T18:31:08.703Z",
+          "lastAnswer": "Estoy bien",
+          "templateId": "registro"
         },
         {
           "id": "abc",
@@ -46,8 +113,9 @@
           "description": "Situacion, pensamiento, emocion y conducta.",
           "status": "Completada",
           "createdAt": "2026-03-06T10:00:00.000Z",
-          "updatedAt": "2026-03-07T13:11:19.357Z",
-          "lastAnswer": "hola\n---\nj\n---\na\n---\na"
+          "updatedAt": "2026-03-08T18:07:37.365Z",
+          "lastAnswer": "ñkjdcnñkjse\n---\nj\n---\na\n---\na",
+          "templateId": "abc"
         },
         {
           "id": "reestructuracion",
@@ -56,10 +124,17 @@
           "status": "Completada",
           "createdAt": "2026-03-05T10:00:00.000Z",
           "updatedAt": "2026-03-07T09:00:00.000Z",
-          "lastAnswer": "Podria ser que este pensamiento no sea del todo realista."
+          "lastAnswer": "Podria ser que este pensamiento no sea del todo realista.",
+          "templateId": "reestructuracion"
         }
       ],
       "checkins": [
+        {
+          "id": "checkin-d317d126",
+          "mood": "Bien",
+          "text": "Bien, estoy feliz",
+          "createdAt": "2026-03-08T17:53:34.932Z"
+        },
         {
           "id": "checkin-add9089d",
           "mood": "Neutro",
@@ -86,7 +161,8 @@
           "author": "paciente",
           "createdAt": "2026-03-07T10:20:00.000Z"
         }
-      ]
+      ],
+      "trackingScale": "wellbeing_text"
     },
     {
       "id": "juan",
@@ -98,7 +174,8 @@
       "lastCheckinAt": "2026-03-06T18:00:00.000Z",
       "tasks": [],
       "checkins": [],
-      "notes": []
+      "notes": [],
+      "trackingScale": "emoji"
     },
     {
       "id": "carlos",
@@ -110,7 +187,120 @@
       "lastCheckinAt": "2026-03-06T17:00:00.000Z",
       "tasks": [],
       "checkins": [],
-      "notes": []
+      "notes": [],
+      "trackingScale": "emoji"
+    }
+  ],
+  "taskTemplates": [
+    {
+      "id": "registro-diario-breve",
+      "title": "Registro diario breve",
+      "description": "Síntesis breve de cómo ha ido el día en 1-2 frases.",
+      "duration": "2 min",
+      "responseType": "texto corto",
+      "instructions": "Resume tu día, emoción principal y qué te ayudó.",
+      "kind": "base",
+      "createdAt": "2026-01-01T10:00:00.000Z"
+    },
+    {
+      "id": "registro-abc",
+      "title": "Registro ABC",
+      "description": "Situación, pensamiento, emoción y conducta asociada.",
+      "duration": "5 min",
+      "responseType": "formulario breve",
+      "instructions": "Completa situación, pensamiento automático, emoción y respuesta.",
+      "kind": "base",
+      "createdAt": "2026-01-01T10:00:00.000Z"
+    },
+    {
+      "id": "reestructuracion-cognitiva-simple",
+      "title": "Reestructuración cognitiva simple",
+      "description": "Busca una alternativa más equilibrada al pensamiento automático.",
+      "duration": "4 min",
+      "responseType": "texto corto",
+      "instructions": "Escribe pensamiento inicial, evidencia y alternativa realista.",
+      "kind": "base",
+      "createdAt": "2026-01-01T10:00:00.000Z"
+    },
+    {
+      "id": "respiracion-2-minutos",
+      "title": "Respiración 2 minutos",
+      "description": "Respiración guiada breve para bajar activación fisiológica.",
+      "duration": "2 min",
+      "responseType": "selección emoji",
+      "instructions": "Realiza 2 minutos de respiración y marca cómo te quedas.",
+      "kind": "base",
+      "createdAt": "2026-01-01T10:00:00.000Z"
+    },
+    {
+      "id": "exposicion-gradual",
+      "title": "Exposición gradual",
+      "description": "Acercamiento progresivo a situaciones evitadas.",
+      "duration": "8 min",
+      "responseType": "formulario breve",
+      "instructions": "Indica situación, nivel de ansiedad previo y resultado final.",
+      "kind": "base",
+      "createdAt": "2026-01-01T10:00:00.000Z"
+    },
+    {
+      "id": "registro-pensamientos-automaticos",
+      "title": "Registro de pensamientos automáticos",
+      "description": "Identifica pensamientos repetitivos del día.",
+      "duration": "4 min",
+      "responseType": "texto corto",
+      "instructions": "Anota 1-3 pensamientos automáticos y su impacto.",
+      "kind": "base",
+      "createdAt": "2026-01-01T10:00:00.000Z"
+    },
+    {
+      "id": "escala-ansiedad-diaria",
+      "title": "Escala de ansiedad diaria",
+      "description": "Evalúa ansiedad percibida para seguimiento semanal.",
+      "duration": "1 min",
+      "responseType": "escala 1-5",
+      "instructions": "Marca tu nivel de ansiedad y añade nota opcional.",
+      "kind": "base",
+      "createdAt": "2026-01-01T10:00:00.000Z"
+    },
+    {
+      "id": "registro-activacion-emocional",
+      "title": "Registro de activación emocional",
+      "description": "Detecta momentos de activación emocional intensa.",
+      "duration": "3 min",
+      "responseType": "formulario breve",
+      "instructions": "Describe detonante, emoción y estrategia utilizada.",
+      "kind": "base",
+      "createdAt": "2026-01-01T10:00:00.000Z"
+    },
+    {
+      "id": "diario-gratitud-breve",
+      "title": "Diario de gratitud breve",
+      "description": "Registra tres elementos positivos del día.",
+      "duration": "2 min",
+      "responseType": "texto corto",
+      "instructions": "Escribe tres cosas pequeñas que agradeces hoy.",
+      "kind": "base",
+      "createdAt": "2026-01-01T10:00:00.000Z"
+    },
+    {
+      "id": "registro-evitacion-afrontamiento",
+      "title": "Registro de evitación / afrontamiento",
+      "description": "Diferencia conductas de evitación frente a afrontamiento.",
+      "duration": "5 min",
+      "responseType": "selección emoji",
+      "instructions": "Marca qué hiciste hoy y si fue evitación o afrontamiento.",
+      "kind": "base",
+      "createdAt": "2026-01-01T10:00:00.000Z"
+    },
+    {
+      "id": "evaluacion-del-control",
+      "title": "Evaluación del control",
+      "description": "Indica en que situaciones pierdes el control",
+      "duration": "5 min",
+      "responseType": "texto corto",
+      "instructions": "Cada 3 días realiza esta tarea",
+      "kind": "personalizada",
+      "createdAt": "2026-03-08T19:00:40.558Z"
     }
   ]
 }

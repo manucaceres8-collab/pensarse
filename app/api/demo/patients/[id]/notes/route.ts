@@ -8,7 +8,7 @@ export async function POST(
   const { id } = await context.params;
   const body = (await req.json()) as {
     text?: string;
-    author?: "paciente" | "psicologo";
+    author?: "paciente" | "psicólogo" | "psicologo";
   };
 
   const text = body.text?.trim();
@@ -18,7 +18,10 @@ export async function POST(
 
   const note = await addPatientNote(id, {
     text,
-    author: body.author ?? "paciente",
+    author:
+      body.author === "psicologo"
+        ? "psicólogo"
+        : body.author ?? "paciente",
   });
 
   if (!note) {

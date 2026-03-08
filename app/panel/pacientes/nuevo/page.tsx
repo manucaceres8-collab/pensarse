@@ -4,11 +4,22 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+type TrackingScale = "emoji" | "numeric_5" | "numeric_10" | "wellbeing_text" | "anxiety_text";
+
+const SCALE_OPTIONS: Array<{ value: TrackingScale; label: string }> = [
+  { value: "emoji", label: "Emojis emocionales" },
+  { value: "numeric_5", label: "Escala numérica 1-5" },
+  { value: "numeric_10", label: "Escala numérica 1-10" },
+  { value: "wellbeing_text", label: "Escala textual bienestar" },
+  { value: "anxiety_text", label: "Escala de ansiedad" },
+];
+
 export default function NuevoPacientePage() {
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [objective, setObjective] = useState("");
+  const [trackingScale, setTrackingScale] = useState<TrackingScale>("emoji");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -30,6 +41,7 @@ export default function NuevoPacientePage() {
           name: name.trim(),
           email: email.trim(),
           objective: objective.trim(),
+          trackingScale,
         }),
       });
 
@@ -50,45 +62,60 @@ export default function NuevoPacientePage() {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-3xl border border-[var(--border)] bg-[var(--surface-soft)] p-6">
-        <h1 className="text-2xl font-semibold text-slate-900">Nuevo paciente</h1>
-        <p className="mt-2 text-sm text-slate-600">
-          Al guardar, el paciente aparecera automaticamente en el listado del psicologo.
+      <section className="rounded-[26px] border border-[#d7deea] bg-[#f8fbff] p-6">
+        <h1 className="text-4xl font-semibold tracking-tight text-[#0f172a]">Nuevo paciente</h1>
+        <p className="mt-2 text-sm text-[#607794]">
+          Crea una ficha para activar seguimiento entre sesiones.
         </p>
       </section>
 
-      <section className="rounded-3xl border border-[var(--border)] bg-white p-6">
+      <section className="rounded-[26px] border border-[#d7deea] bg-white p-6">
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label className="mb-1 block text-sm text-slate-600">Nombre o alias</label>
+            <label className="mb-1 block text-sm text-[#607794]">Nombre o alias</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Ej: Juan"
-              className="w-full rounded-xl border border-[var(--border)] bg-[var(--surface-soft)] px-3 py-2 text-sm outline-none focus:border-blue-300"
+              className="w-full rounded-xl border border-[#d9e1ee] bg-[#f8fbff] px-3 py-2 text-sm outline-none focus:border-[#b8c8de]"
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm text-slate-600">Email del paciente</label>
+            <label className="mb-1 block text-sm text-[#607794]">Email del paciente</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="juan@email.com"
-              className="w-full rounded-xl border border-[var(--border)] bg-[var(--surface-soft)] px-3 py-2 text-sm outline-none focus:border-blue-300"
+              className="w-full rounded-xl border border-[#d9e1ee] bg-[#f8fbff] px-3 py-2 text-sm outline-none focus:border-[#b8c8de]"
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm text-slate-600">Objetivo inicial</label>
+            <label className="mb-1 block text-sm text-[#607794]">Escala de seguimiento diario</label>
+            <select
+              value={trackingScale}
+              onChange={(e) => setTrackingScale(e.target.value as TrackingScale)}
+              className="w-full rounded-xl border border-[#d9e1ee] bg-[#f8fbff] px-3 py-2 text-sm text-[#1f2d45] outline-none focus:border-[#b8c8de]"
+            >
+              {SCALE_OPTIONS.map((scale) => (
+                <option key={scale.value} value={scale.value}>
+                  {scale.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm text-[#607794]">Objetivo inicial</label>
             <textarea
               rows={4}
               value={objective}
               onChange={(e) => setObjective(e.target.value)}
-              placeholder="Describe foco terapeutico inicial..."
-              className="w-full rounded-xl border border-[var(--border)] bg-[var(--surface-soft)] px-3 py-2 text-sm outline-none focus:border-blue-300"
+              placeholder="Describe foco terapéutico inicial..."
+              className="w-full rounded-xl border border-[#d9e1ee] bg-[#f8fbff] px-3 py-2 text-sm outline-none focus:border-[#b8c8de]"
             />
           </div>
 
@@ -101,13 +128,13 @@ export default function NuevoPacientePage() {
           <div className="flex flex-wrap gap-2">
             <button
               disabled={saving}
-              className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300"
+              className="rounded-xl bg-[#0f1f3f] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#1a2c4f] disabled:cursor-not-allowed disabled:bg-slate-300"
             >
               {saving ? "Guardando..." : "Crear paciente"}
             </button>
             <Link
               href="/panel/pacientes"
-              className="rounded-xl border border-[var(--border)] bg-white px-4 py-2 text-sm text-slate-600"
+              className="rounded-xl border border-[#d5deea] bg-[#f6f9ff] px-4 py-2 text-sm text-[#607794]"
             >
               Volver al listado
             </Link>
