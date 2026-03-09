@@ -3,32 +3,58 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
+type ResponseType = "texto corto" | "escala" | "selección" | "emojis" | "formulario breve";
+type TherapyType = "tcc" | "act" | "dbt" | "soluciones" | "personalizadas";
+type TherapyFilter = "todas" | TherapyType;
+
 type TaskTemplate = {
   id: string;
   title: string;
   description: string;
   duration: string;
-  responseType:
-    | "texto corto"
-    | "escala 1-5"
-    | "escala 1-10"
-    | "selección emoji"
-    | "formulario breve";
+  responseType: ResponseType;
+  therapyType: TherapyType;
   instructions: string;
   kind: "base" | "personalizada";
 };
 
-const responseTone: Record<TaskTemplate["responseType"], string> = {
+const responseTone: Record<ResponseType, string> = {
   "texto corto": "border-sky-200 bg-sky-50 text-sky-700",
-  "escala 1-5": "border-indigo-200 bg-indigo-50 text-indigo-700",
-  "escala 1-10": "border-blue-200 bg-blue-50 text-blue-700",
-  "selección emoji": "border-amber-200 bg-amber-50 text-amber-700",
+  escala: "border-indigo-200 bg-indigo-50 text-indigo-700",
+  selección: "border-cyan-200 bg-cyan-50 text-cyan-700",
+  emojis: "border-amber-200 bg-amber-50 text-amber-700",
   "formulario breve": "border-emerald-200 bg-emerald-50 text-emerald-700",
 };
+
+const therapyTone: Record<TherapyType, string> = {
+  tcc: "border-blue-200 bg-blue-50 text-blue-700",
+  act: "border-teal-200 bg-teal-50 text-teal-700",
+  dbt: "border-rose-200 bg-rose-50 text-rose-700",
+  soluciones: "border-lime-200 bg-lime-50 text-lime-700",
+  personalizadas: "border-violet-200 bg-violet-50 text-violet-700",
+};
+
+const therapyLabel: Record<TherapyType, string> = {
+  tcc: "TCC",
+  act: "ACT",
+  dbt: "DBT",
+  soluciones: "Terapia centrada en soluciones",
+  personalizadas: "Personalizadas",
+};
+
+const filterOptions: Array<{ value: TherapyFilter; label: string }> = [
+  { value: "todas", label: "Todas" },
+  { value: "tcc", label: "TCC" },
+  { value: "act", label: "ACT" },
+  { value: "dbt", label: "DBT" },
+  { value: "soluciones", label: "Soluciones" },
+  { value: "personalizadas", label: "Personalizadas" },
+];
 
 export default function TareasPanelPage() {
   const [biblioteca, setBiblioteca] = useState<TaskTemplate[]>([]);
   const [loading, setLoading] = useState(true);
+  const [therapyFilter, setTherapyFilter] = useState<TherapyFilter>("todas");
 
   useEffect(() => {
     let mounted = true;
@@ -59,6 +85,11 @@ export default function TareasPanelPage() {
     [biblioteca]
   );
 
+  const bibliotecaFiltrada = useMemo(() => {
+    if (therapyFilter === "todas") return biblioteca;
+    return biblioteca.filter((item) => item.therapyType === therapyFilter);
+  }, [biblioteca, therapyFilter]);
+
   return (
     <div className="space-y-6">
       <section className="rounded-[26px] border border-[#d7deea] bg-[#f8fbff] p-6">
@@ -66,7 +97,7 @@ export default function TareasPanelPage() {
           <div>
             <h1 className="text-4xl font-semibold tracking-tight text-[#0f172a]">Tareas</h1>
             <p className="mt-2 text-sm text-[#4f617b]">
-              Gestiona tu biblioteca y crea tareas personalizadas para asignar a pacientes.
+              Biblioteca clínica por terapia para asignar tareas base y personalizadas.
             </p>
           </div>
           <Link
@@ -80,40 +111,62 @@ export default function TareasPanelPage() {
 
       <section className="grid gap-4 lg:grid-cols-2">
         <article className="rounded-[26px] border border-[#d7deea] bg-white p-6">
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-2xl font-semibold text-[#0f172a]">A) Biblioteca de tareas</h2>
             <span className="rounded-full border border-[#d5deea] bg-[#f6f9ff] px-3 py-1 text-xs text-[#1f304b]">
-              {biblioteca.length} plantillas
+              {bibliotecaFiltrada.length} de {biblioteca.length} plantillas
             </span>
           </div>
 
-          <div className="mt-4 max-h-[430px] space-y-3 overflow-y-auto pr-1">
+          <div className="mt-4 flex flex-wrap gap-2">
+            {filterOptions.map((option) => {
+              const active = therapyFilter === option.value;
+              return (
+                <button
+                  key={option.value}
+                  onClick={() => setTherapyFilter(option.value)}
+                  className={[
+                    "rounded-full border px-3 py-1 text-xs font-medium transition",
+                    active
+                      ? "border-[#0f1f3f] bg-[#0f1f3f] text-white"
+                      : "border-[#d5deea] bg-[#f6f9ff] text-[#1f304b] hover:bg-white",
+                  ].join(" ")}
+                >
+                  {option.label}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="mt-4 max-h-[470px] space-y-3 overflow-y-auto pr-1">
             {loading && (
               <div className="rounded-2xl border border-[#d9e1ee] bg-[#f8fbff] p-4 text-sm text-[#4f617b]">
                 Cargando biblioteca...
               </div>
             )}
 
+            {!loading && bibliotecaFiltrada.length === 0 && (
+              <div className="rounded-2xl border border-[#d9e1ee] bg-[#f8fbff] p-4 text-sm text-[#4f617b]">
+                No hay tareas para este filtro.
+              </div>
+            )}
+
             {!loading &&
-              biblioteca.map((item) => (
+              bibliotecaFiltrada.map((item) => (
                 <div key={item.id} className="rounded-2xl border border-[#d9e1ee] bg-[#f8fbff] p-4">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <p className="text-sm font-semibold text-[#1f2d45]">{item.title}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {item.kind === "personalizada" && (
-                        <span className="rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs text-violet-700">
-                          Personalizada
-                        </span>
-                      )}
-                      <span className="rounded-full border border-[#d5deea] bg-white px-3 py-1 text-xs text-[#607794]">
-                        {item.duration}
-                      </span>
-                    </div>
+                    <span className="rounded-full border border-[#d5deea] bg-white px-3 py-1 text-xs text-[#607794]">
+                      {item.duration}
+                    </span>
                   </div>
 
                   <p className="mt-2 text-sm text-[#4f617b]">{item.description}</p>
 
                   <div className="mt-3 flex flex-wrap items-center gap-2">
+                    <span className={["rounded-full border px-3 py-1 text-xs", therapyTone[item.therapyType]].join(" ")}>
+                      {therapyLabel[item.therapyType]}
+                    </span>
                     <span className={["rounded-full border px-3 py-1 text-xs", responseTone[item.responseType]].join(" ")}>
                       {item.responseType}
                     </span>
@@ -132,7 +185,7 @@ export default function TareasPanelPage() {
         <article className="rounded-[26px] border border-[#d7deea] bg-white p-6">
           <h2 className="text-2xl font-semibold text-[#0f172a]">B) Crear tarea personalizada</h2>
           <p className="mt-2 text-sm text-[#4f617b]">
-            Diseña tareas reutilizables para tu práctica clínica. Al guardarlas, se añaden automáticamente a la biblioteca.
+            Las tareas creadas por ti se guardan automáticamente en la categoría Personalizadas.
           </p>
 
           <div className="mt-4 rounded-2xl border border-[#d9e1ee] bg-[#f8fbff] p-4">

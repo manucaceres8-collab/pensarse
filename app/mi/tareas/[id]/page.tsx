@@ -6,9 +6,9 @@ import { useEffect, useMemo, useState } from "react";
 
 type ResponseType =
   | "texto corto"
-  | "escala 1-5"
-  | "escala 1-10"
-  | "selección emoji"
+  | "escala"
+  | "selección"
+  | "emojis"
   | "formulario breve";
 
 type DemoTask = {
@@ -30,14 +30,15 @@ type TaskTemplate = {
   description: string;
   instructions: string;
   responseType: ResponseType;
+  therapyType: "tcc" | "act" | "dbt" | "soluciones" | "personalizadas";
   kind: "base" | "personalizada";
 };
 
 const responseTone: Record<ResponseType, string> = {
   "texto corto": "border-sky-200 bg-sky-50 text-sky-700",
-  "escala 1-5": "border-indigo-200 bg-indigo-50 text-indigo-700",
-  "escala 1-10": "border-blue-200 bg-blue-50 text-blue-700",
-  "selección emoji": "border-amber-200 bg-amber-50 text-amber-700",
+  escala: "border-indigo-200 bg-indigo-50 text-indigo-700",
+  selección: "border-cyan-200 bg-cyan-50 text-cyan-700",
+  emojis: "border-amber-200 bg-amber-50 text-amber-700",
   "formulario breve": "border-emerald-200 bg-emerald-50 text-emerald-700",
 };
 
@@ -52,6 +53,7 @@ export default function TareaEjercicio() {
 
   const [textAnswer, setTextAnswer] = useState("");
   const [scaleAnswer, setScaleAnswer] = useState<string | null>(null);
+  const [selectionAnswer, setSelectionAnswer] = useState<string | null>(null);
   const [emojiAnswer, setEmojiAnswer] = useState<string | null>(null);
   const [form1, setForm1] = useState("");
   const [form2, setForm2] = useState("");
@@ -85,10 +87,13 @@ export default function TareaEjercicio() {
       if (type === "texto corto") {
         setTextAnswer(answer);
       }
-      if (type === "escala 1-5" || type === "escala 1-10") {
+      if (type === "escala") {
         setScaleAnswer(answer || null);
       }
-      if (type === "selección emoji") {
+      if (type === "selección") {
+        setSelectionAnswer(answer || null);
+      }
+      if (type === "emojis") {
         setEmojiAnswer(answer || null);
       }
       if (type === "formulario breve") {
@@ -117,10 +122,13 @@ export default function TareaEjercicio() {
     if (responseType === "texto corto") {
       return textAnswer.trim();
     }
-    if (responseType === "escala 1-5" || responseType === "escala 1-10") {
+    if (responseType === "escala") {
       return scaleAnswer ?? "";
     }
-    if (responseType === "selección emoji") {
+    if (responseType === "selección") {
+      return selectionAnswer ?? "";
+    }
+    if (responseType === "emojis") {
       return emojiAnswer ?? "";
     }
     return [form1, form2, form3].map((v) => v.trim()).join("\n---\n");
@@ -184,12 +192,9 @@ export default function TareaEjercicio() {
           />
         )}
 
-        {(responseType === "escala 1-5" || responseType === "escala 1-10") && (
+        {responseType === "escala" && (
           <div className="mt-4 grid gap-2 sm:grid-cols-5">
-            {(responseType === "escala 1-5"
-              ? ["1", "2", "3", "4", "5"]
-              : ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
-            ).map((value) => {
+            {["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"].map((value) => {
               const active = scaleAnswer === value;
               return (
                 <button
@@ -197,7 +202,6 @@ export default function TareaEjercicio() {
                   onClick={() => setScaleAnswer(value)}
                   className={[
                     "rounded-xl border px-3 py-2 text-sm transition",
-                    responseType === "escala 1-10" ? "sm:col-auto" : "",
                     active
                       ? "border-[#0f1f3f] bg-[#0f1f3f] text-white"
                       : "border-[#d9e1ee] bg-[#f8fbff] text-[#1f304b] hover:bg-white",
@@ -210,7 +214,29 @@ export default function TareaEjercicio() {
           </div>
         )}
 
-        {responseType === "selección emoji" && (
+        {responseType === "selección" && (
+          <div className="mt-4 flex flex-wrap gap-2">
+            {["Sí", "Parcial", "No", "No aplica"].map((option) => {
+              const active = selectionAnswer === option;
+              return (
+                <button
+                  key={option}
+                  onClick={() => setSelectionAnswer(option)}
+                  className={[
+                    "rounded-xl border px-3 py-2 text-sm transition",
+                    active
+                      ? "border-[#0f1f3f] bg-[#0f1f3f] text-white"
+                      : "border-[#d9e1ee] bg-[#f8fbff] text-[#1f304b] hover:bg-white",
+                  ].join(" ")}
+                >
+                  {option}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {responseType === "emojis" && (
           <div className="mt-4 flex flex-wrap gap-2">
             {["😣", "😔", "😐", "🙂", "😄"].map((emoji) => {
               const active = emojiAnswer === emoji;

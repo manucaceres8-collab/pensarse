@@ -178,10 +178,11 @@ export default function MiHome() {
 
           <div className="rounded-2xl border border-[#d9e1ee] bg-white p-4 text-center">
             <ProfileAvatar
-              src={patient?.avatar ?? "/profiles/paciente-1.jpg"}
-              fallbackSrc="/paciente-maria.svg"
+              src={patient?.avatar ?? "/avatars/maria.png"}
+              fallbackSrc="/avatars/placeholder.svg"
               alt="Foto del paciente"
-              className="mx-auto h-28 w-28 rounded-full border border-[#cfdae9] bg-[#f7f9fd] object-cover"
+              size={80}
+              className="mx-auto h-20 w-20 rounded-full border border-[#cfdae9] bg-[#f7f9fd] object-cover"
             />
             <p className="mt-3 text-sm font-semibold text-[#1f2d45]">{patient?.name ?? "Paciente"}</p>
             <p className="text-xs text-[#607794]">Paciente en seguimiento</p>

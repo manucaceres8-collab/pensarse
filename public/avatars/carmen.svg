@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Carmen SM">
+  <rect width="160" height="160" rx="80" fill="#efeef8"/>
+  <circle cx="80" cy="57" r="34" fill="#433f63"/>
+  <circle cx="80" cy="69" r="30" fill="#f2c6a5"/>
+  <circle cx="68" cy="67" r="3" fill="#35314f"/>
+  <circle cx="92" cy="67" r="3" fill="#35314f"/>
+  <path d="M69 84c4 4 18 4 22 0" stroke="#7c5f9a" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <path d="M28 152c8-30 30-45 52-45s44 15 52 45" fill="#8e88c0"/>
+</svg>

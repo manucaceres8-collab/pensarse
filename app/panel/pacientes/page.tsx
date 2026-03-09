@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import ProfileAvatar from "../../components/ProfileAvatar";
 
 type PatientListItem = {
   id: string;
   name: string;
+  avatar: string;
   status: string;
   lastCheckinAt: string;
   tasks: { id: string }[];
@@ -109,14 +111,23 @@ export default function PacientesPage() {
               className="block rounded-[24px] border border-[#d7deea] bg-white p-5 transition hover:bg-[#f8fbff]"
             >
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <div>
-                  <p className="text-2xl font-semibold text-[#1f2d45]">{patient.name}</p>
-                  <p className="mt-1 text-xs text-[#607794]">
-                    Último check-in: {formatDate(patient.lastCheckinAt)}
-                  </p>
-                  <p className="mt-2 text-sm text-[#4f617b]">
-                    {patient.checkins[0]?.text || "Sin notas de check-in todavía."}
-                  </p>
+                <div className="flex items-center gap-3">
+                  <ProfileAvatar
+                    src={patient.avatar}
+                    fallbackSrc="/avatars/placeholder.svg"
+                    alt={`Foto de ${patient.name}`}
+                    size={64}
+                    className="h-16 w-16 rounded-full border border-[#cfdae9] bg-[#f7f9fd] object-cover"
+                  />
+                  <div>
+                    <p className="text-2xl font-semibold text-[#1f2d45]">{patient.name}</p>
+                    <p className="mt-1 text-xs text-[#607794]">
+                      Último check-in: {formatDate(patient.lastCheckinAt)}
+                    </p>
+                    <p className="mt-2 text-sm text-[#4f617b]">
+                      {patient.checkins[0]?.text || "Sin notas de check-in todavía."}
+                    </p>
+                  </div>
                 </div>
 
                 <div className="flex gap-2">

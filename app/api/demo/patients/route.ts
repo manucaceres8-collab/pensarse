@@ -12,6 +12,7 @@ export async function POST(req: NextRequest) {
     email?: string;
     objective?: string;
     trackingScale?: string;
+    avatar?: string;
   };
 
   const name = body.name?.trim();
@@ -36,6 +37,7 @@ export async function POST(req: NextRequest) {
     email: body.email?.trim() || "",
     objective: body.objective?.trim() || "",
     trackingScale,
+    avatar: body.avatar?.trim() || "",
   });
 
   return NextResponse.json({ patient }, { status: 201 });

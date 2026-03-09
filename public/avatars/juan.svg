@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Juan Perez">
+  <rect width="160" height="160" rx="80" fill="#eaf3f4"/>
+  <circle cx="80" cy="58" r="33" fill="#2e3d4f"/>
+  <circle cx="80" cy="69" r="29" fill="#f2c8a0"/>
+  <circle cx="69" cy="68" r="3" fill="#2f2b28"/>
+  <circle cx="91" cy="68" r="3" fill="#2f2b28"/>
+  <path d="M70 84c3 3 17 3 20 0" stroke="#8f5d4c" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <path d="M28 152c10-28 30-43 52-43s42 15 52 43" fill="#7aa0a8"/>
+</svg>

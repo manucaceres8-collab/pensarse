@@ -35,10 +35,11 @@ export default function PanelLayout({
             <div className="mt-4 rounded-2xl border border-[#d6deea] bg-[#f7f9fd] p-3">
               <div className="flex items-center gap-3">
                 <ProfileAvatar
-                  src="/profiles/psicologo-1.jpg"
-                  fallbackSrc="/paciente-maria.svg"
+                  src="/avatars/psicologa-sofia.png"
+                  fallbackSrc="/avatars/placeholder.svg"
                   alt="Perfil psicólogo"
-                  className="h-10 w-10 rounded-full border border-[#cfd9e8] object-cover"
+                  size={64}
+                  className="h-16 w-16 rounded-full border border-[#cfd9e8] object-cover"
                 />
                 <div>
                   <p className="text-xs font-semibold text-[#1f2d45]">Dra. Sofia Martin</p>

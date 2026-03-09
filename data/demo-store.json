@@ -5,7 +5,7 @@
       "name": "Carmen SM",
       "email": "carmen@sm.com",
       "objective": "",
-      "avatar": "/profiles/paciente-1.jpg",
+      "avatar": "/avatars/carmen.svg",
       "status": "Nuevo",
       "lastCheckinAt": "2026-03-08T18:32:32.137Z",
       "tasks": [
@@ -39,7 +39,7 @@
       "name": "Eva Cabrera",
       "email": "eva@gmail.com",
       "objective": "",
-      "avatar": "/profiles/paciente-1.jpg",
+      "avatar": "/avatars/eva.svg",
       "status": "Nuevo",
       "lastCheckinAt": "2026-03-07T13:08:33.905Z",
       "tasks": [
@@ -73,10 +73,20 @@
       "name": "Maria Lopez",
       "email": "maria@pensarse.demo",
       "objective": "Reducir ansiedad cotidiana y mejorar descanso.",
-      "avatar": "/profiles/paciente-1.jpg",
+      "avatar": "/avatars/maria.png",
       "status": "Estable",
       "lastCheckinAt": "2026-03-08T17:53:34.932Z",
       "tasks": [
+        {
+          "id": "respiracion-2-minutos-f1623e8e",
+          "templateId": "respiracion-2-minutos",
+          "title": "Respiración 2 minutos",
+          "description": "Respiración guiada breve para bajar activación fisiológica.",
+          "status": "Pendiente",
+          "createdAt": "2026-03-09T08:57:58.451Z",
+          "updatedAt": "2026-03-09T08:57:58.451Z",
+          "lastAnswer": ""
+        },
         {
           "id": "evaluacion-del-control-c7ed7152",
           "templateId": "evaluacion-del-control",
@@ -162,14 +172,14 @@
           "createdAt": "2026-03-07T10:20:00.000Z"
         }
       ],
-      "trackingScale": "wellbeing_text"
+      "trackingScale": "emoji"
     },
     {
       "id": "juan",
       "name": "Juan Perez",
       "email": "juan@pensarse.demo",
       "objective": "Gestionar estres laboral.",
-      "avatar": "/profiles/paciente-2.jpg",
+      "avatar": "/avatars/juan.svg",
       "status": "Variable",
       "lastCheckinAt": "2026-03-06T18:00:00.000Z",
       "tasks": [],
@@ -182,7 +192,7 @@
       "name": "Carlos Gomez",
       "email": "carlos@pensarse.demo",
       "objective": "Regular activacion en examenes.",
-      "avatar": "/profiles/paciente-3.jpg",
+      "avatar": "/avatars/carlos.svg",
       "status": "Variable",
       "lastCheckinAt": "2026-03-06T17:00:00.000Z",
       "tasks": [],
@@ -198,6 +208,7 @@
       "description": "Síntesis breve de cómo ha ido el día en 1-2 frases.",
       "duration": "2 min",
       "responseType": "texto corto",
+      "therapyType": "tcc",
       "instructions": "Resume tu día, emoción principal y qué te ayudó.",
       "kind": "base",
       "createdAt": "2026-01-01T10:00:00.000Z"
@@ -208,6 +219,7 @@
       "description": "Situación, pensamiento, emoción y conducta asociada.",
       "duration": "5 min",
       "responseType": "formulario breve",
+      "therapyType": "tcc",
       "instructions": "Completa situación, pensamiento automático, emoción y respuesta.",
       "kind": "base",
       "createdAt": "2026-01-01T10:00:00.000Z"
@@ -218,27 +230,8 @@
       "description": "Busca una alternativa más equilibrada al pensamiento automático.",
       "duration": "4 min",
       "responseType": "texto corto",
+      "therapyType": "tcc",
       "instructions": "Escribe pensamiento inicial, evidencia y alternativa realista.",
-      "kind": "base",
-      "createdAt": "2026-01-01T10:00:00.000Z"
-    },
-    {
-      "id": "respiracion-2-minutos",
-      "title": "Respiración 2 minutos",
-      "description": "Respiración guiada breve para bajar activación fisiológica.",
-      "duration": "2 min",
-      "responseType": "selección emoji",
-      "instructions": "Realiza 2 minutos de respiración y marca cómo te quedas.",
-      "kind": "base",
-      "createdAt": "2026-01-01T10:00:00.000Z"
-    },
-    {
-      "id": "exposicion-gradual",
-      "title": "Exposición gradual",
-      "description": "Acercamiento progresivo a situaciones evitadas.",
-      "duration": "8 min",
-      "responseType": "formulario breve",
-      "instructions": "Indica situación, nivel de ansiedad previo y resultado final.",
       "kind": "base",
       "createdAt": "2026-01-01T10:00:00.000Z"
     },
@@ -248,47 +241,118 @@
       "description": "Identifica pensamientos repetitivos del día.",
       "duration": "4 min",
       "responseType": "texto corto",
+      "therapyType": "tcc",
       "instructions": "Anota 1-3 pensamientos automáticos y su impacto.",
       "kind": "base",
       "createdAt": "2026-01-01T10:00:00.000Z"
     },
     {
-      "id": "escala-ansiedad-diaria",
-      "title": "Escala de ansiedad diaria",
-      "description": "Evalúa ansiedad percibida para seguimiento semanal.",
-      "duration": "1 min",
-      "responseType": "escala 1-5",
-      "instructions": "Marca tu nivel de ansiedad y añade nota opcional.",
-      "kind": "base",
-      "createdAt": "2026-01-01T10:00:00.000Z"
-    },
-    {
-      "id": "registro-activacion-emocional",
-      "title": "Registro de activación emocional",
-      "description": "Detecta momentos de activación emocional intensa.",
-      "duration": "3 min",
-      "responseType": "formulario breve",
-      "instructions": "Describe detonante, emoción y estrategia utilizada.",
-      "kind": "base",
-      "createdAt": "2026-01-01T10:00:00.000Z"
-    },
-    {
-      "id": "diario-gratitud-breve",
-      "title": "Diario de gratitud breve",
-      "description": "Registra tres elementos positivos del día.",
-      "duration": "2 min",
-      "responseType": "texto corto",
-      "instructions": "Escribe tres cosas pequeñas que agradeces hoy.",
-      "kind": "base",
-      "createdAt": "2026-01-01T10:00:00.000Z"
-    },
-    {
-      "id": "registro-evitacion-afrontamiento",
-      "title": "Registro de evitación / afrontamiento",
-      "description": "Diferencia conductas de evitación frente a afrontamiento.",
+      "id": "activacion-conductual",
+      "title": "Activación conductual",
+      "description": "Planifica una acción valiosa y evalúa su impacto en el ánimo.",
       "duration": "5 min",
-      "responseType": "selección emoji",
-      "instructions": "Marca qué hiciste hoy y si fue evitación o afrontamiento.",
+      "responseType": "selección",
+      "therapyType": "tcc",
+      "instructions": "Elige una acción pequeña, ejecútala y marca el resultado percibido.",
+      "kind": "base",
+      "createdAt": "2026-01-01T10:00:00.000Z"
+    },
+    {
+      "id": "registro-evitacion",
+      "title": "Registro de evitación",
+      "description": "Detecta conductas evitativas y qué intentaban proteger.",
+      "duration": "4 min",
+      "responseType": "texto corto",
+      "therapyType": "act",
+      "instructions": "Describe una evitación del día y el costo que tuvo para ti.",
+      "kind": "base",
+      "createdAt": "2026-01-01T10:00:00.000Z"
+    },
+    {
+      "id": "valores-personales",
+      "title": "Valores personales",
+      "description": "Conecta lo que hiciste hoy con tus valores importantes.",
+      "duration": "6 min",
+      "responseType": "formulario breve",
+      "therapyType": "act",
+      "instructions": "Elige un valor y concreta una acción que lo acerque hoy.",
+      "kind": "base",
+      "createdAt": "2026-01-01T10:00:00.000Z"
+    },
+    {
+      "id": "defusion-cognitiva-breve",
+      "title": "Defusión cognitiva breve",
+      "description": "Toma distancia de un pensamiento difícil sin fusionarte con él.",
+      "duration": "3 min",
+      "responseType": "emojis",
+      "therapyType": "act",
+      "instructions": "Repite el pensamiento con una frase de distancia y marca cómo quedas.",
+      "kind": "base",
+      "createdAt": "2026-01-01T10:00:00.000Z"
+    },
+    {
+      "id": "registro-emocion-intensa",
+      "title": "Registro de emoción intensa",
+      "description": "Registra detonante, emoción, nivel y estrategia usada.",
+      "duration": "5 min",
+      "responseType": "formulario breve",
+      "therapyType": "dbt",
+      "instructions": "Describe el episodio y qué habilidad aplicaste para regularte.",
+      "kind": "base",
+      "createdAt": "2026-01-01T10:00:00.000Z"
+    },
+    {
+      "id": "tecnica-stop",
+      "title": "Técnica STOP",
+      "description": "Entrena pausa, respiración y respuesta efectiva en momentos críticos.",
+      "duration": "3 min",
+      "responseType": "selección",
+      "therapyType": "dbt",
+      "instructions": "Marca qué pasos STOP aplicaste y cómo resultó la situación.",
+      "kind": "base",
+      "createdAt": "2026-01-01T10:00:00.000Z"
+    },
+    {
+      "id": "regulacion-emocional-breve",
+      "title": "Regulación emocional breve",
+      "description": "Evalúa intensidad emocional antes y después de regular.",
+      "duration": "4 min",
+      "responseType": "escala",
+      "therapyType": "dbt",
+      "instructions": "Puntúa tu emoción de 1-10 antes y después de la técnica.",
+      "kind": "base",
+      "createdAt": "2026-01-01T10:00:00.000Z"
+    },
+    {
+      "id": "escala-progreso-1-10",
+      "title": "Escala de progreso 1-10",
+      "description": "Ubica tu avance semanal y qué explica ese punto.",
+      "duration": "2 min",
+      "responseType": "escala",
+      "therapyType": "soluciones",
+      "instructions": "Valora tu progreso de 1 a 10 y añade una razón concreta.",
+      "kind": "base",
+      "createdAt": "2026-01-01T10:00:00.000Z"
+    },
+    {
+      "id": "pequeno-paso-semana",
+      "title": "Pequeño paso de la semana",
+      "description": "Define la próxima acción mínima útil para avanzar.",
+      "duration": "3 min",
+      "responseType": "texto corto",
+      "therapyType": "soluciones",
+      "instructions": "Escribe un paso pequeño, observable y factible para esta semana.",
+      "kind": "base",
+      "createdAt": "2026-01-01T10:00:00.000Z"
+    },
+    {
+      "id": "que-ha-funcionado-hoy",
+      "title": "Qué ha funcionado hoy",
+      "description": "Identifica excepciones: lo que sí ayudó en el día.",
+      "duration": "3 min",
+      "responseType": "emojis",
+      "therapyType": "soluciones",
+      "instructions": "Anota qué funcionó hoy y valora su efecto general.",
       "kind": "base",
       "createdAt": "2026-01-01T10:00:00.000Z"
     },
@@ -300,7 +364,8 @@
       "responseType": "texto corto",
       "instructions": "Cada 3 días realiza esta tarea",
       "kind": "personalizada",
-      "createdAt": "2026-03-08T19:00:40.558Z"
+      "createdAt": "2026-03-08T19:00:40.558Z",
+      "therapyType": "personalizadas"
     }
   ]
 }

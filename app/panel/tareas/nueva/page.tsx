@@ -6,16 +6,16 @@ import { useState } from "react";
 
 type ResponseType =
   | "texto corto"
-  | "escala 1-5"
-  | "escala 1-10"
-  | "selección emoji"
+  | "escala"
+  | "selección"
+  | "emojis"
   | "formulario breve";
 
 const responseOptions: ResponseType[] = [
   "texto corto",
-  "escala 1-5",
-  "escala 1-10",
-  "selección emoji",
+  "escala",
+  "selección",
+  "emojis",
   "formulario breve",
 ];
 

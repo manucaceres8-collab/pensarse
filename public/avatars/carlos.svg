@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Carlos Gomez">
+  <rect width="160" height="160" rx="80" fill="#f1efe8"/>
+  <circle cx="80" cy="58" r="33" fill="#3f332c"/>
+  <circle cx="80" cy="69" r="29" fill="#eec29c"/>
+  <circle cx="69" cy="68" r="3" fill="#332c29"/>
+  <circle cx="91" cy="68" r="3" fill="#332c29"/>
+  <path d="M70 84c3 3 17 3 20 0" stroke="#835a4a" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <path d="M28 152c10-28 30-43 52-43s42 15 52 43" fill="#b1937c"/>
+</svg>

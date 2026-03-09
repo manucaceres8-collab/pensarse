@@ -4,21 +4,24 @@ import Image from "next/image";
 import { useMemo, useState } from "react";
 
 type ProfileAvatarProps = {
-  src: string;
-  fallbackSrc: string;
+  src?: string;
+  fallbackSrc?: string;
   alt: string;
+  size?: 64 | 80 | 160;
   className?: string;
 };
 
 export default function ProfileAvatar({
   src,
-  fallbackSrc,
+  fallbackSrc = "/avatars/placeholder.svg",
   alt,
+  size = 80,
   className = "",
 }: ProfileAvatarProps) {
   const candidates = useMemo(() => {
-    const png = src.endsWith(".jpg") ? src.replace(/\.jpg$/i, ".png") : src;
-    return [src, png, fallbackSrc];
+    const normalized = src?.trim() || "";
+    const png = normalized.endsWith(".jpg") ? normalized.replace(/\.jpg$/i, ".png") : normalized;
+    return [normalized, png, fallbackSrc].filter((item): item is string => Boolean(item));
   }, [fallbackSrc, src]);
 
   const [index, setIndex] = useState(0);
@@ -28,8 +31,8 @@ export default function ProfileAvatar({
     <Image
       src={finalSrc}
       alt={alt}
-      width={160}
-      height={160}
+      width={size}
+      height={size}
       className={className}
       onError={() => setIndex((prev) => Math.min(prev + 1, candidates.length - 1))}
       unoptimized

@@ -14,11 +14,21 @@ const SCALE_OPTIONS: Array<{ value: TrackingScale; label: string }> = [
   { value: "anxiety_text", label: "Escala de ansiedad" },
 ];
 
+const AVATAR_OPTIONS = [
+  { value: "/avatars/maria.png", label: "Avatar Maria" },
+  { value: "/avatars/juan.svg", label: "Avatar Juan" },
+  { value: "/avatars/carlos.svg", label: "Avatar Carlos" },
+  { value: "/avatars/eva.svg", label: "Avatar Eva" },
+  { value: "/avatars/carmen.svg", label: "Avatar Carmen" },
+  { value: "/avatars/placeholder.svg", label: "Placeholder" },
+];
+
 export default function NuevoPacientePage() {
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [objective, setObjective] = useState("");
+  const [avatar, setAvatar] = useState("/avatars/placeholder.svg");
   const [trackingScale, setTrackingScale] = useState<TrackingScale>("emoji");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -41,6 +51,7 @@ export default function NuevoPacientePage() {
           name: name.trim(),
           email: email.trim(),
           objective: objective.trim(),
+          avatar,
           trackingScale,
         }),
       });
@@ -91,6 +102,21 @@ export default function NuevoPacientePage() {
               placeholder="juan@email.com"
               className="w-full rounded-xl border border-[#d9e1ee] bg-[#f8fbff] px-3 py-2 text-sm outline-none focus:border-[#b8c8de]"
             />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm text-[#607794]">Avatar demo</label>
+            <select
+              value={avatar}
+              onChange={(e) => setAvatar(e.target.value)}
+              className="w-full rounded-xl border border-[#d9e1ee] bg-[#f8fbff] px-3 py-2 text-sm text-[#1f2d45] outline-none focus:border-[#b8c8de]"
+            >
+              {AVATAR_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>

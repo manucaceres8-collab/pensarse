@@ -31,10 +31,12 @@ export type DemoTaskStatus = "Pendiente" | "En curso" | "Completada";
 
 export type DemoTaskTemplateResponseType =
   | "texto corto"
-  | "escala 1-5"
-  | "escala 1-10"
-  | "selección emoji"
+  | "escala"
+  | "selección"
+  | "emojis"
   | "formulario breve";
+
+export type DemoTaskTherapyType = "tcc" | "act" | "dbt" | "soluciones" | "personalizadas";
 
 export type DemoTaskTemplate = {
   id: string;
@@ -42,6 +44,7 @@ export type DemoTaskTemplate = {
   description: string;
   duration: string;
   responseType: DemoTaskTemplateResponseType;
+  therapyType: DemoTaskTherapyType;
   instructions: string;
   kind: "base" | "personalizada";
   createdAt: string;
@@ -54,6 +57,7 @@ const BASE_LIBRARY: DemoTaskTemplate[] = [
     description: "Síntesis breve de cómo ha ido el día en 1-2 frases.",
     duration: "2 min",
     responseType: "texto corto",
+    therapyType: "tcc",
     instructions: "Resume tu día, emoción principal y qué te ayudó.",
     kind: "base",
     createdAt: "2026-01-01T10:00:00.000Z",
@@ -64,6 +68,7 @@ const BASE_LIBRARY: DemoTaskTemplate[] = [
     description: "Situación, pensamiento, emoción y conducta asociada.",
     duration: "5 min",
     responseType: "formulario breve",
+    therapyType: "tcc",
     instructions: "Completa situación, pensamiento automático, emoción y respuesta.",
     kind: "base",
     createdAt: "2026-01-01T10:00:00.000Z",
@@ -74,77 +79,129 @@ const BASE_LIBRARY: DemoTaskTemplate[] = [
     description: "Busca una alternativa más equilibrada al pensamiento automático.",
     duration: "4 min",
     responseType: "texto corto",
+    therapyType: "tcc",
     instructions: "Escribe pensamiento inicial, evidencia y alternativa realista.",
-    kind: "base",
-    createdAt: "2026-01-01T10:00:00.000Z",
-  },
-  {
-    id: "respiracion-2-minutos",
-    title: "Respiración 2 minutos",
-    description: "Respiración guiada breve para bajar activación fisiológica.",
-    duration: "2 min",
-    responseType: "selección emoji",
-    instructions: "Realiza 2 minutos de respiración y marca cómo te quedas.",
-    kind: "base",
-    createdAt: "2026-01-01T10:00:00.000Z",
-  },
-  {
-    id: "exposicion-gradual",
-    title: "Exposición gradual",
-    description: "Acercamiento progresivo a situaciones evitadas.",
-    duration: "8 min",
-    responseType: "formulario breve",
-    instructions: "Indica situación, nivel de ansiedad previo y resultado final.",
     kind: "base",
     createdAt: "2026-01-01T10:00:00.000Z",
   },
   {
     id: "registro-pensamientos-automaticos",
     title: "Registro de pensamientos automáticos",
-    description: "Identifica pensamientos repetitivos del día.",
+    description: "Identifica pensamientos repetitivos del día y su intensidad.",
+    duration: "4 min",
+    responseType: "formulario breve",
+    therapyType: "tcc",
+    instructions: "Anota 1-3 pensamientos automáticos y el impacto emocional asociado.",
+    kind: "base",
+    createdAt: "2026-01-01T10:00:00.000Z",
+  },
+  {
+    id: "activacion-conductual",
+    title: "Activación conductual",
+    description: "Planifica una acción valiosa y evalúa su impacto en el ánimo.",
+    duration: "5 min",
+    responseType: "selección",
+    therapyType: "tcc",
+    instructions: "Elige una acción pequeña, ejecútala y marca el resultado percibido.",
+    kind: "base",
+    createdAt: "2026-01-01T10:00:00.000Z",
+  },
+  {
+    id: "registro-evitacion",
+    title: "Registro de evitación",
+    description: "Detecta conductas evitativas y qué intentaban proteger.",
     duration: "4 min",
     responseType: "texto corto",
-    instructions: "Anota 1-3 pensamientos automáticos y su impacto.",
+    therapyType: "act",
+    instructions: "Describe una evitación del día y el costo que tuvo para ti.",
     kind: "base",
     createdAt: "2026-01-01T10:00:00.000Z",
   },
   {
-    id: "escala-ansiedad-diaria",
-    title: "Escala de ansiedad diaria",
-    description: "Evalúa ansiedad percibida para seguimiento semanal.",
-    duration: "1 min",
-    responseType: "escala 1-10",
-    instructions: "Marca tu nivel de ansiedad y añade nota opcional.",
-    kind: "base",
-    createdAt: "2026-01-01T10:00:00.000Z",
-  },
-  {
-    id: "registro-activacion-emocional",
-    title: "Registro de activación emocional",
-    description: "Detecta momentos de activación emocional intensa.",
-    duration: "3 min",
+    id: "valores-personales",
+    title: "Valores personales",
+    description: "Conecta lo que hiciste hoy con tus valores importantes.",
+    duration: "6 min",
     responseType: "formulario breve",
-    instructions: "Describe detonante, emoción y estrategia utilizada.",
+    therapyType: "act",
+    instructions: "Elige un valor y concreta una acción que lo acerque hoy.",
     kind: "base",
     createdAt: "2026-01-01T10:00:00.000Z",
   },
   {
-    id: "diario-gratitud-breve",
-    title: "Diario de gratitud breve",
-    description: "Registra tres elementos positivos del día.",
-    duration: "2 min",
-    responseType: "texto corto",
-    instructions: "Escribe tres cosas pequeñas que agradeces hoy.",
+    id: "defusion-cognitiva-breve",
+    title: "Defusión cognitiva breve",
+    description: "Toma distancia de un pensamiento difícil sin fusionarte con él.",
+    duration: "3 min",
+    responseType: "emojis",
+    therapyType: "act",
+    instructions: "Repite el pensamiento con una frase de distancia y marca cómo quedas.",
     kind: "base",
     createdAt: "2026-01-01T10:00:00.000Z",
   },
   {
-    id: "registro-evitacion-afrontamiento",
-    title: "Registro de evitación / afrontamiento",
-    description: "Diferencia conductas de evitación frente a afrontamiento.",
+    id: "registro-emocion-intensa",
+    title: "Registro de emoción intensa",
+    description: "Registra detonante, emoción, nivel y estrategia usada.",
     duration: "5 min",
-    responseType: "escala 1-5",
-    instructions: "Marca qué hiciste hoy y si fue evitación o afrontamiento.",
+    responseType: "formulario breve",
+    therapyType: "dbt",
+    instructions: "Describe el episodio y qué habilidad aplicaste para regularte.",
+    kind: "base",
+    createdAt: "2026-01-01T10:00:00.000Z",
+  },
+  {
+    id: "tecnica-stop",
+    title: "Técnica STOP",
+    description: "Entrena pausa, respiración y respuesta efectiva en momentos críticos.",
+    duration: "3 min",
+    responseType: "selección",
+    therapyType: "dbt",
+    instructions: "Marca qué pasos STOP aplicaste y cómo resultó la situación.",
+    kind: "base",
+    createdAt: "2026-01-01T10:00:00.000Z",
+  },
+  {
+    id: "regulacion-emocional-breve",
+    title: "Regulación emocional breve",
+    description: "Evalúa intensidad emocional antes y después de regular.",
+    duration: "4 min",
+    responseType: "escala",
+    therapyType: "dbt",
+    instructions: "Puntúa tu emoción de 1-10 antes y después de la técnica.",
+    kind: "base",
+    createdAt: "2026-01-01T10:00:00.000Z",
+  },
+  {
+    id: "escala-progreso-1-10",
+    title: "Escala de progreso 1-10",
+    description: "Ubica tu avance semanal y qué explica ese punto.",
+    duration: "2 min",
+    responseType: "escala",
+    therapyType: "soluciones",
+    instructions: "Valora tu progreso de 1 a 10 y añade una razón concreta.",
+    kind: "base",
+    createdAt: "2026-01-01T10:00:00.000Z",
+  },
+  {
+    id: "pequeno-paso-semana",
+    title: "Pequeño paso de la semana",
+    description: "Define la próxima acción mínima útil para avanzar.",
+    duration: "3 min",
+    responseType: "texto corto",
+    therapyType: "soluciones",
+    instructions: "Escribe un paso pequeño, observable y factible para esta semana.",
+    kind: "base",
+    createdAt: "2026-01-01T10:00:00.000Z",
+  },
+  {
+    id: "que-ha-funcionado-hoy",
+    title: "Qué ha funcionado hoy",
+    description: "Identifica excepciones: lo que sí ayudó en el día.",
+    duration: "3 min",
+    responseType: "emojis",
+    therapyType: "soluciones",
+    instructions: "Anota qué funcionó hoy y valora su efecto general.",
     kind: "base",
     createdAt: "2026-01-01T10:00:00.000Z",
   },
@@ -226,15 +283,22 @@ export function getScaleValues(scale: TrackingScale) {
 }
 
 export function isTaskResponseType(value: unknown): value is DemoTaskTemplateResponseType {
-  return ["texto corto", "escala 1-5", "escala 1-10", "selección emoji", "formulario breve"].includes(
-    String(value)
-  );
+  return ["texto corto", "escala", "selección", "emojis", "formulario breve"].includes(String(value));
+}
+
+function isTherapyType(value: unknown): value is DemoTaskTherapyType {
+  return ["tcc", "act", "dbt", "soluciones", "personalizadas"].includes(String(value));
+}
+
+function normalizeTherapyType(value: unknown, fallback: DemoTaskTherapyType): DemoTaskTherapyType {
+  if (isTherapyType(value)) return value;
+  return fallback;
 }
 
 function normalizeResponseType(value: unknown, fallback: DemoTaskTemplateResponseType): DemoTaskTemplateResponseType {
   const raw = String(value ?? "");
-  if (raw === "escala") return "escala 1-5";
-  if (raw === "selección") return "selección emoji";
+  if (raw === "escala 1-5" || raw === "escala 1-10") return "escala";
+  if (raw === "selección emoji") return "emojis";
   if (isTaskResponseType(raw)) return raw;
   return fallback;
 }
@@ -269,7 +333,13 @@ async function writeStore(store: DemoStore) {
 }
 
 function normalizeTemplates(existing: DemoTaskTemplate[] | undefined) {
-  const custom = (existing ?? []).filter((item) => item.kind === "personalizada");
+  const custom = (existing ?? [])
+    .filter((item) => item.kind === "personalizada")
+    .map((item) => ({
+      ...item,
+      therapyType: "personalizadas" as const,
+      responseType: normalizeResponseType(item.responseType, "formulario breve"),
+    }));
   const customById = new Map(custom.map((item) => [item.id, item]));
 
   const merged = BASE_LIBRARY.map((base) => {
@@ -280,6 +350,7 @@ function normalizeTemplates(existing: DemoTaskTemplate[] | undefined) {
           ...fromStore,
           kind: "base" as const,
           responseType: normalizeResponseType(fromStore.responseType, base.responseType),
+          therapyType: normalizeTherapyType(fromStore.therapyType, base.therapyType),
         }
       : base;
   });
@@ -352,6 +423,7 @@ export async function addTaskTemplate(input: {
     description: input.description,
     duration: input.duration,
     responseType: input.responseType,
+    therapyType: "personalizadas",
     instructions: input.instructions,
     kind: "personalizada",
     createdAt: nowIso(),
@@ -378,6 +450,7 @@ export async function addPatient(input: {
   email: string;
   objective: string;
   trackingScale?: TrackingScale;
+  avatar?: string;
 }) {
   const store = await loadStore();
   const baseId = slugify(input.name) || "paciente";
@@ -395,7 +468,7 @@ export async function addPatient(input: {
     name: input.name,
     email: input.email,
     objective: input.objective,
-    avatar: "/profiles/paciente-1.jpg",
+    avatar: input.avatar?.trim() || "/avatars/placeholder.svg",
     status: "Nuevo",
     trackingScale: normalizeTrackingScale(input.trackingScale),
     lastCheckinAt: nowIso(),
