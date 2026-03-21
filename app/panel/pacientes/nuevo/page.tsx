@@ -32,13 +32,21 @@ export default function NuevoPacientePage() {
   const [trackingScale, setTrackingScale] = useState<TrackingScale>("emoji");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [errorStep, setErrorStep] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
+    setErrorStep(null);
+    setNotice(null);
 
     if (!name.trim()) {
       setError("El nombre es obligatorio.");
+      return;
+    }
+    if (!email.trim()) {
+      setError("El email del paciente es obligatorio.");
       return;
     }
 
@@ -57,10 +65,15 @@ export default function NuevoPacientePage() {
       });
 
       if (!res.ok) {
-        const data = (await res.json()) as { error?: string };
+        const data = (await res.json()) as { error?: string; step?: string };
+        if (data.step) {
+          setErrorStep(data.step);
+        }
         throw new Error(data.error ?? "No se pudo crear el paciente.");
       }
 
+      setNotice("Paciente creado. Se ha enviado un magic link al email del paciente.");
+      await new Promise((resolve) => setTimeout(resolve, 900));
       router.push("/panel/pacientes");
       router.refresh();
     } catch (err) {
@@ -146,8 +159,18 @@ export default function NuevoPacientePage() {
           </div>
 
           {error && (
-            <p className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-              {error}
+            <div className="space-y-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+              <p>{error}</p>
+              {errorStep && (
+                <p className="text-xs">
+                  Paso que falla: <span className="font-semibold">{errorStep}</span>
+                </p>
+              )}
+            </div>
+          )}
+          {notice && (
+            <p className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
+              {notice}
             </p>
           )}
 

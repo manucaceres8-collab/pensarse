@@ -1,38 +1,52 @@
 {
   "patients": [
     {
-      "id": "carmen-sm",
-      "name": "Carmen SM",
-      "email": "carmen@sm.com",
+      "id": "prueba2",
+      "name": "prueba2",
+      "email": "pensar.see@gmail.com",
       "objective": "",
-      "avatar": "/avatars/carmen.svg",
+      "avatar": "/avatars/placeholder.svg",
       "status": "Nuevo",
-      "lastCheckinAt": "2026-03-08T18:32:32.137Z",
+      "trackingScale": "emoji",
+      "lastCheckinAt": "2026-03-11T20:55:25.868Z",
       "tasks": [
         {
-          "id": "respiracion-7ddd961a",
-          "templateId": "respiracion",
-          "title": "Respiración 2 minutos",
-          "description": "Respiración lenta para bajar activación.",
+          "id": "registro-diario-breve-8525d39d",
+          "templateId": "registro-diario-breve",
+          "title": "Registro diario breve",
+          "description": "Síntesis breve de cómo ha ido el día en 1-2 frases.",
           "status": "Pendiente",
-          "createdAt": "2026-03-08T18:32:40.563Z",
-          "updatedAt": "2026-03-08T18:32:40.563Z",
-          "lastAnswer": ""
-        },
-        {
-          "id": "abc-642ba5c4",
-          "templateId": "abc",
-          "title": "Registro ABC",
-          "description": "Situación, pensamiento, emoción y conducta.",
-          "status": "Pendiente",
-          "createdAt": "2026-03-08T18:32:38.408Z",
-          "updatedAt": "2026-03-08T18:32:38.408Z",
+          "createdAt": "2026-03-12T12:22:09.928Z",
+          "updatedAt": "2026-03-12T12:22:09.928Z",
           "lastAnswer": ""
         }
       ],
       "checkins": [],
-      "notes": [],
-      "trackingScale": "anxiety_text"
+      "notes": []
+    },
+    {
+      "id": "manu",
+      "name": "Manu",
+      "email": "manucaceres8@gmail.com",
+      "objective": "Ansiedad",
+      "avatar": "/avatars/placeholder.svg",
+      "status": "Nuevo",
+      "trackingScale": "wellbeing_text",
+      "lastCheckinAt": "2026-03-10T15:56:59.187Z",
+      "tasks": [
+        {
+          "id": "registro-abc-7f29a18c",
+          "templateId": "registro-abc",
+          "title": "Registro ABC",
+          "description": "Situación, pensamiento, emoción y conducta asociada.",
+          "status": "Pendiente",
+          "createdAt": "2026-03-11T07:37:30.308Z",
+          "updatedAt": "2026-03-11T07:37:30.308Z",
+          "lastAnswer": ""
+        }
+      ],
+      "checkins": [],
+      "notes": []
     },
     {
       "id": "eva-cabrera",
@@ -75,8 +89,48 @@
       "objective": "Reducir ansiedad cotidiana y mejorar descanso.",
       "avatar": "/avatars/maria.png",
       "status": "Estable",
-      "lastCheckinAt": "2026-03-08T17:53:34.932Z",
+      "lastCheckinAt": "2026-03-12T12:22:53.958Z",
       "tasks": [
+        {
+          "id": "escala-progreso-1-10-82a1f6ca",
+          "templateId": "escala-progreso-1-10",
+          "title": "Escala de progreso 1-10",
+          "description": "Ubica tu avance semanal y qué explica ese punto.",
+          "status": "Pendiente",
+          "createdAt": "2026-03-11T19:37:47.464Z",
+          "updatedAt": "2026-03-11T19:37:47.464Z",
+          "lastAnswer": ""
+        },
+        {
+          "id": "defusion-cognitiva-breve-b8a48d84",
+          "templateId": "defusion-cognitiva-breve",
+          "title": "Defusión cognitiva breve",
+          "description": "Toma distancia de un pensamiento difícil sin fusionarte con él.",
+          "status": "Pendiente",
+          "createdAt": "2026-03-11T19:37:39.908Z",
+          "updatedAt": "2026-03-11T19:37:39.908Z",
+          "lastAnswer": ""
+        },
+        {
+          "id": "registro-abc-7fcf19a4",
+          "templateId": "registro-abc",
+          "title": "Registro ABC",
+          "description": "Situación, pensamiento, emoción y conducta asociada.",
+          "status": "Completada",
+          "createdAt": "2026-03-11T19:37:34.089Z",
+          "updatedAt": "2026-03-12T12:23:41.851Z",
+          "lastAnswer": "{\"situacion\":\"estaba en el trabajo y he discutido \",\"pensamiento\":\"malo \",\"emocion\":\"ansiedad \",\"conducta\":\"llorar\",\"pensamiento_alternativo\":\"ljshdb\"}"
+        },
+        {
+          "id": "registro-evitacion-9bad501f",
+          "templateId": "registro-evitacion",
+          "title": "Registro de evitación",
+          "description": "Detecta conductas evitativas y qué intentaban proteger.",
+          "status": "Pendiente",
+          "createdAt": "2026-03-11T19:34:46.455Z",
+          "updatedAt": "2026-03-11T19:34:46.455Z",
+          "lastAnswer": ""
+        },
         {
           "id": "respiracion-2-minutos-f1623e8e",
           "templateId": "respiracion-2-minutos",
@@ -140,6 +194,12 @@
       ],
       "checkins": [
         {
+          "id": "checkin-f78ed2d7",
+          "mood": "😄",
+          "text": "me siento mal con el trabjao",
+          "createdAt": "2026-03-12T12:22:53.958Z"
+        },
+        {
           "id": "checkin-d317d126",
           "mood": "Bien",
           "text": "Bien, estoy feliz",
@@ -172,7 +232,7 @@
           "createdAt": "2026-03-07T10:20:00.000Z"
         }
       ],
-      "trackingScale": "emoji"
+      "trackingScale": "wellbeing_text"
     },
     {
       "id": "juan",

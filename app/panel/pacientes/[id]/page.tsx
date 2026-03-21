@@ -1,7 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import ProfileAvatar from "../../../components/ProfileAvatar";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 type DemoTask = {
@@ -10,7 +11,9 @@ type DemoTask = {
   title: string;
   description: string;
   status: "Pendiente" | "En curso" | "Completada";
+  createdAt: string;
   updatedAt: string;
+  lastAnswer: string;
 };
 
 type DemoNote = {
@@ -102,6 +105,7 @@ function formatDate(value: string) {
 
 export default function PacienteDetalle() {
   const params = useParams();
+  const router = useRouter();
   const patientId = String(params.id ?? "maria");
 
   const [patient, setPatient] = useState<DemoPatient | null>(null);
@@ -111,6 +115,7 @@ export default function PacienteDetalle() {
   const [mostrarRepositorio, setMostrarRepositorio] = useState(false);
   const [updatingScale, setUpdatingScale] = useState(false);
   const [therapyFilter, setTherapyFilter] = useState<"todas" | TareaRepo["therapyType"]>("todas");
+  const [deletingPatient, setDeletingPatient] = useState(false);
 
   async function loadPatient() {
     setLoading(true);
@@ -181,6 +186,27 @@ export default function PacienteDetalle() {
     return repo.filter((item) => item.therapyType === therapyFilter);
   }, [repo, therapyFilter]);
 
+  async function eliminarPaciente() {
+    if (!patient) return;
+
+    const confirmed = window.confirm(`¿Eliminar paciente ${patient.name}? Esta acción no se puede deshacer.`);
+    if (!confirmed) return;
+
+    setDeletingPatient(true);
+    try {
+      const res = await fetch(`/api/demo/patients/${patient.id}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) return;
+
+      router.push("/panel/pacientes");
+      router.refresh();
+    } finally {
+      setDeletingPatient(false);
+    }
+  }
+
   if (loading) {
     return (
       <div className="rounded-[24px] border border-[#d7deea] bg-white p-6 text-sm text-[#4f617b]">
@@ -208,12 +234,21 @@ export default function PacienteDetalle() {
                 <p className="mt-1 text-sm text-[#4f617b]">Seguimiento individual del paciente</p>
               </div>
 
-              <button
-                onClick={() => setMostrarRepositorio((v) => !v)}
-                className="rounded-xl !bg-[#0f1f3f] px-4 py-2 text-sm font-medium !text-white transition hover:!bg-[#1a2c4f]"
-              >
-                {mostrarRepositorio ? "Cerrar repositorio" : "Asignar tarea"}
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setMostrarRepositorio((v) => !v)}
+                  className="rounded-xl !bg-[#0f1f3f] px-4 py-2 text-sm font-medium !text-white transition hover:!bg-[#1a2c4f]"
+                >
+                  {mostrarRepositorio ? "Cerrar repositorio" : "Asignar tarea"}
+                </button>
+                <button
+                  onClick={eliminarPaciente}
+                  disabled={deletingPatient}
+                  className="rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm font-medium text-red-700 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {deletingPatient ? "Eliminando..." : "Eliminar paciente"}
+                </button>
+              </div>
             </div>
 
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
@@ -386,12 +421,16 @@ export default function PacienteDetalle() {
             <p className="text-sm text-[#4f617b]">No hay tareas asignadas.</p>
           )}
           {patient.tasks.map((task) => (
-            <div key={task.id} className="rounded-2xl border border-[#d9e1ee] bg-[#f8fbff] p-4">
+            <Link
+              key={task.id}
+              href={`/panel/pacientes/${patient.id}/tareas/${task.id}`}
+              className="block rounded-2xl border border-[#d9e1ee] bg-[#f8fbff] p-4 transition hover:bg-white"
+            >
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <p className="text-sm font-semibold text-[#1f2d45]">{task.title}</p>
                   <p className="mt-1 text-sm text-[#4f617b]">{task.description}</p>
-                  <p className="mt-2 text-xs text-[#607794]">Actualizado: {formatDate(task.updatedAt)}</p>
+                  <p className="mt-2 text-xs text-[#607794]">Asignada: {formatDate(task.createdAt)}</p>
                 </div>
                 <span
                   className={[
@@ -406,7 +445,7 @@ export default function PacienteDetalle() {
                   {task.status}
                 </span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </section>

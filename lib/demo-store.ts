@@ -445,6 +445,18 @@ export async function getPatientById(id: string) {
   return patients.find((p) => p.id === id) ?? null;
 }
 
+export async function deletePatientById(patientId: string) {
+  const store = await loadStore();
+  const index = store.patients.findIndex((p) => p.id === patientId);
+  if (index < 0) {
+    return false;
+  }
+
+  store.patients.splice(index, 1);
+  await writeStore(store);
+  return true;
+}
+
 export async function addPatient(input: {
   name: string;
   email: string;

@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
+import { useEffect, useState } from "react";
 import ProfileAvatar from "../components/ProfileAvatar";
+import { createClient } from "@/lib/supabase/client";
 
 const navItems = [
   { href: "/mi", label: "Inicio", icon: "IN" },
@@ -13,6 +15,47 @@ const navItems = [
 
 export default function MiLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const [profileName, setProfileName] = useState("Paciente");
+  const [profileRole, setProfileRole] = useState("Paciente");
+  const [avatarSrc, setAvatarSrc] = useState("/avatars/placeholder.svg");
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadProfile() {
+      let supabase;
+      try {
+        supabase = createClient();
+      } catch {
+        return;
+      }
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!mounted || !user) return;
+
+      const [{ data: profile }, { data: patient }] = await Promise.all([
+        supabase.from("profiles").select("name, role").eq("id", user.id).maybeSingle(),
+        user.email
+          ? supabase.from("patients").select("avatar_url").eq("email", user.email).maybeSingle()
+          : Promise.resolve({ data: null }),
+      ]);
+
+      if (!mounted) return;
+
+      setProfileName(profile?.name?.trim() || user.email || "Paciente");
+      setProfileRole(profile?.role === "paciente" ? "Paciente" : "Usuario");
+      setAvatarSrc(patient?.avatar_url || "/avatars/placeholder.svg");
+    }
+
+    loadProfile();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#edf1f7] text-slate-900">
@@ -29,15 +72,15 @@ export default function MiLayout({ children }: { children: React.ReactNode }) {
             <div className="mt-4 rounded-2xl border border-[#d6deea] bg-[#f7f9fd] p-3">
               <div className="flex items-center gap-3">
                 <ProfileAvatar
-                  src="/avatars/maria.png"
+                  src={avatarSrc}
                   fallbackSrc="/avatars/placeholder.svg"
                   alt="Perfil paciente"
                   size={64}
                   className="h-16 w-16 rounded-full border border-[#cfd9e8] object-cover"
                 />
                 <div>
-                  <p className="text-xs font-semibold text-[#1f2d45]">Maria Lopez</p>
-                  <p className="text-[11px] text-[#7086a2]">Paciente</p>
+                  <p className="text-xs font-semibold text-[#1f2d45]">{profileName}</p>
+                  <p className="text-[11px] text-[#7086a2]">{profileRole}</p>
                 </div>
               </div>
             </div>
@@ -86,7 +129,7 @@ export default function MiLayout({ children }: { children: React.ReactNode }) {
                 <p className="text-xs text-[#617896]">Paciente - Seguimiento entre sesiones</p>
               </div>
               <span className="rounded-full border border-[#d5deea] bg-[#f6f9ff] px-3 py-1 text-xs text-[#607794]">
-                Demo
+                Real
               </span>
             </div>
             <div className="p-5 sm:p-6">{children}</div>

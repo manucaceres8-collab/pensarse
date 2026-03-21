@@ -29,6 +29,7 @@ export default function PacientesPage() {
   const [allPatients, setAllPatients] = useState<PatientListItem[]>([]);
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -54,13 +55,29 @@ export default function PacientesPage() {
     };
   }, []);
 
+  async function removePatient(patientId: string, patientName: string) {
+    const confirmed = window.confirm(`¿Eliminar paciente ${patientName}? Esta acción no se puede deshacer.`);
+    if (!confirmed) return;
+
+    setDeletingId(patientId);
+    try {
+      const res = await fetch(`/api/demo/patients/${patientId}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) return;
+
+      setAllPatients((prev) => prev.filter((item) => item.id !== patientId));
+    } finally {
+      setDeletingId(null);
+    }
+  }
+
   const patients = useMemo(() => {
     const normalized = query.trim().toLowerCase();
     if (!normalized) return allPatients;
 
-    return allPatients.filter((patient) =>
-      patient.name.toLowerCase().includes(normalized)
-    );
+    return allPatients.filter((patient) => patient.name.toLowerCase().includes(normalized));
   }, [allPatients, query]);
 
   return (
@@ -104,43 +121,51 @@ export default function PacientesPage() {
         )}
 
         {!loading &&
-          patients.map((patient) => (
-            <Link
-              key={patient.id}
-              href={`/panel/pacientes/${patient.id}`}
-              className="block rounded-[24px] border border-[#d7deea] bg-white p-5 transition hover:bg-[#f8fbff]"
-            >
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <ProfileAvatar
-                    src={patient.avatar}
-                    fallbackSrc="/avatars/placeholder.svg"
-                    alt={`Foto de ${patient.name}`}
-                    size={64}
-                    className="h-16 w-16 rounded-full border border-[#cfdae9] bg-[#f7f9fd] object-cover"
-                  />
-                  <div>
-                    <p className="text-2xl font-semibold text-[#1f2d45]">{patient.name}</p>
-                    <p className="mt-1 text-xs text-[#607794]">
-                      Último check-in: {formatDate(patient.lastCheckinAt)}
-                    </p>
-                    <p className="mt-2 text-sm text-[#4f617b]">
-                      {patient.checkins[0]?.text || "Sin notas de check-in todavía."}
-                    </p>
+          patients.map((patient) => {
+            const deleting = deletingId === patient.id;
+
+            return (
+              <div key={patient.id} className="rounded-[24px] border border-[#d7deea] bg-white p-5">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <Link
+                    href={`/panel/pacientes/${patient.id}`}
+                    className="flex min-w-0 flex-1 items-center gap-3 transition hover:opacity-90"
+                  >
+                    <ProfileAvatar
+                      src={patient.avatar}
+                      fallbackSrc="/avatars/placeholder.svg"
+                      alt={`Foto de ${patient.name}`}
+                      size={64}
+                      className="h-16 w-16 rounded-full border border-[#cfdae9] bg-[#f7f9fd] object-cover"
+                    />
+                    <div>
+                      <p className="text-2xl font-semibold text-[#1f2d45]">{patient.name}</p>
+                      <p className="mt-1 text-xs text-[#607794]">Último check-in: {formatDate(patient.lastCheckinAt)}</p>
+                      <p className="mt-2 text-sm text-[#4f617b]">
+                        {patient.checkins[0]?.text || "Sin notas de check-in todavía."}
+                      </p>
+                    </div>
+                  </Link>
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="rounded-full border border-[#cbd8ea] bg-[#edf4ff] px-3 py-1 text-xs font-medium text-[#1f304b]">
+                      {patient.status}
+                    </span>
+                    <span className="rounded-full border border-[#d5deea] bg-[#f6f9ff] px-3 py-1 text-xs text-[#1f304b]">
+                      {patient.tasks.length} tareas
+                    </span>
+                    <button
+                      onClick={() => removePatient(patient.id, patient.name)}
+                      disabled={deleting}
+                      className="rounded-full border border-red-200 bg-red-50 px-3 py-1 text-xs font-medium text-red-700 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      {deleting ? "Eliminando..." : "Eliminar paciente"}
+                    </button>
                   </div>
                 </div>
-
-                <div className="flex gap-2">
-                  <span className="rounded-full border border-[#cbd8ea] bg-[#edf4ff] px-3 py-1 text-xs font-medium text-[#1f304b]">
-                    {patient.status}
-                  </span>
-                  <span className="rounded-full border border-[#d5deea] bg-[#f6f9ff] px-3 py-1 text-xs text-[#1f304b]">
-                    {patient.tasks.length} tareas
-                  </span>
-                </div>
               </div>
-            </Link>
-          ))}
+            );
+          })}
       </section>
     </div>
   );

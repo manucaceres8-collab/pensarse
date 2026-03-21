@@ -81,7 +81,7 @@ export default function MiHome() {
   const [savingNote, setSavingNote] = useState(false);
 
   async function loadPatient() {
-    const res = await fetch("/api/demo/patients/maria", { cache: "no-store" });
+    const res = await fetch("/api/demo/patients/me", { cache: "no-store" });
     if (!res.ok) return;
 
     const data = (await res.json()) as { patient: DemoPatient };
@@ -107,7 +107,7 @@ export default function MiHome() {
 
     setSavingCheckin(true);
     try {
-      const res = await fetch("/api/demo/patients/maria/checkins", {
+      const res = await fetch("/api/demo/patients/me/checkins", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mood: selectedMood, text: registroHoy.trim() }),
@@ -131,7 +131,7 @@ export default function MiHome() {
 
     setSavingNote(true);
     try {
-      await fetch("/api/demo/patients/maria/notes", {
+      await fetch("/api/demo/patients/me/notes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: notas.trim(), author: "paciente" }),

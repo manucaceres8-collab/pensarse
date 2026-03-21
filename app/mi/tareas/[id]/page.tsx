@@ -3,13 +3,16 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-
-type ResponseType =
-  | "texto corto"
-  | "escala"
-  | "selección"
-  | "emojis"
-  | "formulario breve";
+import {
+  type AbcAnswer,
+  type ResponseType,
+  type TaskResponseProfile,
+  getTaskResponseProfile,
+  parseAbcAnswer,
+  parseBriefFormAnswer,
+  serializeAbcAnswer,
+  serializeBriefFormAnswer,
+} from "@/lib/task-response-ui";
 
 type DemoTask = {
   id: string;
@@ -30,6 +33,7 @@ type TaskTemplate = {
   description: string;
   instructions: string;
   responseType: ResponseType;
+  responseProfile?: TaskResponseProfile;
   therapyType: "tcc" | "act" | "dbt" | "soluciones" | "personalizadas";
   kind: "base" | "personalizada";
 };
@@ -40,6 +44,14 @@ const responseTone: Record<ResponseType, string> = {
   selección: "border-cyan-200 bg-cyan-50 text-cyan-700",
   emojis: "border-amber-200 bg-amber-50 text-amber-700",
   "formulario breve": "border-emerald-200 bg-emerald-50 text-emerald-700",
+};
+
+const EMPTY_ABC: AbcAnswer = {
+  situacion: "",
+  pensamiento: "",
+  emocion: "",
+  conducta: "",
+  pensamiento_alternativo: "",
 };
 
 export default function TareaEjercicio() {
@@ -55,16 +67,28 @@ export default function TareaEjercicio() {
   const [scaleAnswer, setScaleAnswer] = useState<string | null>(null);
   const [selectionAnswer, setSelectionAnswer] = useState<string | null>(null);
   const [emojiAnswer, setEmojiAnswer] = useState<string | null>(null);
-  const [form1, setForm1] = useState("");
-  const [form2, setForm2] = useState("");
-  const [form3, setForm3] = useState("");
+  const [abcAnswer, setAbcAnswer] = useState<AbcAnswer>(EMPTY_ABC);
+  const [briefFormAnswers, setBriefFormAnswers] = useState<string[]>(["", "", ""]);
+
+  const responseType = template?.responseType ?? "texto corto";
+
+  const responseProfile = useMemo(() => {
+    if (template?.responseProfile) return template.responseProfile;
+    return getTaskResponseProfile({
+      id: template?.id ?? task?.templateId,
+      title: template?.title ?? task?.title,
+      description: template?.description ?? task?.description,
+      instructions: template?.instructions,
+      responseType,
+    });
+  }, [template, task?.templateId, task?.title, task?.description, responseType]);
 
   useEffect(() => {
     let mounted = true;
 
     async function loadTask() {
       const [patientRes, templatesRes] = await Promise.all([
-        fetch("/api/demo/patients/maria", { cache: "no-store" }),
+        fetch("/api/demo/patients/me", { cache: "no-store" }),
         fetch("/api/demo/tasks", { cache: "no-store" }),
       ]);
 
@@ -81,26 +105,46 @@ export default function TareaEjercicio() {
       setTask(found);
       setTemplate(foundTemplate);
 
-      const answer = found.lastAnswer ?? "";
       const type = foundTemplate?.responseType ?? "texto corto";
+      const profile = foundTemplate?.responseProfile ??
+        getTaskResponseProfile({
+          id: foundTemplate?.id ?? found.templateId,
+          title: foundTemplate?.title ?? found.title,
+          description: foundTemplate?.description ?? found.description,
+          instructions: foundTemplate?.instructions,
+          responseType: type,
+        });
 
-      if (type === "texto corto") {
+      const answer = found.lastAnswer ?? "";
+      setTextAnswer("");
+      setScaleAnswer(null);
+      setSelectionAnswer(null);
+      setEmojiAnswer(null);
+      setAbcAnswer(EMPTY_ABC);
+      setBriefFormAnswers(["", "", ""]);
+
+      if (profile.kind === "text") {
         setTextAnswer(answer);
       }
-      if (type === "escala") {
+
+      if (profile.kind === "scale") {
         setScaleAnswer(answer || null);
       }
-      if (type === "selección") {
+
+      if (profile.kind === "selection") {
         setSelectionAnswer(answer || null);
       }
-      if (type === "emojis") {
+
+      if (profile.kind === "emoji") {
         setEmojiAnswer(answer || null);
       }
-      if (type === "formulario breve") {
-        const [a = "", b = "", c = ""] = answer.split("\n---\n");
-        setForm1(a);
-        setForm2(b);
-        setForm3(c);
+
+      if (profile.kind === "abc") {
+        setAbcAnswer(parseAbcAnswer(answer));
+      }
+
+      if (profile.kind === "brief_form") {
+        setBriefFormAnswers(parseBriefFormAnswer(answer, profile.fields.length));
       }
     }
 
@@ -111,27 +155,33 @@ export default function TareaEjercicio() {
     };
   }, [taskId]);
 
-  const responseType = template?.responseType ?? "texto corto";
-
   const instructions = useMemo(() => {
     if (template?.instructions?.trim()) return template.instructions;
     return task?.description || "Completa el ejercicio y guárdalo para tu psicólogo.";
   }, [template?.instructions, task?.description]);
 
   function buildAnswer() {
-    if (responseType === "texto corto") {
+    if (responseProfile.kind === "text") {
       return textAnswer.trim();
     }
-    if (responseType === "escala") {
+
+    if (responseProfile.kind === "scale") {
       return scaleAnswer ?? "";
     }
-    if (responseType === "selección") {
+
+    if (responseProfile.kind === "selection") {
       return selectionAnswer ?? "";
     }
-    if (responseType === "emojis") {
+
+    if (responseProfile.kind === "emoji") {
       return emojiAnswer ?? "";
     }
-    return [form1, form2, form3].map((v) => v.trim()).join("\n---\n");
+
+    if (responseProfile.kind === "abc") {
+      return serializeAbcAnswer(abcAnswer);
+    }
+
+    return serializeBriefFormAnswer(briefFormAnswers);
   }
 
   async function guardar() {
@@ -141,7 +191,7 @@ export default function TareaEjercicio() {
     try {
       const answer = buildAnswer();
 
-      await fetch(`/api/demo/patients/maria/tasks/${task.id}`, {
+      await fetch(`/api/demo/patients/me/tasks/${task.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -182,41 +232,44 @@ export default function TareaEjercicio() {
       <section className="rounded-[26px] border border-[#d7deea] bg-white p-6">
         <h2 className="text-2xl font-semibold text-[#1f2d45]">Tu respuesta</h2>
 
-        {responseType === "texto corto" && (
+        {responseProfile.kind === "text" && (
           <textarea
             value={textAnswer}
             onChange={(e) => setTextAnswer(e.target.value)}
             className="mt-4 w-full rounded-2xl border border-[#d9e1ee] bg-[#f8fbff] p-4 text-sm text-[#1f2d45]"
             rows={5}
-            placeholder="Escribe aquí tu respuesta..."
+            placeholder={responseProfile.placeholder}
           />
         )}
 
-        {responseType === "escala" && (
-          <div className="mt-4 grid gap-2 sm:grid-cols-5">
-            {["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"].map((value) => {
-              const active = scaleAnswer === value;
-              return (
-                <button
-                  key={value}
-                  onClick={() => setScaleAnswer(value)}
-                  className={[
-                    "rounded-xl border px-3 py-2 text-sm transition",
-                    active
-                      ? "border-[#0f1f3f] bg-[#0f1f3f] text-white"
-                      : "border-[#d9e1ee] bg-[#f8fbff] text-[#1f304b] hover:bg-white",
-                  ].join(" ")}
-                >
-                  {value}
-                </button>
-              );
-            })}
+        {responseProfile.kind === "scale" && (
+          <div className="mt-4 space-y-2">
+            <p className="text-xs text-[#607794]">Selecciona una puntuación de {responseProfile.min} a {responseProfile.max}.</p>
+            <div className="grid gap-2 sm:grid-cols-5">
+              {Array.from({ length: responseProfile.max }, (_, index) => String(index + 1)).map((value) => {
+                const active = scaleAnswer === value;
+                return (
+                  <button
+                    key={value}
+                    onClick={() => setScaleAnswer(value)}
+                    className={[
+                      "rounded-xl border px-3 py-2 text-sm transition",
+                      active
+                        ? "border-[#0f1f3f] bg-[#0f1f3f] text-white"
+                        : "border-[#d9e1ee] bg-[#f8fbff] text-[#1f304b] hover:bg-white",
+                    ].join(" ")}
+                  >
+                    {value}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         )}
 
-        {responseType === "selección" && (
+        {responseProfile.kind === "selection" && (
           <div className="mt-4 flex flex-wrap gap-2">
-            {["Sí", "Parcial", "No", "No aplica"].map((option) => {
+            {responseProfile.options.map((option) => {
               const active = selectionAnswer === option;
               return (
                 <button
@@ -236,9 +289,9 @@ export default function TareaEjercicio() {
           </div>
         )}
 
-        {responseType === "emojis" && (
+        {responseProfile.kind === "emoji" && (
           <div className="mt-4 flex flex-wrap gap-2">
-            {["😣", "😔", "😐", "🙂", "😄"].map((emoji) => {
+            {responseProfile.options.map((emoji) => {
               const active = emojiAnswer === emoji;
               return (
                 <button
@@ -258,35 +311,83 @@ export default function TareaEjercicio() {
           </div>
         )}
 
-        {responseType === "formulario breve" && (
+        {responseProfile.kind === "abc" && (
           <div className="mt-4 space-y-4">
             <div>
               <label className="text-sm text-[#607794]">Situación</label>
               <textarea
-                value={form1}
-                onChange={(e) => setForm1(e.target.value)}
+                value={abcAnswer.situacion}
+                onChange={(e) => setAbcAnswer((prev) => ({ ...prev, situacion: e.target.value }))}
                 className="mt-1 w-full rounded-xl border border-[#d9e1ee] bg-[#f8fbff] p-3 text-sm"
                 rows={2}
+                placeholder="¿Qué pasó?"
               />
             </div>
+
             <div>
-              <label className="text-sm text-[#607794]">Pensamiento o interpretación</label>
+              <label className="text-sm text-[#607794]">Pensamiento</label>
               <textarea
-                value={form2}
-                onChange={(e) => setForm2(e.target.value)}
+                value={abcAnswer.pensamiento}
+                onChange={(e) => setAbcAnswer((prev) => ({ ...prev, pensamiento: e.target.value }))}
                 className="mt-1 w-full rounded-xl border border-[#d9e1ee] bg-[#f8fbff] p-3 text-sm"
                 rows={2}
+                placeholder="¿Qué te dijiste en ese momento?"
               />
             </div>
+
             <div>
-              <label className="text-sm text-[#607794]">Respuesta o siguiente paso</label>
-              <textarea
-                value={form3}
-                onChange={(e) => setForm3(e.target.value)}
-                className="mt-1 w-full rounded-xl border border-[#d9e1ee] bg-[#f8fbff] p-3 text-sm"
-                rows={2}
+              <label className="text-sm text-[#607794]">Emoción</label>
+              <input
+                value={abcAnswer.emocion}
+                onChange={(e) => setAbcAnswer((prev) => ({ ...prev, emocion: e.target.value }))}
+                className="mt-1 w-full rounded-xl border border-[#d9e1ee] bg-[#f8fbff] px-3 py-2 text-sm"
+                placeholder="Ej. ansiedad, tristeza, enfado"
               />
             </div>
+
+            <div>
+              <label className="text-sm text-[#607794]">Conducta</label>
+              <textarea
+                value={abcAnswer.conducta}
+                onChange={(e) => setAbcAnswer((prev) => ({ ...prev, conducta: e.target.value }))}
+                className="mt-1 w-full rounded-xl border border-[#d9e1ee] bg-[#f8fbff] p-3 text-sm"
+                rows={2}
+                placeholder="¿Qué hiciste después?"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm text-[#607794]">Pensamiento alternativo (opcional)</label>
+              <textarea
+                value={abcAnswer.pensamiento_alternativo}
+                onChange={(e) => setAbcAnswer((prev) => ({ ...prev, pensamiento_alternativo: e.target.value }))}
+                className="mt-1 w-full rounded-xl border border-[#d9e1ee] bg-[#f8fbff] p-3 text-sm"
+                rows={2}
+                placeholder="Una alternativa más equilibrada"
+              />
+            </div>
+          </div>
+        )}
+
+        {responseProfile.kind === "brief_form" && (
+          <div className="mt-4 space-y-4">
+            {responseProfile.fields.map((label, index) => (
+              <div key={`${label}-${index}`}>
+                <label className="text-sm text-[#607794]">{label}</label>
+                <textarea
+                  value={briefFormAnswers[index] ?? ""}
+                  onChange={(e) =>
+                    setBriefFormAnswers((prev) => {
+                      const next = [...prev];
+                      next[index] = e.target.value;
+                      return next;
+                    })
+                  }
+                  className="mt-1 w-full rounded-xl border border-[#d9e1ee] bg-[#f8fbff] p-3 text-sm"
+                  rows={2}
+                />
+              </div>
+            ))}
           </div>
         )}
 

@@ -24,7 +24,7 @@ export default function TareasPage() {
 
     async function loadTasks() {
       try {
-        const res = await fetch("/api/demo/patients/maria", { cache: "no-store" });
+        const res = await fetch("/api/demo/patients/me", { cache: "no-store" });
         const data = (await res.json()) as { patient: DemoPatient };
         if (mounted) {
           setTasks(data.patient?.tasks ?? []);
