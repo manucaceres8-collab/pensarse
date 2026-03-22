@@ -41,9 +41,10 @@ function mapStatus(status: string | null | undefined) {
 }
 
 function mapTrackingScale(value: string | null | undefined) {
-  if (value === "numeric_5" || value === "numeric_10" || value === "wellbeing_text" || value === "anxiety_text") {
-    return value;
-  }
+  if (value === "numeric_5" || value === "oneToFive") return "numeric_5";
+  if (value === "numeric_10" || value === "oneToTen") return "numeric_10";
+  if (value === "wellbeing_text" || value === "bienestar") return "wellbeing_text";
+  if (value === "anxiety_text" || value === "ansiedad") return "anxiety_text";
   return "emoji";
 }
 
