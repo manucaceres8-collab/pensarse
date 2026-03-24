@@ -1,239 +1,255 @@
 import Link from "next/link";
 import FloatingChat from "./components/FloatingChat";
 
-const weeklyData = [4, 6, 5, 7, 8];
+const trendBars = [48, 64, 58, 74, 81, 76, 88];
 
-const roleCards = [
+const benefits = [
+  "Detecta patrones emocionales y de adherencia antes de la sesión.",
+  "Reduce la dependencia de recuerdos vagos o incompletos.",
+  "Asigna tareas breves y revisa respuestas sin fricción.",
+  "Llega a consulta con contexto clínico reciente y accionable.",
+];
+
+const steps = [
   {
-    title: "Psicólogo",
-    text: "Deja de depender de lo que el paciente recuerda en sesión. Ve lo que pasa realmente entre sesiones.",
+    title: "Check-in diario",
+    text: "El paciente registra estado y nota breve en menos de 30 segundos.",
   },
   {
-    title: "Paciente",
-    text: "Registra cómo te sientes en menos de 30 segundos, sin esfuerzo ni apps complicadas.",
+    title: "Tareas entre sesiones",
+    text: "Recibe ejercicios breves y los completa desde una interfaz simple.",
   },
   {
-    title: "Seguimiento",
-    text: "Visualiza patrones reales y llega a sesión con información útil, no con recuerdos vagos.",
+    title: "Informe clínico",
+    text: "El psicólogo ve evolución, adherencia y señales útiles antes de sesión.",
   },
 ];
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#edf1f7] px-4 py-6 text-[#0f172a] sm:px-6 sm:py-8">
-      <div className="mx-auto max-w-6xl space-y-6 pb-24">
-        <section className="rounded-[30px] border border-[#d7deea] bg-white px-6 py-10 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:px-10 sm:py-14">
-          <div className="max-w-4xl">
-            <h1 className="max-w-3xl text-4xl font-semibold leading-[1.04] tracking-tight text-[#0f172a] sm:text-5xl">
-              Haz que lo que pasa entre sesiones también sea terapia
-            </h1>
+    <main className="min-h-screen bg-white text-[#111827]">
+      <div className="mx-auto max-w-6xl px-6 pb-24 pt-8 sm:px-8 lg:px-10">
+        <header className="flex items-center justify-between border-b border-[#e5e7eb] pb-5">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#94a3b8]">
+              Pensar(SE)
+            </p>
+            <p className="mt-1 text-sm text-[#64748b]">Seguimiento terapéutico entre sesiones</p>
+          </div>
 
-            <p className="mt-4 max-w-2xl text-base leading-relaxed text-[#546a87] sm:text-lg">
-              Registro diario, tareas y seguimiento real para psicólogos y pacientes.
+          <Link
+            href="/login"
+            className="rounded-lg border border-[#d6dce5] px-4 py-2 text-sm font-medium text-[#334155] transition duration-200 hover:-translate-y-0.5 hover:border-[#c4ceda] hover:shadow-[0_10px_18px_rgba(15,23,42,0.06)]"
+          >
+            Acceder
+          </Link>
+        </header>
+
+        <section className="grid gap-14 border-b border-[#e5e7eb] py-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
+          <div className="max-w-3xl">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#94a3b8]">
+              SaaS para psicólogos
+            </p>
+            <h1 className="mt-4 max-w-4xl text-4xl font-semibold leading-[1.02] tracking-[-0.04em] text-[#0f172a] sm:text-5xl lg:text-6xl">
+              Convierte lo que pasa entre sesiones en datos clínicos útiles
+            </h1>
+            <p className="mt-6 max-w-2xl text-base leading-7 text-[#475569] sm:text-lg">
+              Registro diario, tareas terapéuticas e informes claros para entender mejor la evolución real del
+              paciente entre una sesión y la siguiente.
             </p>
 
-            <div className="mt-6 flex flex-wrap items-center gap-3">
+            <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link
                 href="/login"
-                className="rounded-2xl bg-[#061a38] px-6 py-3 text-sm font-medium !text-white shadow-[0_14px_28px_rgba(6,26,56,0.34)] transition duration-200 hover:scale-105 hover:bg-[#0c2853] hover:shadow-[0_20px_34px_rgba(6,26,56,0.4)]"
+                className="rounded-lg bg-[#0f172a] px-5 py-3 text-sm font-medium text-white transition duration-200 hover:scale-[1.03] hover:bg-[#111f3a] hover:shadow-[0_16px_30px_rgba(15,23,42,0.18)]"
               >
-                Acceso psicólogo
+                Empezar como psicólogo
               </Link>
               <Link
-                href="/acceso-paciente"
-                className="rounded-2xl border border-[#c7d3e5] bg-[#f7f9fd] px-6 py-3 text-sm font-medium text-[#334155] shadow-[0_8px_16px_rgba(15,23,42,0.04)] transition duration-200 hover:scale-105 hover:bg-white hover:shadow-[0_14px_24px_rgba(15,23,42,0.08)]"
+                href="#como-funciona"
+                className="rounded-lg border border-[#d7dde6] px-5 py-3 text-sm font-medium text-[#334155] transition duration-200 hover:scale-[1.03] hover:border-[#c8d0dc] hover:bg-[#f8fafc] hover:shadow-[0_12px_24px_rgba(15,23,42,0.08)]"
               >
-                Acceso paciente
+                Ver cómo funciona
               </Link>
-              <Link
-                href="/demo"
-                className="px-1 py-3 text-sm font-medium text-[#425b7d] transition hover:text-[#1f304b]"
-              >
-                Ver demo →
-              </Link>
+            </div>
+
+            <div className="mt-10 grid gap-4 sm:grid-cols-3">
+              <div className="border-l border-[#dbe2ea] pl-4">
+                <p className="text-2xl font-semibold tracking-tight text-[#0f172a]">20s</p>
+                <p className="mt-1 text-sm text-[#64748b]">para registrar un check-in diario</p>
+              </div>
+              <div className="border-l border-[#dbe2ea] pl-4">
+                <p className="text-2xl font-semibold tracking-tight text-[#0f172a]">1 vista</p>
+                <p className="mt-1 text-sm text-[#64748b]">para revisar evolución y tareas</p>
+              </div>
+              <div className="border-l border-[#dbe2ea] pl-4">
+                <p className="text-2xl font-semibold tracking-tight text-[#0f172a]">+ contexto</p>
+                <p className="mt-1 text-sm text-[#64748b]">antes de cada sesión clínica</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="border border-[#e5e7eb] bg-[#fbfcfe] p-6 shadow-[0_18px_40px_rgba(15,23,42,0.06)]">
+            <div className="flex items-start justify-between gap-3 border-b border-[#e7ecf2] pb-4">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#94a3b8]">
+                  Informe semanal
+                </p>
+                <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#0f172a]">Lucía Martín</h2>
+                <p className="mt-1 text-sm text-[#64748b]">Últimos 7 días · actualización hoy</p>
+              </div>
+              <span className="border border-[#dbe3ed] bg-white px-3 py-1 text-xs font-medium text-[#475569]">
+                progreso 78%
+              </span>
+            </div>
+
+            <div className="mt-5 space-y-5">
+              <div>
+                <div className="flex items-center justify-between text-xs font-medium text-[#64748b]">
+                  <span>Adherencia reciente</span>
+                  <span className="text-[#0f172a]">5/7 registros · 2/3 tareas</span>
+                </div>
+                <div className="mt-2 h-2.5 bg-[#e6edf5]">
+                  <div className="h-full w-[78%] bg-gradient-to-r from-[#0f172a] via-[#136fb0] to-[#2cb9e7]" />
+                </div>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-3">
+                <div className="border border-[#e5e7eb] bg-white p-4">
+                  <p className="text-xs text-[#64748b]">Media emocional</p>
+                  <p className="mt-2 text-2xl font-semibold tracking-tight text-[#0f172a]">6.8/10</p>
+                </div>
+                <div className="border border-[#e5e7eb] bg-white p-4">
+                  <p className="text-xs text-[#64748b]">Tareas completadas</p>
+                  <p className="mt-2 text-2xl font-semibold tracking-tight text-[#0f172a]">2</p>
+                </div>
+                <div className="border border-[#e5e7eb] bg-white p-4">
+                  <p className="text-xs text-[#64748b]">Tendencia</p>
+                  <p className="mt-2 text-2xl font-semibold tracking-tight text-[#0f172a]">Estable</p>
+                </div>
+              </div>
+
+              <div className="border border-[#e5e7eb] bg-white p-5">
+                <div className="flex items-end justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-medium text-[#0f172a]">Evolución diaria</p>
+                    <p className="mt-1 text-xs text-[#64748b]">Estado autorreportado y constancia del seguimiento</p>
+                  </div>
+                  <span className="text-xs text-[#64748b]">últimos 7 días</span>
+                </div>
+
+                <div className="mt-5 flex h-36 items-end justify-between gap-2">
+                  {trendBars.map((value, index) => (
+                    <div key={`${value}-${index}`} className="flex flex-1 flex-col items-center gap-2">
+                      <div
+                        className="w-full max-w-[32px] bg-gradient-to-t from-[#0f172a] via-[#136fb0] to-[#31b8e6]"
+                        style={{ height: `${value}%` }}
+                      />
+                      <span className="text-[10px] text-[#64748b]">
+                        {["L", "M", "X", "J", "V", "S", "D"][index]}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="border border-[#dce8e1] bg-[#f3fbf6] p-5">
+                <p className="text-sm font-semibold text-[#0f5132]">Resumen clínico</p>
+                <p className="mt-2 text-sm leading-6 text-[#35594a]">
+                  Buena adherencia al seguimiento esta semana. Menor activación ansiosa a mitad de semana y mejor
+                  constancia en tareas. Conviene revisar desencadenantes del lunes y reforzar la tarea de registro ABC.
+                </p>
+              </div>
             </div>
           </div>
         </section>
 
-        <section className="space-y-3 rounded-[30px] bg-[#f3f6fa] px-2 py-2 sm:px-3">
-          <div>
-            <h2 className="text-xl font-semibold text-[#0f172a]">Diseñado para el trabajo real en terapia</h2>
-            <p className="mt-1 text-sm text-[#607794]">
-              Pensado para sostener continuidad terapéutica con menos fricción y más contexto útil.
+        <section className="border-b border-[#e5e7eb] py-16">
+          <div className="max-w-3xl">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#94a3b8]">El problema</p>
+            <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] text-[#0f172a] sm:text-4xl">
+              Entre sesiones suele faltar información útil
+            </h2>
+            <p className="mt-5 max-w-2xl text-base leading-7 text-[#475569]">
+              Muchos procesos terapéuticos dependen de lo que el paciente recuerda al llegar a consulta. Eso deja fuera
+              patrones diarios, adherencia real y señales tempranas que sí importan clínicamente.
             </p>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-3">
-            {roleCards.map((item) => (
-              <article
-                key={item.title}
-                className={[
-                  "rounded-[22px] border p-5 transition duration-200 hover:-translate-y-1 hover:shadow-[0_14px_28px_rgba(15,23,42,0.09)]",
-                  item.title === "Paciente"
-                    ? "border-[#cfd9e8] bg-white shadow-[0_8px_20px_rgba(15,23,42,0.07)]"
-                    : "border-[#d7deea] bg-white shadow-[0_4px_16px_rgba(15,23,42,0.04)]",
-                ].join(" ")}
-              >
-                <div
-                  className={[
-                    "mb-4 h-1.5 w-14 rounded-full",
-                    item.title === "Psicólogo" && "bg-[#0c2853]",
-                    item.title === "Paciente" && "bg-[#1f7ae0]",
-                    item.title === "Seguimiento" && "bg-[#0ea5b7]",
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
-                />
-                <div
-                  className={[
-                    "mb-3 inline-flex rounded-full px-3 py-1 text-[11px] font-medium",
-                    item.title === "Psicólogo" && "bg-[#eef3fb] text-[#27466f]",
-                    item.title === "Paciente" && "bg-[#eef6ff] text-[#1b5fb8]",
-                    item.title === "Seguimiento" && "bg-[#edf9fb] text-[#0f6f7c]",
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
-                >
-                  {item.title}
-                </div>
-                <p className="text-sm leading-relaxed text-[#546a87]">{item.text}</p>
-              </article>
-            ))}
           </div>
         </section>
 
-        <section className="space-y-3 rounded-[30px] bg-white px-2 py-2 sm:px-3">
-          <div>
-            <h2 className="text-xl font-semibold text-[#0f172a]">Preview del producto</h2>
-            <p className="mt-1 text-sm text-[#607794]">Vista rápida de la experiencia de seguimiento en Pensar(SE).</p>
+        <section id="como-funciona" className="border-b border-[#e5e7eb] py-16">
+          <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between">
+            <div className="max-w-xl">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#94a3b8]">
+                Cómo funciona
+              </p>
+              <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] text-[#0f172a] sm:text-4xl">
+                Un flujo simple para sostener trabajo terapéutico entre sesiones
+              </h2>
+            </div>
+
+            <div className="grid flex-1 gap-4 md:grid-cols-3">
+              {steps.map((step, index) => (
+                <article
+                  key={step.title}
+                  className="border border-[#e5e7eb] bg-white p-5 transition duration-200 hover:-translate-y-1 hover:shadow-[0_14px_28px_rgba(15,23,42,0.08)]"
+                >
+                  <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[#94a3b8]">
+                    Paso {index + 1}
+                  </span>
+                  <h3 className="mt-3 text-lg font-semibold text-[#0f172a]">{step.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-[#64748b]">{step.text}</p>
+                </article>
+              ))}
+            </div>
           </div>
+        </section>
 
-          <div className="grid gap-4 lg:grid-cols-3">
-            <article className="rounded-[24px] border border-[#d7deea] bg-white p-5 shadow-[0_3px_12px_rgba(15,23,42,0.035)] sm:p-6">
-              <div className="flex items-center justify-between gap-3">
-                <h3 className="text-xl font-semibold text-[#0f172a]">Registro diario</h3>
-                <span className="shrink-0 rounded-full border border-[#d5deea] bg-[#f6f9ff] px-3 py-1 text-xs text-[#5d7595]">
-                  20s
-                </span>
-              </div>
+        <section className="border-b border-[#e5e7eb] py-16">
+          <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+            <div className="max-w-md">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#94a3b8]">Beneficios</p>
+              <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] text-[#0f172a] sm:text-4xl">
+                Diseñado para aportar claridad clínica, no ruido
+              </h2>
+            </div>
 
-              <div className="mt-4 rounded-2xl border border-[#d9e1ee] bg-[#f8fbff] p-4">
-                <div className="flex items-center justify-between gap-3">
-                  <p className="text-sm text-[#607794]">¿Cómo te sientes hoy?</p>
-                  <span className="rounded-full border border-[#d5deea] bg-white px-3 py-1 text-xs text-[#607794]">
-                    20s
-                  </span>
+            <div className="grid gap-4">
+              {benefits.map((item) => (
+                <div key={item} className="flex items-start gap-4 border-t border-[#e8edf3] py-4">
+                  <div className="mt-1 h-2.5 w-2.5 shrink-0 bg-[#0f172a]" />
+                  <p className="text-base leading-7 text-[#475569]">{item}</p>
                 </div>
+              ))}
+            </div>
+          </div>
+        </section>
 
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {[
-                    { emoji: "😣", active: false },
-                    { emoji: "😔", active: false },
-                    { emoji: "😐", active: false },
-                    { emoji: "🙂", active: true },
-                  ].map((item) => (
-                    <div
-                      key={item.emoji}
-                      className={[
-                        "flex h-10 w-10 items-center justify-center rounded-xl border text-base",
-                        item.active
-                          ? "border-[#0f1f3f] bg-[#0f1f3f] text-white"
-                          : "border-[#d4dcea] bg-white text-[#31445f]",
-                      ].join(" ")}
-                    >
-                      {item.emoji}
-                    </div>
-                  ))}
-                </div>
+        <section className="py-16">
+          <div className="max-w-3xl">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#94a3b8]">Empieza ahora</p>
+            <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] text-[#0f172a] sm:text-4xl">
+              Haz seguimiento real de tus pacientes entre sesiones
+            </h2>
+            <p className="mt-5 max-w-2xl text-base leading-7 text-[#475569]">
+              Si quieres llegar a consulta con contexto útil y no solo con recuerdos dispersos, Pensar(SE) te da una
+              estructura simple para verlo con claridad.
+            </p>
 
-                <div className="mt-4 rounded-2xl border border-[#d9e1ee] bg-white px-4 py-3 text-sm text-[#5c6f89]">
-                  Hoy me he sentido más tranquila y con mejor energía.
-                </div>
-
-                <div className="mt-4 rounded-2xl border border-emerald-400 bg-emerald-200 px-4 py-3 shadow-[0_12px_20px_rgba(16,185,129,0.2)] ring-1 ring-emerald-300">
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <p className="text-sm font-medium text-emerald-950">Check-in completado</p>
-                      <p className="mt-1 text-xs text-emerald-900">
-                        Guardado y compartido con tu psicólogo.
-                      </p>
-                    </div>
-                    <span className="rounded-full border border-emerald-400 bg-white px-3 py-1 text-xs text-emerald-900">
-                      completado
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </article>
-
-            <article className="rounded-[24px] border border-[#d7deea] bg-white p-5 shadow-[0_3px_12px_rgba(15,23,42,0.035)] sm:p-6">
-              <div className="flex items-center justify-between gap-3">
-                <h3 className="text-xl font-semibold text-[#0f172a]">Tareas terapéuticas</h3>
-                <span className="shrink-0 rounded-full border border-[#d5deea] bg-[#f6f9ff] px-3 py-1 text-xs text-[#5d7595]">
-                  3 activas
-                </span>
-              </div>
-
-              <div className="mt-4 space-y-3 rounded-2xl border border-[#d9e1ee] bg-[#f8fbff] p-4">
-                {[
-                  { title: "Registro ABC", status: "pendiente", tone: "amber" },
-                  { title: "Reestructuración cognitiva", status: "hecha", tone: "emerald" },
-                  { title: "Registro diario breve", status: "en curso", tone: "sky" },
-                ].map((task) => (
-                  <div
-                    key={task.title}
-                    className="flex items-center justify-between gap-3 rounded-xl border border-[#d2dbe9] bg-white px-4 py-3"
-                  >
-                    <span className="text-sm font-medium text-[#1f2d45]">{task.title}</span>
-                    <span
-                      className={[
-                        "shrink-0 rounded-full border px-3 py-1 text-xs",
-                        task.tone === "amber" && "border-amber-200 bg-amber-50 text-amber-700",
-                        task.tone === "emerald" && "border-emerald-200 bg-emerald-50 text-emerald-700",
-                        task.tone === "sky" && "border-sky-200 bg-sky-50 text-sky-700",
-                      ]
-                        .filter(Boolean)
-                        .join(" ")}
-                    >
-                      {task.status}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </article>
-
-            <article className="rounded-[24px] border border-[#d7deea] bg-white p-5 shadow-[0_3px_12px_rgba(15,23,42,0.035)] sm:p-6">
-              <div className="flex items-center justify-between gap-3">
-                <h3 className="text-xl font-semibold text-[#0f172a]">Informes evolución</h3>
-                <span className="shrink-0 rounded-full border border-[#d5deea] bg-[#f6f9ff] px-3 py-1 text-xs text-[#5d7595]">
-                  semanal
-                </span>
-              </div>
-
-              <div className="mt-4 rounded-2xl border border-[#d9e1ee] bg-[#f8fbff] p-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-2xl font-semibold text-[#0f172a]">María</p>
-                    <p className="text-sm text-[#607794]">Últimos 5 días</p>
-                  </div>
-                  <span className="shrink-0 rounded-full border border-[#d5deea] bg-white px-3 py-1 text-xs text-[#607794]">
-                    media 6.0
-                  </span>
-                </div>
-
-                <div className="mt-5 flex h-32 items-end justify-between gap-2">
-                  {weeklyData.map((value, i) => (
-                    <div key={`${value}-${i}`} className="flex flex-1 flex-col items-center gap-2">
-                      <div
-                        className="w-8 rounded-t-2xl bg-gradient-to-t from-[#0f1f3f] via-[#116fb1] to-[#22b6ef] shadow-[0_4px_12px_rgba(17,111,177,0.22)]"
-                        style={{ height: `${value * 10}px` }}
-                      />
-                      <span className="text-xs text-[#607794]">{["L", "M", "X", "J", "V"][i]}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </article>
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <Link
+                href="/login"
+                className="rounded-lg bg-[#0f172a] px-5 py-3 text-sm font-medium text-white transition duration-200 hover:scale-[1.03] hover:bg-[#111f3a] hover:shadow-[0_16px_30px_rgba(15,23,42,0.18)]"
+              >
+                Empezar como psicólogo
+              </Link>
+              <Link
+                href="/panel/informes"
+                className="rounded-lg border border-[#d7dde6] px-5 py-3 text-sm font-medium text-[#334155] transition duration-200 hover:scale-[1.03] hover:border-[#c8d0dc] hover:bg-[#f8fafc] hover:shadow-[0_12px_24px_rgba(15,23,42,0.08)]"
+              >
+                Ver ejemplo de informe
+              </Link>
+            </div>
           </div>
         </section>
       </div>
