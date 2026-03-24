@@ -3,21 +3,11 @@ import OpenAI from "openai";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-type Mode = "guided" | "free" | "plan7";
-
-type GuidedState = {
-  step: number; // 0..7 (máx 8)
-  answers: Record<string, string>;
-};
+type Mode = "product_onboarding";
 
 type ReqBody = {
   message: string;
   mode?: Mode;
-  guided?: GuidedState;
-  profile?: {
-    name?: string;
-    goal?: string;
-  };
 };
 
 function json(data: unknown, status = 200) {
@@ -31,16 +21,36 @@ function safeStr(v: unknown) {
   return typeof v === "string" ? v : "";
 }
 
-const GUIDED_QUESTIONS = [
-  "Para empezar: ¿qué te gustaría conseguir exactamente con esto? (una frase)",
-  "¿Desde cuándo te pasa y con qué frecuencia aparece? (días/semana)",
-  "Del 0 al 10, ¿qué intensidad tiene cuando aparece? ¿Qué impacto tiene en tu día?",
-  "¿En qué situaciones aparece más? Pon un ejemplo reciente en 2–3 líneas.",
-  "En ese momento, ¿qué pensamiento o imagen se te viene? (lo más literal posible)",
-  "¿Qué emoción principal notas y qué señales físicas aparecen? (pecho, estómago, respiración…)",
-  "¿Qué sueles hacer después? (evitar, comprobar, discutir, aislarte, comer, redes…)",
-  "¿Qué has probado que te haya ayudado aunque sea un 10%? ¿Y qué te gustaría que cambiara primero?",
-];
+const PRODUCT_SYSTEM_PROMPT = `
+Eres el asistente de Pensar(SE), una herramienta para psicólogos y pacientes que facilita el trabajo terapéutico entre sesiones.
+
+Tu función no es ser un chatbot genérico. Tu objetivo es ayudar a una persona interesada, normalmente un psicólogo, a entender:
+- qué hace Pensar(SE)
+- qué problema resuelve
+- cómo se usa en consulta real
+- qué ve el psicólogo
+- qué hace el paciente
+- por qué aporta valor clínico
+
+Contexto del producto:
+- El paciente hace check-ins diarios rápidos.
+- El psicólogo puede asignar tareas terapéuticas.
+- El sistema genera una vista de evolución e informes clínicos breves.
+- La propuesta central es convertir lo que pasa entre sesiones en información útil antes de consulta.
+
+Reglas:
+- Responde siempre en español.
+- Sé claro, concreto y breve.
+- Prioriza utilidad clínica y uso real, no marketing vacío.
+- No hables como soporte técnico salvo que te lo pidan.
+- No inventes integraciones, funciones avanzadas ni diagnósticos automáticos.
+- Si te preguntan por una funcionalidad, explícalo como flujo real de uso.
+- Usa tono profesional y cercano.
+- Evita respuestas largas; normalmente entre 4 y 8 líneas.
+- Si conviene, puedes usar bullets cortos.
+
+Si el usuario pregunta algo ambiguo, interpreta que quiere saber cómo usar Pensar(SE) con pacientes reales.
+`;
 
 export async function POST(req: Request) {
   try {
@@ -51,159 +61,31 @@ export async function POST(req: Request) {
       );
     }
 
-    // ✅ clave para que TS no marque rojo
-    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
     const body = (await req.json()) as ReqBody;
     const message = safeStr(body?.message).trim();
-    const mode: Mode = body?.mode ?? "free";
 
-    if (!message) return json({ error: "Falta 'message' en el body." }, 400);
-
-    // -----------------------
-    // MODO GUIADO (8 pasos)
-    // -----------------------
-    if (mode === "guided") {
-      const incomingStep = Number(body?.guided?.step ?? 0);
-      const step = Math.max(0, Math.min(7, incomingStep));
-
-      const answers = (body?.guided?.answers ?? {}) as Record<string, string>;
-      const nextAnswers: Record<string, string> = { ...answers, [`q${step}`]: message };
-
-      // Si no hemos terminado -> devolvemos la siguiente pregunta fija
-      if (step < 7) {
-        const nextStep = step + 1;
-        const question = GUIDED_QUESTIONS[nextStep];
-
-        return json({
-          mode: "guided",
-          guided: { step: nextStep, answers: nextAnswers },
-          ui: {
-            type: "question",
-            question,
-            progress: { current: nextStep + 1, total: 8 },
-          },
-          reply: question, // ✅ para que el front no ponga "Sin respuesta"
-        });
-      }
-
-      // step == 7 -> generamos respuesta final con el modelo
-      const system = `
-Eres Pensar(SE), un asistente de psicología práctica con estilo propio.
-Objetivo: NO sonar como ChatGPT. Estilo: humano, claro, con personalidad; evita "plantillas" genéricas.
-
-Reglas:
-- NO uses listas largas genéricas.
-- NO uses más de 2 emojis en toda la respuesta.
-- NO digas "como IA".
-- NO uses la palabra "diagnóstico". Usa: "formulación", "hipótesis", "patrón".
-- Sé concreto y personalizado según las respuestas del usuario.
-
-Estructura obligatoria EXACTA con estos títulos:
-1) Validación breve (1–2 frases)
-2) Formulación Pensar(SE) (3–5 líneas, concreta)
-3) Herramienta (3 bullets máximo)
-4) Micro-ejercicio (60–120s, 2 pasos máximo)
-5) Seguimiento (1 pregunta final + siguiente paso sugerido)
-`;
-
-      const user = `
-Resumen de la entrevista guiada (8 respuestas):
-1) ${safeStr(nextAnswers.q0)}
-2) ${safeStr(nextAnswers.q1)}
-3) ${safeStr(nextAnswers.q2)}
-4) ${safeStr(nextAnswers.q3)}
-5) ${safeStr(nextAnswers.q4)}
-6) ${safeStr(nextAnswers.q5)}
-7) ${safeStr(nextAnswers.q6)}
-8) ${safeStr(nextAnswers.q7)}
-
-Ahora genera la respuesta final siguiendo la estructura exacta.
-`;
-
-      const completion = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
-        temperature: 0.7,
-        messages: [
-          { role: "system", content: system },
-          { role: "user", content: user },
-        ],
-      });
-
-      const reply =
-        completion.choices?.[0]?.message?.content ?? "No he podido generar respuesta.";
-
-      return json({
-        mode: "guided",
-        guided: { step: 0, answers: {} },
-        ui: { type: "final" },
-        reply,
-      });
+    if (!message) {
+      return json({ error: "Falta 'message' en el body." }, 400);
     }
-
-    // -----------------------
-    // MODO PLAN 7 DÍAS
-    // -----------------------
-    if (mode === "plan7") {
-      const system = `
-Eres Pensar(SE). Haces planes de 7 días concretos y realistas.
-Reglas:
-- Máximo 1 emoji.
-- Evita texto plano largo; usa bloques cortos.
-- Si falta info mínima (objetivo + dificultad), pregunta 2 cosas y para.
-
-Estructura:
-A) Validación breve
-B) Preguntas (solo si falta info) o Plan 7 días (si hay info)
-C) Cierre de seguimiento (1 pregunta)
-`;
-
-      const completion = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
-        temperature: 0.6,
-        messages: [
-          { role: "system", content: system },
-          { role: "user", content: message },
-        ],
-      });
-
-      return json({
-        mode: "plan7",
-        reply: completion.choices?.[0]?.message?.content ?? "No he podido generar el plan.",
-      });
-    }
-
-    // -----------------------
-    // MODO FREE (natural)
-    // -----------------------
-    const systemFree = `
-Eres Pensar(SE). Conversación natural con estilo propio.
-Reglas:
-- No repitas siempre la misma plantilla.
-- Si el usuario hace una pregunta informativa/meta ("en qué te diferencias", "qué es X"), responde breve y directo.
-- Si detectas emoción/problema personal, entonces:
-  - validación breve
-  - 1 herramienta práctica
-  - 1 micro-ejercicio corto (opcional si procede)
-  - cierre con seguimiento
-- Máximo 2 emojis en toda la respuesta.
-`;
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
-      temperature: 0.7,
+      temperature: 0.5,
       messages: [
-        { role: "system", content: systemFree },
+        { role: "system", content: PRODUCT_SYSTEM_PROMPT },
         { role: "user", content: message },
       ],
     });
 
     return json({
-      mode: "free",
-      reply: completion.choices?.[0]?.message?.content ?? "No he podido responder.",
+      mode: "product_onboarding",
+      reply: completion.choices?.[0]?.message?.content ?? "No he podido responder ahora mismo.",
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("API /api/chat ERROR:", err);
-    return json({ error: String(err?.message ?? err) }, 500);
+    const message = err instanceof Error ? err.message : String(err);
+    return json({ error: message }, 500);
   }
 }

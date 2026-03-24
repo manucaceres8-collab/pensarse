@@ -2,6 +2,7 @@ import Link from "next/link";
 import FloatingChat from "./components/FloatingChat";
 
 const trendBars = [48, 64, 58, 74, 81, 76, 88];
+const fallbackTrendBars = [42, 55, 51, 63, 59, 67, 61];
 
 const reportBullets = [
   "evolución emocional semanal",
@@ -32,10 +33,19 @@ const benefits = [
   "Menos tiempo reconstruyendo la semana.",
 ];
 
+const primaryCtaClass =
+  "rounded-lg bg-[#0f172a] px-5 py-3 text-sm font-medium text-white transition duration-200 hover:scale-[1.03] hover:bg-[#1b2a44] hover:shadow-[0_16px_30px_rgba(15,23,42,0.18)]";
+
+const secondaryCtaClass =
+  "rounded-lg border border-[#cbd5e1] bg-white px-5 py-3 text-sm font-medium text-[#334155] transition duration-200 hover:scale-[1.03] hover:border-[#94a3b8] hover:bg-[#f8fafc] hover:shadow-[0_12px_24px_rgba(15,23,42,0.08)]";
+
 export default function Home() {
+  const hasTrendData = trendBars.length > 0;
+  const visibleTrendBars = hasTrendData ? trendBars : fallbackTrendBars;
+
   return (
     <main className="min-h-screen bg-white text-[#111827]">
-      <div className="mx-auto max-w-6xl px-6 pb-24 pt-8 sm:px-8 lg:px-10">
+      <div className="mx-auto max-w-6xl px-6 pb-16 pt-6 sm:px-8 lg:px-10">
         <header className="flex items-center justify-between border-b border-[#e5e7eb] pb-5">
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#94a3b8]">
@@ -46,13 +56,13 @@ export default function Home() {
 
           <Link
             href="/login"
-            className="rounded-lg border border-[#d6dce5] px-4 py-2 text-sm font-medium text-[#334155] transition duration-200 hover:-translate-y-0.5 hover:border-[#c4ceda] hover:shadow-[0_10px_18px_rgba(15,23,42,0.06)]"
+            className="rounded-lg border border-[#cbd5e1] bg-white px-4 py-2 text-sm font-medium text-[#334155] transition duration-200 hover:-translate-y-0.5 hover:border-[#94a3b8] hover:bg-[#f8fafc] hover:shadow-[0_10px_18px_rgba(15,23,42,0.06)]"
           >
             Acceder
           </Link>
         </header>
 
-        <section className="border-b border-[#e5e7eb] py-20">
+        <section className="border-b border-[#e5e7eb] py-14">
           <div className="max-w-4xl">
             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#94a3b8]">
               Para psicólogos
@@ -60,28 +70,22 @@ export default function Home() {
             <h1 className="mt-4 max-w-5xl text-4xl font-semibold leading-[1.02] tracking-[-0.04em] text-[#0f172a] sm:text-5xl lg:text-6xl">
               Llega a sesión sabiendo exactamente qué ha pasado esta semana
             </h1>
-            <p className="mt-6 max-w-3xl text-base leading-7 text-[#475569] sm:text-lg">
+            <p className="mt-5 max-w-3xl text-base leading-7 text-[#475569] sm:text-lg">
               Tus pacientes registran su día en 20 segundos. Tú ves evolución, adherencia y patrones antes de empezar.
             </p>
 
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Link
-                href="/login"
-                className="rounded-lg bg-[#0f172a] px-5 py-3 text-sm font-medium text-white transition duration-200 hover:scale-[1.03] hover:bg-[#111f3a] hover:shadow-[0_16px_30px_rgba(15,23,42,0.18)]"
-              >
+            <div className="mt-7 flex flex-wrap items-center gap-3">
+              <Link href="/login" className={primaryCtaClass}>
                 Empezar con mis pacientes
               </Link>
-              <Link
-                href="#demo-informe"
-                className="rounded-lg border border-[#d7dde6] px-5 py-3 text-sm font-medium text-[#334155] transition duration-200 hover:scale-[1.03] hover:border-[#c8d0dc] hover:bg-[#f8fafc] hover:shadow-[0_12px_24px_rgba(15,23,42,0.08)]"
-              >
+              <Link href="#demo-informe" className={secondaryCtaClass}>
                 Ver ejemplo real
               </Link>
             </div>
           </div>
         </section>
 
-        <section id="demo-informe" className="grid gap-10 border-b border-[#e5e7eb] py-16 lg:grid-cols-[0.88fr_1.12fr] lg:items-start">
+        <section id="demo-informe" className="grid gap-8 border-b border-[#e5e7eb] py-12 lg:grid-cols-[0.88fr_1.12fr] lg:items-start">
           <div className="max-w-md">
             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#94a3b8]">
               Propuesta de valor
@@ -89,13 +93,13 @@ export default function Home() {
             <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] text-[#0f172a] sm:text-4xl">
               Esto es lo que ves antes de cada sesión
             </h2>
-            <p className="mt-5 text-base leading-7 text-[#475569]">
+            <p className="mt-4 text-base leading-7 text-[#475569]">
               Pensar(SE) convierte el trabajo entre sesiones en una vista clínica simple, útil y accionable.
             </p>
 
-            <div className="mt-8 space-y-4">
+            <div className="mt-6 space-y-3">
               {reportBullets.map((item) => (
-                <div key={item} className="flex items-start gap-4 border-t border-[#e8edf3] py-4">
+                <div key={item} className="flex items-start gap-4 border-t border-[#e8edf3] py-3">
                   <div className="mt-1 h-2.5 w-2.5 shrink-0 bg-[#0f172a]" />
                   <p className="text-base leading-7 text-[#475569]">{item}</p>
                 </div>
@@ -117,7 +121,7 @@ export default function Home() {
               </span>
             </div>
 
-            <div className="mt-5 space-y-5">
+            <div className="mt-5 space-y-4">
               <div>
                 <div className="flex items-center justify-between text-xs font-medium text-[#64748b]">
                   <span>Adherencia reciente</span>
@@ -147,16 +151,27 @@ export default function Home() {
                 <div className="flex items-end justify-between gap-3">
                   <div>
                     <p className="text-sm font-medium text-[#0f172a]">Evolución diaria</p>
-                    <p className="mt-1 text-xs text-[#64748b]">Estado autorreportado y constancia del seguimiento</p>
+                    <p className="mt-1 text-xs text-[#64748b]">
+                      {hasTrendData
+                        ? "Estado autorreportado y constancia del seguimiento"
+                        : "Aquí verás la evolución diaria del paciente"}
+                    </p>
                   </div>
-                  <span className="text-xs text-[#64748b]">últimos 7 días</span>
+                  <span className="text-xs text-[#64748b]">
+                    {hasTrendData ? "últimos 7 días" : "vista previa"}
+                  </span>
                 </div>
 
-                <div className="mt-5 flex h-36 items-end justify-between gap-2">
-                  {trendBars.map((value, index) => (
+                <div className="mt-4 flex h-32 items-end justify-between gap-2">
+                  {visibleTrendBars.map((value, index) => (
                     <div key={`${value}-${index}`} className="flex flex-1 flex-col items-center gap-2">
                       <div
-                        className="w-full max-w-[32px] bg-gradient-to-t from-[#0f172a] via-[#136fb0] to-[#31b8e6]"
+                        className={[
+                          "w-full max-w-[32px]",
+                          hasTrendData
+                            ? "bg-gradient-to-t from-[#0f172a] via-[#136fb0] to-[#31b8e6]"
+                            : "bg-gradient-to-t from-[#7b8799] via-[#9aa9bd] to-[#c4d2e3]",
+                        ].join(" ")}
                         style={{ height: `${value}%` }}
                       />
                       <span className="text-[10px] text-[#64748b]">
@@ -178,20 +193,20 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="border-b border-[#e5e7eb] py-16">
+        <section className="border-b border-[#e5e7eb] py-12">
           <div className="max-w-3xl">
             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#94a3b8]">El problema</p>
             <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] text-[#0f172a] sm:text-4xl">
               Trabajar solo con lo que el paciente recuerda limita la terapia
             </h2>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-[#475569]">
+            <p className="mt-4 max-w-2xl text-base leading-7 text-[#475569]">
               Se pierden patrones diarios, señales tempranas y adherencia real entre sesiones.
             </p>
           </div>
         </section>
 
-        <section id="como-funciona" className="border-b border-[#e5e7eb] py-16">
-          <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between">
+        <section id="como-funciona" className="border-b border-[#e5e7eb] py-12">
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-xl">
               <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#94a3b8]">
                 Cómo funciona
@@ -218,8 +233,8 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="border-b border-[#e5e7eb] py-16">
-          <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+        <section className="border-b border-[#e5e7eb] py-12">
+          <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
             <div className="max-w-md">
               <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#94a3b8]">Beneficios</p>
               <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] text-[#0f172a] sm:text-4xl">
@@ -229,7 +244,7 @@ export default function Home() {
 
             <div className="grid gap-4">
               {benefits.map((item) => (
-                <div key={item} className="flex items-start gap-4 border-t border-[#e8edf3] py-4">
+                <div key={item} className="flex items-start gap-4 border-t border-[#e8edf3] py-3">
                   <div className="mt-1 h-2.5 w-2.5 shrink-0 bg-[#0f172a]" />
                   <p className="text-base leading-7 text-[#475569]">{item}</p>
                 </div>
@@ -238,27 +253,21 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="py-16">
+        <section className="py-12">
           <div className="max-w-3xl">
             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#94a3b8]">Empieza ahora</p>
             <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] text-[#0f172a] sm:text-4xl">
               Empieza con tus primeros pacientes en menos de 5 minutos
             </h2>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-[#475569]">
+            <p className="mt-4 max-w-2xl text-base leading-7 text-[#475569]">
               Sin fricción. Sin formación compleja. Con una estructura clara desde el primer día.
             </p>
 
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Link
-                href="/login"
-                className="rounded-lg bg-[#0f172a] px-5 py-3 text-sm font-medium text-white transition duration-200 hover:scale-[1.03] hover:bg-[#111f3a] hover:shadow-[0_16px_30px_rgba(15,23,42,0.18)]"
-              >
+            <div className="mt-7 flex flex-wrap items-center gap-3">
+              <Link href="/login" className={primaryCtaClass}>
                 Crear cuenta como psicólogo
               </Link>
-              <Link
-                href="#demo-informe"
-                className="rounded-lg border border-[#d7dde6] px-5 py-3 text-sm font-medium text-[#334155] transition duration-200 hover:scale-[1.03] hover:border-[#c8d0dc] hover:bg-[#f8fafc] hover:shadow-[0_12px_24px_rgba(15,23,42,0.08)]"
-              >
+              <Link href="#demo-informe" className={secondaryCtaClass}>
                 Ver ejemplo de informe
               </Link>
             </div>
