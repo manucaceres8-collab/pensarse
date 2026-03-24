@@ -3,26 +3,33 @@ import FloatingChat from "./components/FloatingChat";
 
 const trendBars = [48, 64, 58, 74, 81, 76, 88];
 
-const benefits = [
-  "Detecta patrones emocionales y de adherencia antes de la sesión.",
-  "Reduce la dependencia de recuerdos vagos o incompletos.",
-  "Asigna tareas breves y revisa respuestas sin fricción.",
-  "Llega a consulta con contexto clínico reciente y accionable.",
+const reportBullets = [
+  "evolución emocional semanal",
+  "adherencia al seguimiento",
+  "tareas completadas",
+  "resumen clínico breve",
 ];
 
 const steps = [
   {
     title: "Check-in diario",
-    text: "El paciente registra estado y nota breve en menos de 30 segundos.",
+    text: "El paciente registra cómo ha estado en 20 segundos, con una nota breve si hace falta.",
   },
   {
     title: "Tareas entre sesiones",
-    text: "Recibe ejercicios breves y los completa desde una interfaz simple.",
+    text: "Recibe ejercicios concretos y tú puedes ver si los completa y cómo responde.",
   },
   {
     title: "Informe clínico",
-    text: "El psicólogo ve evolución, adherencia y señales útiles antes de sesión.",
+    text: "Antes de sesión ves evolución, adherencia y señales relevantes en una sola vista.",
   },
+];
+
+const benefits = [
+  "Llegas a sesión con contexto real.",
+  "Detectas patrones antes.",
+  "Aumenta la adherencia del paciente.",
+  "Menos tiempo reconstruyendo la semana.",
 ];
 
 export default function Home() {
@@ -45,17 +52,16 @@ export default function Home() {
           </Link>
         </header>
 
-        <section className="grid gap-14 border-b border-[#e5e7eb] py-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
-          <div className="max-w-3xl">
+        <section className="border-b border-[#e5e7eb] py-20">
+          <div className="max-w-4xl">
             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#94a3b8]">
-              SaaS para psicólogos
+              Para psicólogos
             </p>
-            <h1 className="mt-4 max-w-4xl text-4xl font-semibold leading-[1.02] tracking-[-0.04em] text-[#0f172a] sm:text-5xl lg:text-6xl">
-              Convierte lo que pasa entre sesiones en datos clínicos útiles
+            <h1 className="mt-4 max-w-5xl text-4xl font-semibold leading-[1.02] tracking-[-0.04em] text-[#0f172a] sm:text-5xl lg:text-6xl">
+              Llega a sesión sabiendo exactamente qué ha pasado esta semana
             </h1>
-            <p className="mt-6 max-w-2xl text-base leading-7 text-[#475569] sm:text-lg">
-              Registro diario, tareas terapéuticas e informes claros para entender mejor la evolución real del
-              paciente entre una sesión y la siguiente.
+            <p className="mt-6 max-w-3xl text-base leading-7 text-[#475569] sm:text-lg">
+              Tus pacientes registran su día en 20 segundos. Tú ves evolución, adherencia y patrones antes de empezar.
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -63,29 +69,37 @@ export default function Home() {
                 href="/login"
                 className="rounded-lg bg-[#0f172a] px-5 py-3 text-sm font-medium text-white transition duration-200 hover:scale-[1.03] hover:bg-[#111f3a] hover:shadow-[0_16px_30px_rgba(15,23,42,0.18)]"
               >
-                Empezar como psicólogo
+                Empezar con mis pacientes
               </Link>
               <Link
-                href="#como-funciona"
+                href="#demo-informe"
                 className="rounded-lg border border-[#d7dde6] px-5 py-3 text-sm font-medium text-[#334155] transition duration-200 hover:scale-[1.03] hover:border-[#c8d0dc] hover:bg-[#f8fafc] hover:shadow-[0_12px_24px_rgba(15,23,42,0.08)]"
               >
-                Ver cómo funciona
+                Ver ejemplo real
               </Link>
             </div>
+          </div>
+        </section>
 
-            <div className="mt-10 grid gap-4 sm:grid-cols-3">
-              <div className="border-l border-[#dbe2ea] pl-4">
-                <p className="text-2xl font-semibold tracking-tight text-[#0f172a]">20s</p>
-                <p className="mt-1 text-sm text-[#64748b]">para registrar un check-in diario</p>
-              </div>
-              <div className="border-l border-[#dbe2ea] pl-4">
-                <p className="text-2xl font-semibold tracking-tight text-[#0f172a]">1 vista</p>
-                <p className="mt-1 text-sm text-[#64748b]">para revisar evolución y tareas</p>
-              </div>
-              <div className="border-l border-[#dbe2ea] pl-4">
-                <p className="text-2xl font-semibold tracking-tight text-[#0f172a]">+ contexto</p>
-                <p className="mt-1 text-sm text-[#64748b]">antes de cada sesión clínica</p>
-              </div>
+        <section id="demo-informe" className="grid gap-10 border-b border-[#e5e7eb] py-16 lg:grid-cols-[0.88fr_1.12fr] lg:items-start">
+          <div className="max-w-md">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#94a3b8]">
+              Propuesta de valor
+            </p>
+            <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] text-[#0f172a] sm:text-4xl">
+              Esto es lo que ves antes de cada sesión
+            </h2>
+            <p className="mt-5 text-base leading-7 text-[#475569]">
+              Pensar(SE) convierte el trabajo entre sesiones en una vista clínica simple, útil y accionable.
+            </p>
+
+            <div className="mt-8 space-y-4">
+              {reportBullets.map((item) => (
+                <div key={item} className="flex items-start gap-4 border-t border-[#e8edf3] py-4">
+                  <div className="mt-1 h-2.5 w-2.5 shrink-0 bg-[#0f172a]" />
+                  <p className="text-base leading-7 text-[#475569]">{item}</p>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -168,11 +182,10 @@ export default function Home() {
           <div className="max-w-3xl">
             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#94a3b8]">El problema</p>
             <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] text-[#0f172a] sm:text-4xl">
-              Entre sesiones suele faltar información útil
+              Trabajar solo con lo que el paciente recuerda limita la terapia
             </h2>
             <p className="mt-5 max-w-2xl text-base leading-7 text-[#475569]">
-              Muchos procesos terapéuticos dependen de lo que el paciente recuerda al llegar a consulta. Eso deja fuera
-              patrones diarios, adherencia real y señales tempranas que sí importan clínicamente.
+              Se pierden patrones diarios, señales tempranas y adherencia real entre sesiones.
             </p>
           </div>
         </section>
@@ -184,7 +197,7 @@ export default function Home() {
                 Cómo funciona
               </p>
               <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] text-[#0f172a] sm:text-4xl">
-                Un flujo simple para sostener trabajo terapéutico entre sesiones
+                Tres pasos simples para entender mejor lo que pasa entre sesiones
               </h2>
             </div>
 
@@ -210,7 +223,7 @@ export default function Home() {
             <div className="max-w-md">
               <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#94a3b8]">Beneficios</p>
               <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] text-[#0f172a] sm:text-4xl">
-                Diseñado para aportar claridad clínica, no ruido
+                Lo que gana tu práctica cuando dejas de trabajar a ciegas
               </h2>
             </div>
 
@@ -229,11 +242,10 @@ export default function Home() {
           <div className="max-w-3xl">
             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#94a3b8]">Empieza ahora</p>
             <h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] text-[#0f172a] sm:text-4xl">
-              Haz seguimiento real de tus pacientes entre sesiones
+              Empieza con tus primeros pacientes en menos de 5 minutos
             </h2>
             <p className="mt-5 max-w-2xl text-base leading-7 text-[#475569]">
-              Si quieres llegar a consulta con contexto útil y no solo con recuerdos dispersos, Pensar(SE) te da una
-              estructura simple para verlo con claridad.
+              Sin fricción. Sin formación compleja. Con una estructura clara desde el primer día.
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -241,10 +253,10 @@ export default function Home() {
                 href="/login"
                 className="rounded-lg bg-[#0f172a] px-5 py-3 text-sm font-medium text-white transition duration-200 hover:scale-[1.03] hover:bg-[#111f3a] hover:shadow-[0_16px_30px_rgba(15,23,42,0.18)]"
               >
-                Empezar como psicólogo
+                Crear cuenta como psicólogo
               </Link>
               <Link
-                href="/panel/informes"
+                href="#demo-informe"
                 className="rounded-lg border border-[#d7dde6] px-5 py-3 text-sm font-medium text-[#334155] transition duration-200 hover:scale-[1.03] hover:border-[#c8d0dc] hover:bg-[#f8fafc] hover:shadow-[0_12px_24px_rgba(15,23,42,0.08)]"
               >
                 Ver ejemplo de informe
