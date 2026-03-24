@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import ProfileAvatar from "../../../components/ProfileAvatar";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import ProfileAvatar from "../../../components/ProfileAvatar";
 
-type DemoTask = {
+type PatientTask = {
   id: string;
   templateId: string;
   title: string;
@@ -16,33 +16,51 @@ type DemoTask = {
   lastAnswer: string;
 };
 
-type DemoNote = {
+type PatientNote = {
   id: string;
   text: string;
   author: "paciente" | "psicólogo";
   createdAt: string;
 };
 
-type DemoCheckin = {
+type PatientCheckin = {
   id: string;
   mood: string;
   text: string;
   createdAt: string;
 };
 
-type DemoPatient = {
+type PatientPayload = {
   id: string;
   name: string;
   avatar: string;
   status: string;
   trackingScale: "emoji" | "numeric_5" | "numeric_10" | "wellbeing_text" | "anxiety_text";
   lastCheckinAt: string;
-  tasks: DemoTask[];
-  notes: DemoNote[];
-  checkins: DemoCheckin[];
+  tasks: PatientTask[];
+  notes: PatientNote[];
+  checkins: PatientCheckin[];
 };
 
-type TareaRepo = {
+type PatientReport = {
+  patientId: string;
+  name: string;
+  avatar: string;
+  trackingScale: "emoji" | "numeric_5" | "numeric_10" | "wellbeing_text" | "anxiety_text";
+  periodLabel: string;
+  lastUpdatedAt: string;
+  averageLabel: string;
+  trendLabel: string;
+  completedCheckins: number;
+  activeTasks: number;
+  completedTasks: number;
+  progressPercent: number;
+  progressLabel: string;
+  summary: string;
+  bars: Array<{ label: string; value: number; hasData: boolean }>;
+};
+
+type TaskLibraryItem = {
   id: string;
   title: string;
   description: string;
@@ -58,9 +76,9 @@ const scaleOptions = [
   { value: "numeric_10", label: "Escala numérica 1-10" },
   { value: "wellbeing_text", label: "Escala textual bienestar" },
   { value: "anxiety_text", label: "Escala de ansiedad" },
-];
+] as const;
 
-const responseTone: Record<TareaRepo["responseType"], string> = {
+const responseTone: Record<TaskLibraryItem["responseType"], string> = {
   "texto corto": "border-sky-200 bg-sky-50 text-sky-700",
   escala: "border-indigo-200 bg-indigo-50 text-indigo-700",
   selección: "border-cyan-200 bg-cyan-50 text-cyan-700",
@@ -68,7 +86,7 @@ const responseTone: Record<TareaRepo["responseType"], string> = {
   "formulario breve": "border-emerald-200 bg-emerald-50 text-emerald-700",
 };
 
-const therapyTone: Record<TareaRepo["therapyType"], string> = {
+const therapyTone: Record<TaskLibraryItem["therapyType"], string> = {
   tcc: "border-blue-200 bg-blue-50 text-blue-700",
   act: "border-teal-200 bg-teal-50 text-teal-700",
   dbt: "border-rose-200 bg-rose-50 text-rose-700",
@@ -76,7 +94,7 @@ const therapyTone: Record<TareaRepo["therapyType"], string> = {
   personalizadas: "border-violet-200 bg-violet-50 text-violet-700",
 };
 
-const therapyLabel: Record<TareaRepo["therapyType"], string> = {
+const therapyLabel: Record<TaskLibraryItem["therapyType"], string> = {
   tcc: "TCC",
   act: "ACT",
   dbt: "DBT",
@@ -84,7 +102,7 @@ const therapyLabel: Record<TareaRepo["therapyType"], string> = {
   personalizadas: "Personalizadas",
 };
 
-const therapyFilters: Array<{ value: "todas" | TareaRepo["therapyType"]; label: string }> = [
+const therapyFilters: Array<{ value: "todas" | TaskLibraryItem["therapyType"]; label: string }> = [
   { value: "todas", label: "Todas" },
   { value: "tcc", label: "TCC" },
   { value: "act", label: "ACT" },
@@ -106,26 +124,33 @@ function formatDate(value: string) {
 export default function PacienteDetalle() {
   const params = useParams();
   const router = useRouter();
-  const patientId = String(params.id ?? "maria");
+  const patientId = String(params.id ?? "");
 
-  const [patient, setPatient] = useState<DemoPatient | null>(null);
-  const [repo, setRepo] = useState<TareaRepo[]>([]);
+  const [patient, setPatient] = useState<PatientPayload | null>(null);
+  const [report, setReport] = useState<PatientReport | null>(null);
+  const [repo, setRepo] = useState<TaskLibraryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [savingTask, setSavingTask] = useState<string | null>(null);
   const [mostrarRepositorio, setMostrarRepositorio] = useState(false);
   const [updatingScale, setUpdatingScale] = useState(false);
-  const [therapyFilter, setTherapyFilter] = useState<"todas" | TareaRepo["therapyType"]>("todas");
+  const [therapyFilter, setTherapyFilter] = useState<"todas" | TaskLibraryItem["therapyType"]>("todas");
   const [deletingPatient, setDeletingPatient] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function loadPatient() {
     setLoading(true);
+    setError(null);
+
     try {
-      const res = await fetch(`/api/demo/patients/${patientId}`, { cache: "no-store" });
+      const res = await fetch(`/api/patients/${patientId}`, { cache: "no-store" });
       if (!res.ok) {
+        const data = (await res.json().catch(() => ({}))) as { error?: string };
         setPatient(null);
+        setError(data.error ?? "No se pudo cargar la ficha del paciente.");
         return;
       }
-      const data = (await res.json()) as { patient: DemoPatient };
+
+      const data = (await res.json()) as { patient: PatientPayload };
       setPatient(data.patient);
     } finally {
       setLoading(false);
@@ -133,22 +158,38 @@ export default function PacienteDetalle() {
   }
 
   async function loadRepositorio() {
-    const res = await fetch("/api/demo/tasks", { cache: "no-store" });
+    const res = await fetch("/api/patients/tasks", { cache: "no-store" });
     if (!res.ok) return;
-    const data = (await res.json()) as { tasks: TareaRepo[] };
+    const data = (await res.json()) as { tasks: TaskLibraryItem[] };
     setRepo(data.tasks ?? []);
   }
 
+  async function loadReport() {
+    const res = await fetch(`/api/patients/reports/${patientId}`, { cache: "no-store" });
+    if (!res.ok) {
+      setReport(null);
+      return;
+    }
+
+    const data = (await res.json()) as { report: PatientReport };
+    setReport(data.report);
+  }
+
   useEffect(() => {
+    if (!patientId) return;
+
     loadPatient();
     loadRepositorio();
+    loadReport();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [patientId]);
 
-  async function asignarTarea(item: TareaRepo) {
+  async function asignarTarea(item: TaskLibraryItem) {
     setSavingTask(item.id);
+    setError(null);
+
     try {
-      await fetch(`/api/demo/patients/${patientId}/tasks`, {
+      const res = await fetch(`/api/patients/${patientId}/tasks`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -157,34 +198,43 @@ export default function PacienteDetalle() {
           description: item.description,
         }),
       });
+
+      if (!res.ok) {
+        const data = (await res.json().catch(() => ({}))) as { error?: string };
+        setError(data.error ?? "No se pudo asignar la tarea.");
+        return;
+      }
+
       await loadPatient();
+      await loadReport();
     } finally {
       setSavingTask(null);
     }
   }
 
-  async function guardarEscala(trackingScale: DemoPatient["trackingScale"]) {
+  async function guardarEscala(trackingScale: PatientPayload["trackingScale"]) {
     setUpdatingScale(true);
+    setError(null);
+
     try {
-      await fetch(`/api/demo/patients/${patientId}`, {
+      const res = await fetch(`/api/patients/${patientId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ trackingScale }),
       });
+
+      if (!res.ok) {
+        const data = (await res.json().catch(() => ({}))) as { error?: string };
+        setError(data.error ?? "No se pudo actualizar la escala.");
+        return;
+      }
+
       await loadPatient();
+      await loadReport();
     } finally {
       setUpdatingScale(false);
     }
   }
-
-  const pendientes = useMemo(
-    () => patient?.tasks.filter((t) => t.status === "Pendiente" || t.status === "En curso").length ?? 0,
-    [patient]
-  );
-  const repoFiltrado = useMemo(() => {
-    if (therapyFilter === "todas") return repo;
-    return repo.filter((item) => item.therapyType === therapyFilter);
-  }, [repo, therapyFilter]);
 
   async function eliminarPaciente() {
     if (!patient) return;
@@ -193,12 +243,18 @@ export default function PacienteDetalle() {
     if (!confirmed) return;
 
     setDeletingPatient(true);
+    setError(null);
+
     try {
-      const res = await fetch(`/api/demo/patients/${patient.id}`, {
+      const res = await fetch(`/api/patients/${patient.id}`, {
         method: "DELETE",
       });
 
-      if (!res.ok) return;
+      if (!res.ok) {
+        const data = (await res.json().catch(() => ({}))) as { error?: string };
+        setError(data.error ?? "No se pudo eliminar el paciente.");
+        return;
+      }
 
       router.push("/panel/pacientes");
       router.refresh();
@@ -206,6 +262,16 @@ export default function PacienteDetalle() {
       setDeletingPatient(false);
     }
   }
+
+  const pendientes = useMemo(
+    () => patient?.tasks.filter((t) => t.status === "Pendiente" || t.status === "En curso").length ?? 0,
+    [patient]
+  );
+
+  const repoFiltrado = useMemo(() => {
+    if (therapyFilter === "todas") return repo;
+    return repo.filter((item) => item.therapyType === therapyFilter);
+  }, [repo, therapyFilter]);
 
   if (loading) {
     return (
@@ -218,7 +284,7 @@ export default function PacienteDetalle() {
   if (!patient) {
     return (
       <div className="rounded-[24px] border border-[#d7deea] bg-white p-6 text-sm text-[#4f617b]">
-        Paciente no encontrado.
+        {error ?? "Paciente no encontrado."}
       </div>
     );
   }
@@ -236,7 +302,7 @@ export default function PacienteDetalle() {
 
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => setMostrarRepositorio((v) => !v)}
+                  onClick={() => setMostrarRepositorio((value) => !value)}
                   className="rounded-xl !bg-[#0f1f3f] px-4 py-2 text-sm font-medium !text-white transition hover:!bg-[#1a2c4f]"
                 >
                   {mostrarRepositorio ? "Cerrar repositorio" : "Asignar tarea"}
@@ -263,7 +329,7 @@ export default function PacienteDetalle() {
               <div className="rounded-xl border border-[#d9e1ee] bg-white p-3">
                 <p className="text-xs text-[#607794]">Escala de seguimiento</p>
                 <p className="mt-1 text-sm font-semibold text-[#1f2d45]">
-                  {scaleOptions.find((s) => s.value === patient.trackingScale)?.label ?? "Emojis emocionales"}
+                  {scaleOptions.find((scale) => scale.value === patient.trackingScale)?.label ?? "Emojis emocionales"}
                 </p>
               </div>
             </div>
@@ -283,6 +349,12 @@ export default function PacienteDetalle() {
         </div>
       </section>
 
+      {error && (
+        <section className="rounded-[20px] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {error}
+        </section>
+      )}
+
       <section className="rounded-[26px] border border-[#d7deea] bg-white p-6">
         <h2 className="text-2xl font-semibold text-[#0f172a]">Configuración de registro diario</h2>
         <p className="mt-1 text-sm text-[#4f617b]">
@@ -291,7 +363,7 @@ export default function PacienteDetalle() {
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <select
             value={patient.trackingScale}
-            onChange={(e) => guardarEscala(e.target.value as DemoPatient["trackingScale"])}
+            onChange={(e) => guardarEscala(e.target.value as PatientPayload["trackingScale"])}
             disabled={updatingScale}
             className="rounded-xl border border-[#d9e1ee] bg-[#f8fbff] px-3 py-2 text-sm text-[#1f2d45] outline-none focus:border-[#b8c8de] disabled:cursor-not-allowed disabled:bg-slate-100"
           >
@@ -302,11 +374,83 @@ export default function PacienteDetalle() {
             ))}
           </select>
           {updatingScale && <span className="text-xs text-[#607794]">Guardando...</span>}
-          {!updatingScale && (
-            <span className="text-xs text-[#607794]">Tareas pendientes: {pendientes}</span>
-          )}
+          {!updatingScale && <span className="text-xs text-[#607794]">Tareas pendientes: {pendientes}</span>}
         </div>
       </section>
+
+      {report && (
+        <section className="rounded-[26px] border border-[#d7deea] bg-white p-6">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h2 className="text-2xl font-semibold text-[#0f172a]">Informe de evolución</h2>
+              <p className="mt-1 text-sm text-[#4f617b]">{report.summary}</p>
+            </div>
+            <span className="rounded-full border border-[#d5deea] bg-[#f6f9ff] px-3 py-1 text-xs text-[#607794]">
+              {report.periodLabel}
+            </span>
+          </div>
+
+          <div className="mt-4 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+            <div className="rounded-2xl border border-[#d9e1ee] bg-[#f8fbff] p-4">
+              <div className="flex items-center justify-between text-xs text-[#607794]">
+                <span>{report.periodLabel}</span>
+                <span className="rounded-full border border-[#d5deea] bg-white px-3 py-1">
+                  media {report.averageLabel}
+                </span>
+              </div>
+
+              <div className="mt-4 flex h-28 items-end justify-between gap-2">
+                {(report.bars.length > 0 ? report.bars : [{ label: "-", value: 16, hasData: false }]).map((bar, index) => (
+                  <div key={`${bar.label}-${index}`} className="flex flex-1 flex-col items-center gap-2">
+                    <div
+                      className={[
+                        "w-7 rounded-t-2xl shadow-[0_4px_12px_rgba(17,111,177,0.22)] sm:w-8",
+                        bar.hasData ? "bg-gradient-to-t from-[#0f1f3f] via-[#116fb1] to-[#22b6ef]" : "bg-[#dbe7f4]",
+                      ].join(" ")}
+                      style={{ height: `${bar.value}px` }}
+                    />
+                    <span className="text-[10px] text-[#607794]">{bar.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-[#d9e1ee] bg-[#f8fbff] p-4">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-xs text-[#607794]">Progreso terapéutico</p>
+                  <p className="mt-1 text-2xl font-semibold text-[#0f172a]">{report.progressPercent}%</p>
+                </div>
+                <span className="rounded-full border border-[#d5deea] bg-white px-3 py-1 text-xs text-[#607794]">
+                  {report.progressLabel}
+                </span>
+              </div>
+
+              <div className="mt-4 h-3 overflow-hidden rounded-full bg-[#deebf8]">
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-[#0f1f3f] via-[#1272b7] to-[#21b5ee]"
+                  style={{ width: `${report.progressPercent}%` }}
+                />
+              </div>
+
+              <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                <div className="rounded-xl border border-[#d9e1ee] bg-white p-3">
+                  <p className="text-xs text-[#607794]">Registros</p>
+                  <p className="mt-1 text-lg font-semibold text-[#0f172a]">{report.completedCheckins}</p>
+                </div>
+                <div className="rounded-xl border border-[#d9e1ee] bg-white p-3">
+                  <p className="text-xs text-[#607794]">Activas</p>
+                  <p className="mt-1 text-lg font-semibold text-[#0f172a]">{report.activeTasks}</p>
+                </div>
+                <div className="rounded-xl border border-[#d9e1ee] bg-white p-3">
+                  <p className="text-xs text-[#607794]">Completadas</p>
+                  <p className="mt-1 text-lg font-semibold text-[#0f172a]">{report.completedTasks}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {mostrarRepositorio && (
         <section className="rounded-[26px] border border-[#d7deea] bg-white p-6">
@@ -341,6 +485,7 @@ export default function PacienteDetalle() {
                 No hay tareas disponibles para este filtro.
               </div>
             )}
+
             {repoFiltrado.map((item) => {
               const busy = savingTask === item.id;
 
@@ -389,7 +534,9 @@ export default function PacienteDetalle() {
             )}
             {patient.checkins.slice(0, 4).map((checkin) => (
               <div key={checkin.id} className="rounded-xl border border-[#d9e1ee] bg-[#f8fbff] p-3">
-                <p className="text-xs text-[#607794]">{formatDate(checkin.createdAt)} · {checkin.mood}</p>
+                <p className="text-xs text-[#607794]">
+                  {formatDate(checkin.createdAt)} · {checkin.mood}
+                </p>
                 <p className="mt-1 text-sm text-[#1f2d45]">{checkin.text || "Sin texto"}</p>
               </div>
             ))}
