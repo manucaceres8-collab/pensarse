@@ -10,14 +10,14 @@ type ChatMsg = {
 };
 
 const QUICK_PROMPTS = [
-  "¿Qué hace Pensar(SE)?",
-  "¿Cómo lo usaría con mis pacientes?",
+  "¿Qué es Pensarse?",
+  "¿Cómo funciona?",
   "¿Qué ve el psicólogo?",
-  "¿Qué tiene que hacer el paciente?",
+  "¿Qué hace el paciente?",
 ];
 
 const INITIAL_MESSAGE =
-  "Hola, soy el asistente de Pensar(SE). Puedo explicarte cómo funciona o cómo usarlo con tus pacientes.";
+  "Hola, soy el asistente de Pensarse. Puedo explicarte cómo funciona o cómo puede ayudarte con tus pacientes.";
 
 export default function ChatWidget() {
   const [messages, setMessages] = useState<ChatMsg[]>([
