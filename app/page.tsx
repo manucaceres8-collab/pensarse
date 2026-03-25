@@ -138,6 +138,175 @@ function ProductCard({
   body: string;
   variant: "large" | "medium" | "compact";
 }) {
+  function renderPreview() {
+    if (tag === "Informes") {
+      return (
+        <div className="mt-6 flex-1 space-y-3">
+          <div className="h-2.5 overflow-hidden rounded-full bg-[#ecf2f8]">
+            <div className="h-full w-[78%] bg-gradient-to-r from-[#0f172a] via-[#1272b7] to-[#59c4ef]" />
+          </div>
+          <div className="grid grid-cols-[0.85fr_1.15fr] gap-3">
+            <div className="border border-[#e5edf5] bg-[#f8fbff] p-3">
+              <p className="text-[10px] uppercase tracking-[0.12em] text-[#64748b]">Resumen</p>
+              <p className="mt-2 text-lg font-semibold text-[#0f172a]">6.8/10</p>
+              <p className="mt-1 text-[11px] text-[#64748b]">media semanal</p>
+            </div>
+            <div className="border border-[#e5edf5] bg-[#fbfdff] p-3">
+              <p className="text-[10px] uppercase tracking-[0.12em] text-[#64748b]">Tareas</p>
+              <div className="mt-2 space-y-1.5 text-[11px]">
+                <div className="flex items-center justify-between">
+                  <span className="text-[#0f172a]">Registro ABC</span>
+                  <span className="bg-[#e9fbef] px-1.5 py-0.5 text-[#15803d]">hecha</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-[#0f172a]">STOP</span>
+                  <span className="bg-[#fff4df] px-1.5 py-0.5 text-[#c27b13]">pend.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="border border-[#e5edf5] bg-[#f7fbfe] p-3">
+            <div className="flex items-center justify-between">
+              <p className="text-[10px] uppercase tracking-[0.12em] text-[#64748b]">Resumen clínico</p>
+              <span className="text-[10px] font-medium text-[#1272b7]">estable</span>
+            </div>
+            <div className="mt-3 flex h-12 items-end gap-1.5">
+              {[34, 58, 46, 69, 54].map((bar, index) => (
+                <div
+                  key={`${tag}-${bar}-${index}`}
+                  className="flex-1 rounded-t-[7px] bg-gradient-to-t from-[#1272b7] to-[#79d0f2]"
+                  style={{ height: `${bar}%` }}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (tag === "Evolución") {
+      return (
+        <div className="mt-6 flex-1 space-y-3">
+          <div className="border border-[#e5edf5] bg-[#f8fbff] p-3">
+            <div className="flex items-center justify-between">
+              <p className="text-[10px] uppercase tracking-[0.12em] text-[#64748b]">Semana</p>
+              <span className="text-[10px] font-medium text-[#0f172a]">patrón detectado</span>
+            </div>
+            <div className="mt-3 grid h-20 grid-cols-7 items-end gap-1.5">
+              {[42, 64, 51, 76, 68, 57, 82].map((bar, index) => (
+                <div key={`${tag}-${bar}-${index}`} className="flex flex-col items-center gap-1.5">
+                  <div
+                    className="w-full rounded-t-[8px] bg-gradient-to-t from-[#0f172a] via-[#1272b7] to-[#7cd5f4]"
+                    style={{ height: `${bar}%`, minHeight: "14px" }}
+                  />
+                  <span className="text-[9px] text-[#64748b]">{weeklyDays[index]}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            {[
+              ["Lun", "activación alta"],
+              ["Jue", "más estabilidad"],
+              ["Dom", "mejor cierre"],
+            ].map(([day, note]) => (
+              <div key={`${tag}-${day}`} className="border border-[#e5edf5] bg-white p-2.5">
+                <p className="text-[10px] uppercase tracking-[0.12em] text-[#64748b]">{day}</p>
+                <p className="mt-1 text-[11px] leading-4 text-[#0f172a]">{note}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    if (tag === "Seguimiento") {
+      return (
+        <div className="mt-6 flex-1 space-y-3">
+          <div className="flex flex-wrap gap-2">
+            <span className="bg-[#eef6ff] px-2 py-1 text-[10px] font-medium text-[#1272b7]">check-in diario</span>
+            <span className="bg-[#e9fbef] px-2 py-1 text-[10px] font-medium text-[#15803d]">seguimiento activo</span>
+            <span className="bg-[#fff4df] px-2 py-1 text-[10px] font-medium text-[#c27b13]">2 tareas abiertas</span>
+          </div>
+          <div className="border border-[#e5edf5] bg-[#f8fbff] p-3">
+            <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.12em] text-[#64748b]">
+              <span>Actividad</span>
+              <span>74%</span>
+            </div>
+            <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-[#e6edf5]">
+              <div className="h-full w-[74%] bg-gradient-to-r from-[#1272b7] to-[#73d2f3]" />
+            </div>
+            <div className="mt-3 grid grid-cols-2 gap-2 text-[11px]">
+              <div className="bg-white p-2.5">
+                <p className="text-[#64748b]">último registro</p>
+                <p className="mt-1 font-semibold text-[#0f172a]">hoy · 08:40</p>
+              </div>
+              <div className="bg-white p-2.5">
+                <p className="text-[#64748b]">estado</p>
+                <p className="mt-1 font-semibold text-[#0f172a]">en seguimiento</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (tag === "Pacientes") {
+      return (
+        <div className="mt-6 flex-1 space-y-3">
+          <div className="grid gap-2">
+            {[
+              ["Lucía Martín", "revisar informe", "alta"],
+              ["Mario Ruiz", "2 tareas pendientes", "media"],
+              ["Clara Soto", "sin check-in ayer", "alta"],
+            ].map(([name, note, level]) => (
+              <div key={`${tag}-${name}`} className="grid grid-cols-[1fr_auto] items-center gap-3 border border-[#e5edf5] bg-[#f8fbff] p-2.5">
+                <div>
+                  <p className="text-sm font-medium text-[#0f172a]">{name}</p>
+                  <p className="mt-0.5 text-[11px] text-[#64748b]">{note}</p>
+                </div>
+                <span className="bg-[#eef6ff] px-2 py-1 text-[10px] font-medium text-[#1272b7]">{level}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="mt-6 flex-1 space-y-3">
+        <div className="grid grid-cols-[1.1fr_0.9fr] gap-3">
+          <div className="border border-[#e5edf5] bg-[#f8fbff] p-3">
+            <p className="text-[10px] uppercase tracking-[0.12em] text-[#64748b]">Tareas</p>
+            <div className="mt-2 space-y-1.5 text-[11px]">
+              <div className="flex items-center justify-between">
+                <span className="text-[#0f172a]">Registro ABC</span>
+                <span className="bg-[#e9fbef] px-1.5 py-0.5 text-[#15803d]">ok</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-[#0f172a]">Valores</span>
+                <span className="bg-[#fff4df] px-1.5 py-0.5 text-[#c27b13]">hoy</span>
+              </div>
+            </div>
+          </div>
+          <div className="border border-[#e5edf5] bg-[#fbfdff] p-3">
+            <p className="text-[10px] uppercase tracking-[0.12em] text-[#64748b]">Respuesta</p>
+            <p className="mt-2 text-[11px] leading-5 text-[#0f172a]">“Más calma por la tarde y mejor descanso.”</p>
+          </div>
+        </div>
+        <div className="border border-[#e5edf5] bg-[#f7fbfe] p-3">
+          <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.12em] text-[#64748b]">
+            <span>Seguimiento</span>
+            <span>5/7</span>
+          </div>
+          <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-[#e6edf5]">
+            <div className="h-full w-[71%] bg-gradient-to-r from-[#0f172a] via-[#1272b7] to-[#75d2f3]" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       className={[
@@ -159,43 +328,7 @@ function ProductCard({
         <p className="mt-3 text-sm leading-6 text-[#64748b]">{body}</p>
       </div>
 
-      <div className="mt-6 flex-1 space-y-3">
-        <div className="h-2.5 bg-[#ecf2f8]">
-          <div className="h-full w-[72%] bg-gradient-to-r from-[#0f172a] via-[#1272b7] to-[#59c4ef]" />
-        </div>
-        <div className="grid grid-cols-3 gap-2">
-          <div className="border border-[#e5edf5] bg-[#f8fbff] p-2.5">
-            <p className="text-[10px] uppercase tracking-[0.12em] text-[#64748b]">Resumen</p>
-            <p className="mt-2 text-sm font-semibold text-[#0f172a]">6.8/10</p>
-            <p className="mt-1 text-[11px] text-[#64748b]">media semanal</p>
-          </div>
-          <div className="border border-[#e5edf5] bg-[#f7fbfe] p-2.5">
-            <p className="text-[10px] uppercase tracking-[0.12em] text-[#64748b]">Tareas</p>
-            <div className="mt-2 space-y-1.5">
-              <div className="flex items-center justify-between text-[11px]">
-                <span className="text-[#0f172a]">ABC</span>
-                <span className="bg-[#e9fbef] px-1.5 py-0.5 text-[#15803d]">hecha</span>
-              </div>
-              <div className="flex items-center justify-between text-[11px]">
-                <span className="text-[#0f172a]">STOP</span>
-                <span className="bg-[#fff4df] px-1.5 py-0.5 text-[#c27b13]">pend.</span>
-              </div>
-            </div>
-          </div>
-          <div className="border border-[#e5edf5] bg-[#f5f9fd] p-2.5">
-            <p className="text-[10px] uppercase tracking-[0.12em] text-[#64748b]">Actividad</p>
-            <div className="mt-3 flex h-10 items-end gap-1.5">
-              {[30, 56, 42, 68].map((bar, index) => (
-                <div
-                  key={`${bar}-${index}`}
-                  className="flex-1 rounded-t-[6px] bg-gradient-to-t from-[#1272b7] to-[#79d0f2]"
-                  style={{ height: `${bar}%` }}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
+      {renderPreview()}
     </div>
   );
 }
@@ -317,16 +450,19 @@ export default function Home() {
                     <span className="text-[11px] font-medium text-[#0f172a]">tendencia positiva</span>
                   </div>
 
-                  <div className="mt-4 flex h-28 items-end justify-between gap-2">
-                    {weeklyBars.map((value, index) => (
-                      <div key={`${value}-${index}`} className="flex flex-1 flex-col items-center gap-2">
-                        <div
-                          className="w-full max-w-[22px] rounded-t-[10px] bg-gradient-to-t from-[#0f172a] via-[#1272B7] to-[#55c2ee] shadow-[0_10px_16px_rgba(18,114,183,0.22)]"
-                          style={{ height: `${value}%` }}
-                        />
-                        <span className="text-[10px] text-[#64748b]">{weeklyDays[index]}</span>
-                      </div>
-                    ))}
+                  <div className="relative mt-4 overflow-hidden rounded-[18px] border border-[#dde7f1] bg-[linear-gradient(180deg,#fafdff_0%,#f1f7fc_100%)] p-3">
+                    <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(18,114,183,0.04)_1px,transparent_1px)] bg-[size:100%_28px]" />
+                    <div className="relative grid h-36 grid-cols-7 items-end gap-2">
+                      {weeklyBars.map((value, index) => (
+                        <div key={`${value}-${index}`} className="flex h-full flex-col items-center justify-end gap-2">
+                          <div
+                            className="w-full max-w-[30px] rounded-[10px_10px_4px_4px] bg-gradient-to-t from-[#0f172a] via-[#1272B7] to-[#68cef2] shadow-[0_12px_20px_rgba(18,114,183,0.24)]"
+                            style={{ height: `${value}%`, minHeight: "28px" }}
+                          />
+                          <span className="text-[10px] font-medium text-[#607794]">{weeklyDays[index]}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
