@@ -62,99 +62,106 @@ export default function InformesPage() {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-[26px] border border-[#d7deea] bg-[#f8fbff] p-6">
-        <h1 className="text-4xl font-semibold tracking-tight text-[#0f172a]">Informes</h1>
-        <p className="mt-2 text-sm text-[#607794]">
+      <section className="rounded-[30px] border border-[#d8e4ef] bg-[linear-gradient(180deg,#fbfdff_0%,#f4f9fd_100%)] p-6 shadow-[0_18px_34px_rgba(15,23,42,0.05)]">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#6a7f9a]">Lectura clínica</p>
+        <h1 className="mt-2 text-4xl font-semibold tracking-[-0.04em] text-[#0f172a]">Informes</h1>
+        <p className="mt-3 text-sm leading-6 text-[#607794]">
           Resumen de evolución real para preparar mejor la siguiente sesión.
         </p>
       </section>
 
       <section className="space-y-4">
         {loading && (
-          <div className="rounded-[26px] border border-[#d7deea] bg-white p-6 text-sm text-[#4f617b]">
+          <div className="rounded-[26px] border border-[#d8e4ef] bg-white/92 p-6 text-sm text-[#4f617b] shadow-[0_14px_24px_rgba(15,23,42,0.04)]">
             Cargando informes reales...
           </div>
         )}
 
         {!loading && reports.length === 0 && (
-          <div className="rounded-[26px] border border-[#d7deea] bg-white p-6 text-sm text-[#4f617b]">
+          <div className="rounded-[26px] border border-[#d8e4ef] bg-white/92 p-6 text-sm text-[#4f617b] shadow-[0_14px_24px_rgba(15,23,42,0.04)]">
             No hay datos suficientes para generar informes todavía.
           </div>
         )}
 
         {!loading &&
           reports.map((item) => (
-            <article key={item.patientId} className="rounded-[26px] border border-[#d7deea] bg-white p-6">
+            <article
+              key={item.patientId}
+              className="rounded-[30px] border border-[#d8e4ef] bg-white/92 p-6 shadow-[0_18px_34px_rgba(15,23,42,0.05)]"
+            >
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="max-w-3xl">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="text-2xl font-semibold text-[#1f2d45]">{item.name}</h2>
-                    <span className="rounded-full border border-[#d5deea] bg-[#f6f9ff] px-3 py-1 text-xs text-[#607794]">
+                    <h2 className="text-2xl font-semibold tracking-[-0.03em] text-[#1f2d45]">{item.name}</h2>
+                    <span className="rounded-full border border-[#d8e4ef] bg-[#f5fbff] px-3 py-1 text-xs font-medium text-[#607794]">
                       {item.periodLabel}
                     </span>
                   </div>
-                  <p className="mt-2 text-sm text-[#546a87]">{item.summary}</p>
+                  <p className="mt-2 text-sm leading-6 text-[#546a87]">{item.summary}</p>
                 </div>
-                <span className="rounded-full border border-[#d5deea] bg-[#f6f9ff] px-3 py-1 text-xs text-[#607794]">
+                <span className="rounded-full border border-[#d8e4ef] bg-white px-3 py-1 text-xs font-medium text-[#607794]">
                   {formatRelative(item.lastUpdatedAt)}
                 </span>
               </div>
 
-              <div className="mt-4 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-                <div className="rounded-2xl border border-[#d9e1ee] bg-[#f8fbff] p-4">
+              <div className="mt-5 grid gap-4 lg:grid-cols-[1.08fr_0.92fr]">
+                <div className="rounded-[24px] border border-[#dbe7f1] bg-[linear-gradient(180deg,#fbfdff_0%,#f5faff_100%)] p-4">
                   <div className="flex items-center justify-between text-xs text-[#607794]">
                     <span>{item.periodLabel}</span>
-                    <span className="rounded-full border border-[#d5deea] bg-white px-3 py-1">
+                    <span className="rounded-full border border-[#d8e4ef] bg-white px-3 py-1 font-medium">
                       media {item.averageLabel}
                     </span>
                   </div>
 
-                  <div className="mt-4 flex h-28 items-end justify-between gap-2">
-                    {(item.bars.length > 0 ? item.bars : [{ label: "-", value: 16, hasData: false }]).map((bar, i) => (
-                      <div key={`${item.patientId}-${bar.label}-${i}`} className="flex flex-1 flex-col items-center gap-2">
-                        <div
-                          className={[
-                            "w-7 rounded-t-2xl shadow-[0_4px_12px_rgba(17,111,177,0.22)] sm:w-8",
-                            bar.hasData
-                              ? "bg-gradient-to-t from-[#0f1f3f] via-[#116fb1] to-[#22b6ef]"
-                              : "bg-[#dbe7f4]",
-                          ].join(" ")}
-                          style={{ height: `${bar.value}px` }}
-                        />
-                        <span className="text-[10px] text-[#607794]">{bar.label}</span>
-                      </div>
-                    ))}
+                  <div className="relative mt-4 overflow-hidden rounded-[18px] border border-[#dde7f1] bg-white p-3">
+                    <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(18,114,183,0.04)_1px,transparent_1px)] bg-[size:100%_28px]" />
+                    <div className="relative flex h-36 items-end justify-between gap-2">
+                      {(item.bars.length > 0 ? item.bars : [{ label: "-", value: 16, hasData: false }]).map((bar, i) => (
+                        <div key={`${item.patientId}-${bar.label}-${i}`} className="flex flex-1 flex-col items-center gap-2">
+                          <div
+                            className={[
+                              "w-full max-w-[30px] rounded-[10px_10px_4px_4px] shadow-[0_10px_18px_rgba(18,114,183,0.18)]",
+                              bar.hasData
+                                ? "bg-gradient-to-t from-[#0f172a] via-[#1272b7] to-[#4cc3ee]"
+                                : "bg-[#dbe7f4]",
+                            ].join(" ")}
+                            style={{ height: `${Math.max(bar.value, 24)}px` }}
+                          />
+                          <span className="text-[10px] font-medium text-[#607794]">{bar.label}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
-                <div className="rounded-2xl border border-[#d9e1ee] bg-[#f8fbff] p-4">
+                <div className="rounded-[24px] border border-[#dbe7f1] bg-[linear-gradient(180deg,#fbfdff_0%,#f5faff_100%)] p-4">
                   <div className="flex items-center justify-between gap-3">
                     <div>
                       <p className="text-xs text-[#607794]">Progreso terapéutico</p>
-                      <p className="mt-1 text-2xl font-semibold text-[#0f172a]">{item.progressPercent}%</p>
+                      <p className="mt-1 text-3xl font-semibold tracking-[-0.03em] text-[#0f172a]">{item.progressPercent}%</p>
                     </div>
-                    <span className="rounded-full border border-[#d5deea] bg-white px-3 py-1 text-xs text-[#607794]">
+                    <span className="rounded-full border border-[#d8e4ef] bg-white px-3 py-1 text-xs font-medium text-[#607794]">
                       {item.progressLabel}
                     </span>
                   </div>
 
                   <div className="mt-4 h-3 overflow-hidden rounded-full bg-[#deebf8]">
                     <div
-                      className="h-full rounded-full bg-gradient-to-r from-[#0f1f3f] via-[#1272b7] to-[#21b5ee]"
+                      className="h-full rounded-full bg-gradient-to-r from-[#0f172a] via-[#1272b7] to-[#21b5ee]"
                       style={{ width: `${item.progressPercent}%` }}
                     />
                   </div>
 
                   <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                    <div className="rounded-xl border border-[#d9e1ee] bg-white p-3">
+                    <div className="rounded-[18px] border border-[#d8e4ef] bg-white p-3">
                       <p className="text-xs text-[#607794]">Registros</p>
                       <p className="mt-1 text-lg font-semibold text-[#0f172a]">{item.completedCheckins}</p>
                     </div>
-                    <div className="rounded-xl border border-[#d9e1ee] bg-white p-3">
+                    <div className="rounded-[18px] border border-[#d8e4ef] bg-white p-3">
                       <p className="text-xs text-[#607794]">Activas</p>
                       <p className="mt-1 text-lg font-semibold text-[#0f172a]">{item.activeTasks}</p>
                     </div>
-                    <div className="rounded-xl border border-[#d9e1ee] bg-white p-3">
+                    <div className="rounded-[18px] border border-[#d8e4ef] bg-white p-3">
                       <p className="text-xs text-[#607794]">Completadas</p>
                       <p className="mt-1 text-lg font-semibold text-[#0f172a]">{item.completedTasks}</p>
                     </div>
@@ -162,10 +169,10 @@ export default function InformesPage() {
                 </div>
               </div>
 
-              <div className="mt-4 flex flex-wrap gap-2">
+              <div className="mt-5 flex flex-wrap gap-2">
                 <Link
                   href={`/panel/pacientes/${item.patientId}`}
-                  className="rounded-xl border border-[#d5deea] bg-[#f6f9ff] px-4 py-2 text-xs text-[#607794]"
+                  className="rounded-2xl border border-[#d8e4ef] bg-[#f5fbff] px-4 py-2 text-xs font-medium text-[#1272b7] transition hover:bg-white"
                 >
                   Ver ficha
                 </Link>

@@ -58,29 +58,34 @@ export default function PanelLayout({
   }
 
   return (
-    <div className="min-h-screen bg-[#edf1f7] text-slate-900">
-      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[linear-gradient(180deg,#ffffff_0%,#f7fbff_42%,#ffffff_100%)] text-slate-900">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[420px] overflow-hidden">
+        <div className="absolute left-[6%] top-[-52px] h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(103,197,236,0.34)_0%,rgba(103,197,236,0)_72%)] blur-[78px]" />
+        <div className="absolute right-[4%] top-[22px] h-80 w-80 rounded-full bg-[radial-gradient(circle,rgba(18,114,183,0.17)_0%,rgba(18,114,183,0)_75%)] blur-[90px]" />
+      </div>
+
+      <div className="relative mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <div className="grid gap-5 lg:grid-cols-[270px_1fr]">
-          <aside className="h-fit rounded-[28px] border border-[#d7deea] bg-white p-5 shadow-[0_6px_24px_rgba(15,23,42,0.05)] lg:sticky lg:top-6">
+          <aside className="h-fit rounded-[30px] border border-[#d8e4ef] bg-white/92 p-5 shadow-[0_22px_40px_rgba(15,23,42,0.07)] backdrop-blur lg:sticky lg:top-6">
             <div>
               <p className="text-3xl font-semibold tracking-tight text-[#0f172a]">
-                Pensar<span className="text-[#62789b]">(SE)</span>
+                Pensar<span className="text-[#1272b7]">(SE)</span>
               </p>
-              <p className="text-xs text-[#6a7f9a]">Panel del psicólogo</p>
+              <p className="mt-1 text-xs uppercase tracking-[0.14em] text-[#6a7f9a]">Panel del psicólogo</p>
             </div>
 
-            <div className="mt-4 rounded-2xl border border-[#d6deea] bg-[#f7f9fd] p-3">
+            <div className="mt-5 rounded-[24px] border border-[#d8e4ef] bg-[linear-gradient(180deg,#fbfdff_0%,#f4f9fd_100%)] p-3.5">
               <div className="flex items-center gap-3">
                 <ProfileAvatar
                   src="/avatars/placeholder.svg"
                   fallbackSrc="/avatars/placeholder.svg"
                   alt="Perfil psicólogo"
                   size={64}
-                  className="h-16 w-16 rounded-full border border-[#cfd9e8] object-cover"
+                  className="h-16 w-16 rounded-full border border-[#cfd9e8] bg-white object-cover"
                 />
                 <div>
-                  <p className="text-xs font-semibold text-[#1f2d45]">{me?.name ?? "Psicólogo"}</p>
-                  <p className="text-[11px] text-[#7086a2]">{me?.clinicName ?? "Piloto real"}</p>
+                  <p className="text-sm font-semibold text-[#1f2d45]">{me?.name ?? "Psicólogo"}</p>
+                  <p className="mt-0.5 text-[11px] text-[#7086a2]">{me?.clinicName ?? "Piloto real"}</p>
                 </div>
               </div>
             </div>
@@ -97,13 +102,13 @@ export default function PanelLayout({
                     key={item.href}
                     href={item.href}
                     className={[
-                      "flex items-center gap-3 rounded-2xl px-3 py-3 text-sm transition",
+                      "flex items-center gap-3 rounded-2xl px-3 py-3 text-sm transition duration-200",
                       active
-                        ? "border border-[#c8d4e6] bg-[#eef4ff] text-[#1f304b]"
-                        : "border border-transparent text-[#334a67] hover:bg-[#f7f9fd]",
+                        ? "border border-[#c8d9ea] bg-[linear-gradient(180deg,#f5fbff_0%,#edf5ff_100%)] text-[#163150] shadow-[0_10px_20px_rgba(18,114,183,0.10)]"
+                        : "border border-transparent text-[#334a67] hover:-translate-y-0.5 hover:bg-[#f8fbff]",
                     ].join(" ")}
                   >
-                    <span className="inline-flex h-6 w-6 items-center justify-center rounded-lg border border-[#d5dcea] bg-white text-[10px] font-semibold text-[#1f304b]">
+                    <span className="inline-flex h-7 w-7 items-center justify-center rounded-xl border border-[#d5dcea] bg-white text-[10px] font-semibold text-[#1f304b]">
                       {item.icon}
                     </span>
                     <span>{item.label}</span>
@@ -115,20 +120,20 @@ export default function PanelLayout({
             <div className="mt-6 border-t border-[#d8e0ec] pt-4">
               <button
                 onClick={logout}
-                className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-[#334a67] transition hover:bg-[#f7f9fd]"
+                className="flex w-full items-center gap-2 rounded-2xl border border-transparent px-3 py-2.5 text-left text-sm font-medium text-[#334a67] transition duration-200 hover:bg-[#f8fbff]"
               >
                 <span>Cerrar sesión</span>
               </button>
             </div>
           </aside>
 
-          <main className="rounded-[30px] border border-[#d7deea] bg-white shadow-[0_6px_24px_rgba(15,23,42,0.05)]">
-            <div className="flex items-center justify-between border-b border-[#dbe2ed] px-5 py-4 sm:px-6">
+          <main className="overflow-hidden rounded-[32px] border border-[#d8e4ef] bg-white/92 shadow-[0_24px_48px_rgba(15,23,42,0.08)] backdrop-blur">
+            <div className="flex items-center justify-between border-b border-[#e5edf5] bg-white/70 px-5 py-4 backdrop-blur sm:px-6">
               <div>
                 <p className="text-sm font-semibold text-[#0f172a]">Pensar(SE)</p>
-                <p className="text-xs text-[#617896]">Psicólogo - Pilot real</p>
+                <p className="mt-0.5 text-xs text-[#617896]">Psicólogo · espacio clínico</p>
               </div>
-              <span className="rounded-full border border-[#d5deea] bg-[#f6f9ff] px-3 py-1 text-xs text-[#1f304b]">
+              <span className="rounded-full border border-[#d8e4ef] bg-[#f5fbff] px-3 py-1 text-xs font-medium text-[#1272b7]">
                 Real
               </span>
             </div>

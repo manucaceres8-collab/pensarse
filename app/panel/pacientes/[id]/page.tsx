@@ -275,7 +275,7 @@ export default function PacienteDetalle() {
 
   if (loading) {
     return (
-      <div className="rounded-[24px] border border-[#d7deea] bg-white p-6 text-sm text-[#4f617b]">
+      <div className="rounded-[26px] border border-[#d8e4ef] bg-white/92 p-6 text-sm text-[#4f617b] shadow-[0_14px_24px_rgba(15,23,42,0.04)]">
         Cargando ficha del paciente...
       </div>
     );
@@ -283,7 +283,7 @@ export default function PacienteDetalle() {
 
   if (!patient) {
     return (
-      <div className="rounded-[24px] border border-[#d7deea] bg-white p-6 text-sm text-[#4f617b]">
+      <div className="rounded-[26px] border border-[#d8e4ef] bg-white/92 p-6 text-sm text-[#4f617b] shadow-[0_14px_24px_rgba(15,23,42,0.04)]">
         {error ?? "Paciente no encontrado."}
       </div>
     );
@@ -291,19 +291,19 @@ export default function PacienteDetalle() {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-[26px] border border-[#d7deea] bg-[#f8fbff] p-6">
+      <section className="rounded-[30px] border border-[#d8e4ef] bg-[linear-gradient(180deg,#fbfdff_0%,#f4f9fd_100%)] p-6 shadow-[0_18px_34px_rgba(15,23,42,0.05)]">
         <div className="grid gap-4 md:grid-cols-[1fr_220px] md:items-center">
           <div>
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
-                <h1 className="text-4xl font-semibold tracking-tight text-[#0f172a]">{patient.name}</h1>
-                <p className="mt-1 text-sm text-[#4f617b]">Seguimiento individual del paciente</p>
+                <h1 className="text-4xl font-semibold tracking-[-0.04em] text-[#0f172a]">{patient.name}</h1>
+                <p className="mt-2 text-sm leading-6 text-[#4f617b]">Seguimiento individual del paciente</p>
               </div>
 
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setMostrarRepositorio((value) => !value)}
-                  className="rounded-xl !bg-[#0f1f3f] px-4 py-2 text-sm font-medium !text-white transition hover:!bg-[#1a2c4f]"
+                  className="rounded-2xl bg-[#1272b7] px-4 py-2.5 text-sm font-medium text-white shadow-[0_18px_28px_rgba(18,114,183,0.22)] transition duration-200 hover:-translate-y-0.5 hover:bg-[#0f68a8]"
                 >
                   {mostrarRepositorio ? "Cerrar repositorio" : "Asignar tarea"}
                 </button>
@@ -318,15 +318,15 @@ export default function PacienteDetalle() {
             </div>
 
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-xl border border-[#d9e1ee] bg-white p-3">
+              <div className="rounded-[20px] border border-[#d8e4ef] bg-white p-3.5 shadow-[0_10px_18px_rgba(15,23,42,0.03)]">
                 <p className="text-xs text-[#607794]">Último check-in</p>
                 <p className="mt-1 text-sm font-semibold text-[#1f2d45]">{formatDate(patient.lastCheckinAt)}</p>
               </div>
-              <div className="rounded-xl border border-[#d9e1ee] bg-white p-3">
+              <div className="rounded-[20px] border border-[#d8e4ef] bg-white p-3.5 shadow-[0_10px_18px_rgba(15,23,42,0.03)]">
                 <p className="text-xs text-[#607794]">Estado actual</p>
                 <p className="mt-1 text-sm font-semibold text-[#1f2d45]">{patient.status}</p>
               </div>
-              <div className="rounded-xl border border-[#d9e1ee] bg-white p-3">
+              <div className="rounded-[20px] border border-[#d8e4ef] bg-white p-3.5 shadow-[0_10px_18px_rgba(15,23,42,0.03)]">
                 <p className="text-xs text-[#607794]">Escala de seguimiento</p>
                 <p className="mt-1 text-sm font-semibold text-[#1f2d45]">
                   {scaleOptions.find((scale) => scale.value === patient.trackingScale)?.label ?? "Emojis emocionales"}
@@ -335,7 +335,7 @@ export default function PacienteDetalle() {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-[#d9e1ee] bg-white p-4 text-center">
+          <div className="rounded-[24px] border border-[#d8e4ef] bg-white/96 p-4 text-center shadow-[0_12px_22px_rgba(15,23,42,0.04)]">
             <ProfileAvatar
               src={patient.avatar}
               fallbackSrc="/avatars/placeholder.svg"
@@ -350,12 +350,12 @@ export default function PacienteDetalle() {
       </section>
 
       {error && (
-        <section className="rounded-[20px] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <section className="rounded-[22px] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {error}
         </section>
       )}
 
-      <section className="rounded-[26px] border border-[#d7deea] bg-white p-6">
+      <section className="rounded-[30px] border border-[#d8e4ef] bg-white/92 p-6 shadow-[0_18px_34px_rgba(15,23,42,0.05)]">
         <h2 className="text-2xl font-semibold text-[#0f172a]">Configuración de registro diario</h2>
         <p className="mt-1 text-sm text-[#4f617b]">
           El paciente verá esta escala en su check-in de menos de 20 segundos.
@@ -365,7 +365,7 @@ export default function PacienteDetalle() {
             value={patient.trackingScale}
             onChange={(e) => guardarEscala(e.target.value as PatientPayload["trackingScale"])}
             disabled={updatingScale}
-            className="rounded-xl border border-[#d9e1ee] bg-[#f8fbff] px-3 py-2 text-sm text-[#1f2d45] outline-none focus:border-[#b8c8de] disabled:cursor-not-allowed disabled:bg-slate-100"
+            className="rounded-2xl border border-[#d8e4ef] bg-[#f8fbff] px-4 py-2.5 text-sm text-[#1f2d45] outline-none transition focus:border-[#97c3df] focus:bg-white disabled:cursor-not-allowed disabled:bg-slate-100"
           >
             {scaleOptions.map((scale) => (
               <option key={scale.value} value={scale.value}>
@@ -379,49 +379,52 @@ export default function PacienteDetalle() {
       </section>
 
       {report && (
-        <section className="rounded-[26px] border border-[#d7deea] bg-white p-6">
+        <section className="rounded-[30px] border border-[#d8e4ef] bg-white/92 p-6 shadow-[0_18px_34px_rgba(15,23,42,0.05)]">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <h2 className="text-2xl font-semibold text-[#0f172a]">Informe de evolución</h2>
               <p className="mt-1 text-sm text-[#4f617b]">{report.summary}</p>
             </div>
-            <span className="rounded-full border border-[#d5deea] bg-[#f6f9ff] px-3 py-1 text-xs text-[#607794]">
+            <span className="rounded-full border border-[#d8e4ef] bg-[#f5fbff] px-3 py-1 text-xs font-medium text-[#607794]">
               {report.periodLabel}
             </span>
           </div>
 
           <div className="mt-4 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-            <div className="rounded-2xl border border-[#d9e1ee] bg-[#f8fbff] p-4">
+            <div className="rounded-[24px] border border-[#dbe7f1] bg-[linear-gradient(180deg,#fbfdff_0%,#f5faff_100%)] p-4">
               <div className="flex items-center justify-between text-xs text-[#607794]">
                 <span>{report.periodLabel}</span>
-                <span className="rounded-full border border-[#d5deea] bg-white px-3 py-1">
+                <span className="rounded-full border border-[#d8e4ef] bg-white px-3 py-1 font-medium">
                   media {report.averageLabel}
                 </span>
               </div>
 
-              <div className="mt-4 flex h-28 items-end justify-between gap-2">
-                {(report.bars.length > 0 ? report.bars : [{ label: "-", value: 16, hasData: false }]).map((bar, index) => (
-                  <div key={`${bar.label}-${index}`} className="flex flex-1 flex-col items-center gap-2">
-                    <div
-                      className={[
-                        "w-7 rounded-t-2xl shadow-[0_4px_12px_rgba(17,111,177,0.22)] sm:w-8",
-                        bar.hasData ? "bg-gradient-to-t from-[#0f1f3f] via-[#116fb1] to-[#22b6ef]" : "bg-[#dbe7f4]",
-                      ].join(" ")}
-                      style={{ height: `${bar.value}px` }}
-                    />
-                    <span className="text-[10px] text-[#607794]">{bar.label}</span>
-                  </div>
-                ))}
+              <div className="relative mt-4 overflow-hidden rounded-[18px] border border-[#dde7f1] bg-white p-3">
+                <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(18,114,183,0.04)_1px,transparent_1px)] bg-[size:100%_28px]" />
+                <div className="relative flex h-36 items-end justify-between gap-2">
+                  {(report.bars.length > 0 ? report.bars : [{ label: "-", value: 16, hasData: false }]).map((bar, index) => (
+                    <div key={`${bar.label}-${index}`} className="flex flex-1 flex-col items-center gap-2">
+                      <div
+                        className={[
+                          "w-full max-w-[30px] rounded-[10px_10px_4px_4px] shadow-[0_10px_18px_rgba(18,114,183,0.18)]",
+                          bar.hasData ? "bg-gradient-to-t from-[#0f172a] via-[#1272b7] to-[#4cc3ee]" : "bg-[#dbe7f4]",
+                        ].join(" ")}
+                        style={{ height: `${Math.max(bar.value, 24)}px` }}
+                      />
+                      <span className="text-[10px] font-medium text-[#607794]">{bar.label}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
-            <div className="rounded-2xl border border-[#d9e1ee] bg-[#f8fbff] p-4">
+            <div className="rounded-[24px] border border-[#dbe7f1] bg-[linear-gradient(180deg,#fbfdff_0%,#f5faff_100%)] p-4">
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <p className="text-xs text-[#607794]">Progreso terapéutico</p>
-                  <p className="mt-1 text-2xl font-semibold text-[#0f172a]">{report.progressPercent}%</p>
+                  <p className="mt-1 text-3xl font-semibold tracking-[-0.03em] text-[#0f172a]">{report.progressPercent}%</p>
                 </div>
-                <span className="rounded-full border border-[#d5deea] bg-white px-3 py-1 text-xs text-[#607794]">
+                <span className="rounded-full border border-[#d8e4ef] bg-white px-3 py-1 text-xs font-medium text-[#607794]">
                   {report.progressLabel}
                 </span>
               </div>
@@ -434,15 +437,15 @@ export default function PacienteDetalle() {
               </div>
 
               <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                <div className="rounded-xl border border-[#d9e1ee] bg-white p-3">
+                <div className="rounded-[18px] border border-[#d8e4ef] bg-white p-3">
                   <p className="text-xs text-[#607794]">Registros</p>
                   <p className="mt-1 text-lg font-semibold text-[#0f172a]">{report.completedCheckins}</p>
                 </div>
-                <div className="rounded-xl border border-[#d9e1ee] bg-white p-3">
+                <div className="rounded-[18px] border border-[#d8e4ef] bg-white p-3">
                   <p className="text-xs text-[#607794]">Activas</p>
                   <p className="mt-1 text-lg font-semibold text-[#0f172a]">{report.activeTasks}</p>
                 </div>
-                <div className="rounded-xl border border-[#d9e1ee] bg-white p-3">
+                <div className="rounded-[18px] border border-[#d8e4ef] bg-white p-3">
                   <p className="text-xs text-[#607794]">Completadas</p>
                   <p className="mt-1 text-lg font-semibold text-[#0f172a]">{report.completedTasks}</p>
                 </div>
@@ -453,7 +456,7 @@ export default function PacienteDetalle() {
       )}
 
       {mostrarRepositorio && (
-        <section className="rounded-[26px] border border-[#d7deea] bg-white p-6">
+        <section className="rounded-[30px] border border-[#d8e4ef] bg-white/92 p-6 shadow-[0_18px_34px_rgba(15,23,42,0.05)]">
           <h2 className="text-2xl font-semibold text-[#0f172a]">Repositorio de tareas</h2>
           <p className="mt-1 text-sm text-[#4f617b]">
             Puedes asignar tareas base o personalizadas. Cada asignación crea una nueva instancia pendiente.
@@ -467,10 +470,10 @@ export default function PacienteDetalle() {
                   key={filter.value}
                   onClick={() => setTherapyFilter(filter.value)}
                   className={[
-                    "rounded-full border px-3 py-1 text-xs font-medium transition",
+                    "rounded-full border px-3 py-1 text-xs font-medium transition duration-200",
                     active
-                      ? "border-[#0f1f3f] bg-[#0f1f3f] text-white"
-                      : "border-[#d5deea] bg-[#f6f9ff] text-[#1f304b] hover:bg-white",
+                      ? "border-[#1272b7] bg-[#1272b7] text-white shadow-[0_12px_20px_rgba(18,114,183,0.18)]"
+                      : "border-[#d8e4ef] bg-[#f5fbff] text-[#1f304b] hover:bg-white",
                   ].join(" ")}
                 >
                   {filter.label}
@@ -481,7 +484,7 @@ export default function PacienteDetalle() {
 
           <div className="mt-4 grid gap-3 md:grid-cols-2">
             {repoFiltrado.length === 0 && (
-              <div className="rounded-2xl border border-[#d9e1ee] bg-[#f8fbff] p-4 text-sm text-[#4f617b]">
+              <div className="rounded-[24px] border border-[#d8e4ef] bg-[linear-gradient(180deg,#fbfdff_0%,#f5faff_100%)] p-4 text-sm text-[#4f617b]">
                 No hay tareas disponibles para este filtro.
               </div>
             )}
@@ -490,7 +493,7 @@ export default function PacienteDetalle() {
               const busy = savingTask === item.id;
 
               return (
-                <div key={item.id} className="rounded-2xl border border-[#d9e1ee] bg-[#f8fbff] p-4">
+                <div key={item.id} className="rounded-[24px] border border-[#d8e4ef] bg-[linear-gradient(180deg,#fbfdff_0%,#f7fbff_100%)] p-4 shadow-[0_12px_22px_rgba(15,23,42,0.03)]">
                   <div className="flex items-center justify-between gap-2">
                     <p className="text-sm font-semibold text-[#1f2d45]">{item.title}</p>
                     <span className={["rounded-full border px-3 py-1 text-xs", therapyTone[item.therapyType]].join(" ")}>
@@ -499,7 +502,7 @@ export default function PacienteDetalle() {
                   </div>
                   <p className="mt-2 text-sm text-[#4f617b]">{item.description}</p>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    <span className="rounded-full border border-[#d5deea] bg-white px-3 py-1 text-xs text-[#607794]">
+                    <span className="rounded-full border border-[#d8e4ef] bg-white px-3 py-1 text-xs text-[#607794]">
                       {item.duration}
                     </span>
                     <span className={["rounded-full border px-3 py-1 text-xs", responseTone[item.responseType]].join(" ")}>
@@ -510,10 +513,10 @@ export default function PacienteDetalle() {
                     onClick={() => asignarTarea(item)}
                     disabled={busy}
                     className={[
-                      "mt-4 rounded-xl px-3 py-2 text-xs font-medium",
+                      "mt-4 rounded-2xl px-3 py-2.5 text-xs font-medium transition duration-200",
                       busy
                         ? "cursor-not-allowed border border-slate-200 bg-slate-100 text-slate-400"
-                        : "border border-[#d5deea] bg-[#f6f9ff] text-[#1f304b] hover:bg-white",
+                        : "border border-[#d8e4ef] bg-[#f5fbff] text-[#1f304b] hover:bg-white",
                     ].join(" ")}
                   >
                     {busy ? "Asignando..." : "Asignar tarea"}
@@ -526,14 +529,14 @@ export default function PacienteDetalle() {
       )}
 
       <section className="grid gap-4 md:grid-cols-2">
-        <div className="rounded-[26px] border border-[#d7deea] bg-white p-6">
+        <div className="rounded-[30px] border border-[#d8e4ef] bg-white/92 p-6 shadow-[0_18px_34px_rgba(15,23,42,0.05)]">
           <h2 className="text-2xl font-semibold text-[#0f172a]">Últimos check-ins</h2>
           <div className="mt-4 space-y-2">
             {patient.checkins.length === 0 && (
               <p className="text-sm text-[#4f617b]">Aún no hay check-ins.</p>
             )}
             {patient.checkins.slice(0, 4).map((checkin) => (
-              <div key={checkin.id} className="rounded-xl border border-[#d9e1ee] bg-[#f8fbff] p-3">
+              <div key={checkin.id} className="rounded-[18px] border border-[#d8e4ef] bg-[linear-gradient(180deg,#fbfdff_0%,#f7fbff_100%)] p-3">
                 <p className="text-xs text-[#607794]">
                   {formatDate(checkin.createdAt)} · {checkin.mood}
                 </p>
@@ -543,14 +546,14 @@ export default function PacienteDetalle() {
           </div>
         </div>
 
-        <div className="rounded-[26px] border border-[#d7deea] bg-white p-6">
+        <div className="rounded-[30px] border border-[#d8e4ef] bg-white/92 p-6 shadow-[0_18px_34px_rgba(15,23,42,0.05)]">
           <h2 className="text-2xl font-semibold text-[#0f172a]">Notas recientes</h2>
           <div className="mt-4 space-y-2">
             {patient.notes.length === 0 && (
               <p className="text-sm text-[#4f617b]">Aún no hay notas.</p>
             )}
             {patient.notes.slice(0, 4).map((note) => (
-              <div key={note.id} className="rounded-xl border border-[#d9e1ee] bg-[#f8fbff] p-3 text-sm text-[#1f2d45]">
+              <div key={note.id} className="rounded-[18px] border border-[#d8e4ef] bg-[linear-gradient(180deg,#fbfdff_0%,#f7fbff_100%)] p-3 text-sm text-[#1f2d45]">
                 <p className="text-xs text-[#607794]">
                   {formatDate(note.createdAt)} · {note.author}
                 </p>
@@ -561,7 +564,7 @@ export default function PacienteDetalle() {
         </div>
       </section>
 
-      <section className="rounded-[26px] border border-[#d7deea] bg-white p-6">
+      <section className="rounded-[30px] border border-[#d8e4ef] bg-white/92 p-6 shadow-[0_18px_34px_rgba(15,23,42,0.05)]">
         <h2 className="text-2xl font-semibold text-[#0f172a]">Tareas terapéuticas</h2>
         <div className="mt-4 space-y-3">
           {patient.tasks.length === 0 && (
@@ -571,7 +574,7 @@ export default function PacienteDetalle() {
             <Link
               key={task.id}
               href={`/panel/pacientes/${patient.id}/tareas/${task.id}`}
-              className="block rounded-2xl border border-[#d9e1ee] bg-[#f8fbff] p-4 transition hover:bg-white"
+              className="block rounded-[24px] border border-[#d8e4ef] bg-[linear-gradient(180deg,#fbfdff_0%,#f7fbff_100%)] p-4 transition duration-200 hover:-translate-y-0.5 hover:bg-white"
             >
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>

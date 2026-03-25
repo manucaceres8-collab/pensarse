@@ -76,48 +76,43 @@ export default function PanelPage() {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-[26px] border border-[#d7deea] bg-[#f8fbff] p-6">
-        <p className="text-sm text-[#607794]">Panel psicólogo</p>
-        <h1 className="mt-1 text-4xl font-semibold tracking-tight text-[#0f172a]">Dashboard</h1>
-        <p className="mt-2 max-w-3xl text-sm text-[#607794]">
+      <section className="overflow-hidden rounded-[30px] border border-[#d8e4ef] bg-[linear-gradient(180deg,#fbfdff_0%,#f4f9fd_100%)] p-6 shadow-[0_18px_34px_rgba(15,23,42,0.05)]">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#6a7f9a]">Panel psicólogo</p>
+        <h1 className="mt-2 text-4xl font-semibold tracking-[-0.04em] text-[#0f172a]">Dashboard</h1>
+        <p className="mt-3 max-w-3xl text-sm leading-6 text-[#607794]">
           Resumen real de tus pacientes y su actividad entre sesiones.
         </p>
       </section>
 
-      <section className="grid gap-4 md:grid-cols-4">
-        <div className="rounded-[22px] border border-[#d7deea] bg-white p-5">
-          <p className="text-xs text-[#607794]">Pacientes</p>
-          <p className="mt-2 text-4xl font-semibold text-[#0f172a]">{totalPatients}</p>
-          <p className="mt-1 text-xs text-[#6e84a0]">vinculados a tu cuenta</p>
-        </div>
-        <div className="rounded-[22px] border border-[#d7deea] bg-white p-5">
-          <p className="text-xs text-[#607794]">Tareas activas</p>
-          <p className="mt-2 text-4xl font-semibold text-[#0f172a]">{totalActiveTasks}</p>
-          <p className="mt-1 text-xs text-[#6e84a0]">pendientes o en curso</p>
-        </div>
-        <div className="rounded-[22px] border border-[#d7deea] bg-white p-5">
-          <p className="text-xs text-[#607794]">Registros recientes</p>
-          <p className="mt-2 text-4xl font-semibold text-[#0f172a]">{totalRecentCheckins}</p>
-          <p className="mt-1 text-xs text-[#6e84a0]">últimos 7 días</p>
-        </div>
-        <div className="rounded-[22px] border border-[#d7deea] bg-white p-5">
-          <p className="text-xs text-[#607794]">Progreso medio</p>
-          <p className="mt-2 text-4xl font-semibold text-[#0f172a]">{averageProgress}%</p>
-          <p className="mt-1 text-xs text-[#6e84a0]">según adherencia reciente</p>
-        </div>
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {[
+          ["Pacientes", totalPatients, "vinculados a tu cuenta"],
+          ["Tareas activas", totalActiveTasks, "pendientes o en curso"],
+          ["Registros recientes", totalRecentCheckins, "últimos 7 días"],
+          ["Progreso medio", `${averageProgress}%`, "según adherencia reciente"],
+        ].map(([label, value, caption]) => (
+          <div
+            key={label}
+            className="rounded-[26px] border border-[#d8e4ef] bg-white/92 p-5 shadow-[0_16px_28px_rgba(15,23,42,0.05)]"
+          >
+            <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#607794]">{label}</p>
+            <p className="mt-3 text-4xl font-semibold tracking-[-0.04em] text-[#0f172a]">{value}</p>
+            <p className="mt-2 text-xs text-[#6e84a0]">{caption}</p>
+          </div>
+        ))}
       </section>
 
-      <section className="rounded-[26px] border border-[#d7deea] bg-white p-6">
-        <div className="flex items-center justify-between gap-3">
+      <section className="rounded-[30px] border border-[#d8e4ef] bg-white/92 p-6 shadow-[0_18px_34px_rgba(15,23,42,0.05)]">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 className="text-2xl font-semibold text-[#0f172a]">Evolución reciente</h2>
+            <h2 className="text-2xl font-semibold tracking-[-0.03em] text-[#0f172a]">Evolución reciente</h2>
             <p className="mt-1 text-sm text-[#607794]">
               Informes reales construidos con check-ins, tareas y notas.
             </p>
           </div>
           <Link
             href="/panel/informes"
-            className="rounded-full border border-[#d5deea] bg-[#f6f9ff] px-4 py-2 text-xs text-[#607794]"
+            className="rounded-full border border-[#d8e4ef] bg-[#f5fbff] px-4 py-2 text-xs font-medium text-[#1272b7] transition hover:bg-white"
           >
             Ver informes
           </Link>
@@ -125,13 +120,13 @@ export default function PanelPage() {
 
         <div className="mt-5 space-y-4">
           {loading && (
-            <div className="rounded-2xl border border-[#d9e1ee] bg-[#f8fbff] p-4 text-sm text-[#4f617b]">
+            <div className="rounded-[24px] border border-[#d8e4ef] bg-[linear-gradient(180deg,#fbfdff_0%,#f5faff_100%)] p-5 text-sm text-[#4f617b]">
               Cargando informes reales...
             </div>
           )}
 
           {!loading && reports.length === 0 && (
-            <div className="rounded-2xl border border-[#d9e1ee] bg-[#f8fbff] p-4 text-sm text-[#4f617b]">
+            <div className="rounded-[24px] border border-[#d8e4ef] bg-[linear-gradient(180deg,#fbfdff_0%,#f5faff_100%)] p-5 text-sm text-[#4f617b]">
               Todavía no hay pacientes con datos suficientes para generar informes.
             </div>
           )}
@@ -141,42 +136,42 @@ export default function PanelPage() {
               <Link
                 key={report.patientId}
                 href={`/panel/pacientes/${report.patientId}`}
-                className="block rounded-2xl border border-[#d9e1ee] bg-[#f8fbff] p-5 transition hover:bg-white"
+                className="block rounded-[26px] border border-[#d8e4ef] bg-[linear-gradient(180deg,#fbfdff_0%,#f7fbff_100%)] p-5 shadow-[0_14px_26px_rgba(15,23,42,0.04)] transition duration-200 hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_22px_36px_rgba(15,23,42,0.07)]"
               >
-                <div className="flex flex-wrap items-start justify-between gap-4">
+                <div className="flex flex-wrap items-start justify-between gap-5">
                   <div className="max-w-3xl">
                     <div className="flex flex-wrap items-center gap-2">
                       <p className="text-xl font-semibold text-[#1f2d45]">{report.name}</p>
-                      <span className="rounded-full border border-[#d5deea] bg-white px-3 py-1 text-[11px] text-[#607794]">
+                      <span className="rounded-full border border-[#d8e4ef] bg-white px-3 py-1 text-[11px] font-medium text-[#607794]">
                         {report.periodLabel}
                       </span>
                     </div>
-                    <p className="mt-2 text-sm text-[#4f617b]">{report.summary}</p>
+                    <p className="mt-2 text-sm leading-6 text-[#4f617b]">{report.summary}</p>
                     <div className="mt-3 flex flex-wrap gap-2 text-xs text-[#607794]">
-                      <span>{report.completedCheckins} registros</span>
-                      <span>{report.completedTasks} tareas completadas</span>
-                      <span>{report.activeTasks} tareas activas</span>
-                      <span>{report.trendLabel}</span>
+                      <span className="rounded-full bg-white px-2.5 py-1">{report.completedCheckins} registros</span>
+                      <span className="rounded-full bg-white px-2.5 py-1">{report.completedTasks} tareas completadas</span>
+                      <span className="rounded-full bg-white px-2.5 py-1">{report.activeTasks} tareas activas</span>
+                      <span className="rounded-full bg-white px-2.5 py-1">{report.trendLabel}</span>
                     </div>
                   </div>
 
-                  <div className="min-w-[220px] flex-1 max-w-[280px]">
+                  <div className="min-w-[240px] max-w-[310px] flex-1">
                     <div className="flex items-center justify-between text-xs text-[#607794]">
                       <span>{report.progressLabel}</span>
-                      <span className="font-semibold text-[#1f304b]">{report.progressPercent}%</span>
+                      <span className="font-semibold text-[#163150]">{report.progressPercent}%</span>
                     </div>
-                    <div className="mt-2 h-3 overflow-hidden rounded-full bg-[#deebf8]">
+                    <div className="mt-2 h-3 overflow-hidden rounded-full bg-[#dfeaf5]">
                       <div
-                        className="h-full rounded-full bg-gradient-to-r from-[#0f1f3f] via-[#1272b7] to-[#21b5ee]"
+                        className="h-full rounded-full bg-gradient-to-r from-[#0f172a] via-[#1272b7] to-[#39bcea]"
                         style={{ width: `${report.progressPercent}%` }}
                       />
                     </div>
-                    <p className="mt-3 text-xs text-[#607794]">
-                      Media reciente: <span className="font-semibold text-[#1f304b]">{report.averageLabel}</span>
-                    </p>
-                    <p className="mt-1 text-xs text-[#607794]">
-                      Última actualización: {formatDate(report.lastUpdatedAt)}
-                    </p>
+                    <div className="mt-4 rounded-[20px] border border-[#e1eaf3] bg-white p-3">
+                      <p className="text-xs text-[#607794]">
+                        Media reciente: <span className="font-semibold text-[#163150]">{report.averageLabel}</span>
+                      </p>
+                      <p className="mt-1 text-xs text-[#607794]">Última actualización: {formatDate(report.lastUpdatedAt)}</p>
+                    </div>
                   </div>
                 </div>
               </Link>
@@ -184,18 +179,18 @@ export default function PanelPage() {
         </div>
       </section>
 
-      <section className="rounded-[26px] border border-[#d7deea] bg-white p-6">
-        <h2 className="text-2xl font-semibold text-[#0f172a]">Accesos rápidos</h2>
+      <section className="rounded-[30px] border border-[#d8e4ef] bg-white/92 p-6 shadow-[0_18px_34px_rgba(15,23,42,0.05)]">
+        <h2 className="text-2xl font-semibold tracking-[-0.03em] text-[#0f172a]">Accesos rápidos</h2>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           <Link
             href="/panel/pacientes/nuevo"
-            className="rounded-xl border border-[#d9e1ee] bg-[#f8fbff] p-3 text-sm text-[#334155] transition hover:bg-[#eef4ff]"
+            className="rounded-[22px] border border-[#d8e4ef] bg-[linear-gradient(180deg,#fbfdff_0%,#f5faff_100%)] p-4 text-sm font-medium text-[#334155] transition duration-200 hover:-translate-y-0.5 hover:bg-white"
           >
             Crear nueva ficha de paciente
           </Link>
           <Link
             href="/panel/tareas"
-            className="rounded-xl border border-[#d9e1ee] bg-[#f8fbff] p-3 text-sm text-[#334155] transition hover:bg-[#eef4ff]"
+            className="rounded-[22px] border border-[#d8e4ef] bg-[linear-gradient(180deg,#fbfdff_0%,#f5faff_100%)] p-4 text-sm font-medium text-[#334155] transition duration-200 hover:-translate-y-0.5 hover:bg-white"
           >
             Gestionar biblioteca de tareas
           </Link>

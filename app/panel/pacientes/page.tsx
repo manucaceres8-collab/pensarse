@@ -82,40 +82,41 @@ export default function PacientesPage() {
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-wrap items-end justify-between gap-3">
+      <section className="flex flex-wrap items-end justify-between gap-4 rounded-[30px] border border-[#d8e4ef] bg-[linear-gradient(180deg,#fbfdff_0%,#f4f9fd_100%)] p-6 shadow-[0_18px_34px_rgba(15,23,42,0.05)]">
         <div>
-          <h1 className="text-4xl font-semibold tracking-tight text-[#0f172a]">Pacientes</h1>
-          <p className="mt-1 text-sm text-[#4f617b]">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#6a7f9a]">Seguimiento clínico</p>
+          <h1 className="mt-2 text-4xl font-semibold tracking-[-0.04em] text-[#0f172a]">Pacientes</h1>
+          <p className="mt-2 text-sm leading-6 text-[#4f617b]">
             Alta, seguimiento y actividad en vivo entre paciente y psicólogo.
           </p>
         </div>
 
         <Link
           href="/panel/pacientes/nuevo"
-          className="rounded-2xl !bg-[#0f1f3f] px-5 py-3 text-sm font-medium !text-white shadow-[0_6px_14px_rgba(15,31,63,0.24)] transition hover:!bg-[#1b2b4d]"
+          className="rounded-2xl bg-[#1272b7] px-5 py-3 text-sm font-medium text-white shadow-[0_18px_28px_rgba(18,114,183,0.24)] transition duration-200 hover:-translate-y-0.5 hover:bg-[#0f68a8]"
         >
           Nuevo paciente
         </Link>
-      </div>
+      </section>
 
-      <section className="rounded-[22px] border border-[#d7deea] bg-white p-4">
+      <section className="rounded-[26px] border border-[#d8e4ef] bg-white/92 p-4 shadow-[0_16px_28px_rgba(15,23,42,0.05)]">
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full rounded-xl border border-[#d9e1ee] bg-[#f8fbff] px-3 py-2 text-sm outline-none focus:border-[#b8c8de]"
+          className="w-full rounded-2xl border border-[#d8e4ef] bg-[#f8fbff] px-4 py-3 text-sm text-[#0f172a] outline-none transition focus:border-[#97c3df] focus:bg-white focus:shadow-[0_0_0_4px_rgba(18,114,183,0.10)]"
           placeholder="Buscar paciente..."
         />
       </section>
 
       <section className="space-y-3">
         {loading && (
-          <div className="rounded-[24px] border border-[#d7deea] bg-white p-5 text-sm text-[#4f617b]">
+          <div className="rounded-[26px] border border-[#d8e4ef] bg-white/92 p-5 text-sm text-[#4f617b] shadow-[0_14px_24px_rgba(15,23,42,0.04)]">
             Cargando pacientes...
           </div>
         )}
 
         {!loading && patients.length === 0 && (
-          <div className="rounded-[24px] border border-[#d7deea] bg-white p-5 text-sm text-[#4f617b]">
+          <div className="rounded-[26px] border border-[#d8e4ef] bg-white/92 p-5 text-sm text-[#4f617b] shadow-[0_14px_24px_rgba(15,23,42,0.04)]">
             No hay pacientes para ese filtro.
           </div>
         )}
@@ -125,33 +126,36 @@ export default function PacientesPage() {
             const deleting = deletingId === patient.id;
 
             return (
-              <div key={patient.id} className="rounded-[24px] border border-[#d7deea] bg-white p-5">
-                <div className="flex flex-wrap items-center justify-between gap-3">
+              <div
+                key={patient.id}
+                className="rounded-[28px] border border-[#d8e4ef] bg-white/92 p-5 shadow-[0_16px_28px_rgba(15,23,42,0.05)]"
+              >
+                <div className="flex flex-wrap items-center justify-between gap-4">
                   <Link
                     href={`/panel/pacientes/${patient.id}`}
-                    className="flex min-w-0 flex-1 items-center gap-3 transition hover:opacity-90"
+                    className="flex min-w-0 flex-1 items-center gap-4 transition duration-200 hover:opacity-90"
                   >
                     <ProfileAvatar
                       src={patient.avatar}
                       fallbackSrc="/avatars/placeholder.svg"
                       alt={`Foto de ${patient.name}`}
                       size={64}
-                      className="h-16 w-16 rounded-full border border-[#cfdae9] bg-[#f7f9fd] object-cover"
+                      className="h-16 w-16 rounded-full border border-[#cfdae9] bg-white object-cover"
                     />
-                    <div>
-                      <p className="text-2xl font-semibold text-[#1f2d45]">{patient.name}</p>
+                    <div className="min-w-0">
+                      <p className="text-2xl font-semibold tracking-[-0.03em] text-[#1f2d45]">{patient.name}</p>
                       <p className="mt-1 text-xs text-[#607794]">Último check-in: {formatDate(patient.lastCheckinAt)}</p>
-                      <p className="mt-2 text-sm text-[#4f617b]">
+                      <p className="mt-2 text-sm leading-6 text-[#4f617b]">
                         {patient.checkins[0]?.text || "Sin notas de check-in todavía."}
                       </p>
                     </div>
                   </Link>
 
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="rounded-full border border-[#cbd8ea] bg-[#edf4ff] px-3 py-1 text-xs font-medium text-[#1f304b]">
+                    <span className="rounded-full border border-[#cfe0ef] bg-[#edf6ff] px-3 py-1 text-xs font-medium text-[#1f304b]">
                       {patient.status}
                     </span>
-                    <span className="rounded-full border border-[#d5deea] bg-[#f6f9ff] px-3 py-1 text-xs text-[#1f304b]">
+                    <span className="rounded-full border border-[#d8e4ef] bg-white px-3 py-1 text-xs font-medium text-[#607794]">
                       {patient.tasks.length} tareas
                     </span>
                     <button
