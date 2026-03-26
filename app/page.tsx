@@ -388,7 +388,7 @@ export default function Home() {
               </span>
 
               <h1 className="mt-6 max-w-6xl text-5xl font-semibold leading-[0.96] tracking-[-0.06em] text-[#0f172a] sm:text-6xl lg:text-[72px]">
-                Haz visible lo que ocurre entre sesiones y conviértelo en criterio clínico útil.
+                Pensar(SE): la terapia no ocurre solo en consulta.
               </h1>
 
               <p className="mt-6 max-w-3xl text-lg leading-8 text-[#475569]">
