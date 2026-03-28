@@ -68,13 +68,13 @@ export default function LoginPage() {
         <div className="grid w-full max-w-5xl gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
           <section className="hidden lg:block">
             <div className="max-w-lg">
-              <p className="inline-flex rounded-full bg-[#e9f4fb] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1272b7]">
-                Acceso seguro
-              </p>
-              <h1 className="mt-6 text-5xl font-semibold leading-[0.96] tracking-[-0.05em] text-[#0f172a]">
-                Entra en Pensar<span className="text-[#1272b7]">(SE)</span> con el mismo lenguaje visual del producto.
+              <h1 className="text-5xl font-semibold leading-[0.96] tracking-[-0.05em] text-[#0f172a]">
+                Pensar<span className="text-[#1272b7]">(SE)</span>
               </h1>
-              <p className="mt-5 text-lg leading-8 text-[#475569]">
+              <p className="mt-4 text-sm font-medium uppercase tracking-[0.18em] text-[#1272b7]">
+                Tecnología para psicólogos
+              </p>
+              <p className="mt-6 text-lg leading-8 text-[#475569]">
                 Un entorno clínico claro, moderno y sin fricción para psicólogos y pacientes.
               </p>
 
