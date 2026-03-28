@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useMemo, useState } from "react";
 
 type ProfileAvatarProps = {
@@ -28,14 +27,13 @@ export default function ProfileAvatar({
   const finalSrc = candidates[Math.min(index, candidates.length - 1)];
 
   return (
-    <Image
+    <img
       src={finalSrc}
       alt={alt}
       width={size}
       height={size}
       className={className}
       onError={() => setIndex((prev) => Math.min(prev + 1, candidates.length - 1))}
-      unoptimized
     />
   );
 }

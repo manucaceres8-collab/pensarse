@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ProfileAvatar from "../components/ProfileAvatar";
 import { createClient } from "@/lib/supabase/client";
+import { AVATARS_BUCKET, buildAvatarPath, createAvatarSignedUrl } from "@/lib/supabase/avatar";
 
 type MeUser = {
   id: string;
@@ -12,6 +13,7 @@ type MeUser = {
   email: string;
   role: "psicologo" | "paciente";
   clinicName: string | null;
+  avatarUrl: string | null;
 };
 
 const navItems = [
@@ -30,16 +32,31 @@ export default function PanelLayout({
   const pathname = usePathname();
   const router = useRouter();
   const [me, setMe] = useState<MeUser | null>(null);
+  const [avatarSrc, setAvatarSrc] = useState("/avatars/placeholder.svg");
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [avatarError, setAvatarError] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     let mounted = true;
 
     async function loadMe() {
+      let supabase;
+      try {
+        supabase = createClient();
+      } catch {
+        return;
+      }
+
       const res = await fetch("/api/auth/me", { cache: "no-store" });
       if (!res.ok) return;
       const data = (await res.json()) as { user: MeUser };
       if (mounted) {
         setMe(data.user);
+        const signedUrl = await createAvatarSignedUrl(supabase, data.user.avatarUrl);
+        if (mounted) {
+          setAvatarSrc(signedUrl || "/avatars/placeholder.svg");
+        }
       }
     }
 
@@ -55,6 +72,50 @@ export default function PanelLayout({
     await supabase.auth.signOut();
     router.push("/login");
     router.refresh();
+  }
+
+  async function handleAvatarChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file || !me) return;
+
+    if (!file.type.startsWith("image/")) {
+      setAvatarError("Selecciona una imagen válida.");
+      event.target.value = "";
+      return;
+    }
+
+    const supabase = createClient();
+    const avatarPath = buildAvatarPath("psicologo", me.id);
+
+    setUploadingAvatar(true);
+    setAvatarError(null);
+
+    try {
+      const { error: uploadError } = await supabase.storage.from(AVATARS_BUCKET).upload(avatarPath, file, {
+        upsert: true,
+        contentType: file.type || "image/jpeg",
+      });
+
+      if (uploadError) {
+        setAvatarError(uploadError.message);
+        return;
+      }
+
+      const { error: profileError } = await supabase.from("profiles").update({ avatar_url: avatarPath }).eq("id", me.id);
+
+      if (profileError) {
+        setAvatarError(profileError.message);
+        return;
+      }
+
+      const signedUrl = await createAvatarSignedUrl(supabase, avatarPath);
+      setAvatarSrc(signedUrl || "/avatars/placeholder.svg");
+      setMe((current) => (current ? { ...current, avatarUrl: avatarPath } : current));
+      router.refresh();
+    } finally {
+      setUploadingAvatar(false);
+      event.target.value = "";
+    }
   }
 
   return (
@@ -77,7 +138,7 @@ export default function PanelLayout({
             <div className="mt-5 rounded-[24px] border border-[#d8e4ef] bg-[linear-gradient(180deg,#fbfdff_0%,#f4f9fd_100%)] p-3.5">
               <div className="flex items-center gap-3">
                 <ProfileAvatar
-                  src="/avatars/placeholder.svg"
+                  src={avatarSrc}
                   fallbackSrc="/avatars/placeholder.svg"
                   alt="Perfil psicólogo"
                   size={64}
@@ -87,6 +148,19 @@ export default function PanelLayout({
                   <p className="text-sm font-semibold text-[#1f2d45]">{me?.name ?? "Psicólogo"}</p>
                   <p className="mt-0.5 text-[11px] text-[#7086a2]">{me?.clinicName ?? "Piloto real"}</p>
                 </div>
+              </div>
+
+              <div className="mt-3">
+                <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
+                <button
+                  type="button"
+                  onClick={() => inputRef.current?.click()}
+                  disabled={uploadingAvatar}
+                  className="w-full rounded-2xl border border-[#d8e4ef] bg-white px-3 py-2.5 text-sm font-medium text-[#1f304b] transition hover:bg-[#f8fbff] disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {uploadingAvatar ? "Subiendo foto..." : "Cambiar foto"}
+                </button>
+                {avatarError && <p className="mt-2 text-xs text-red-600">{avatarError}</p>}
               </div>
             </div>
 

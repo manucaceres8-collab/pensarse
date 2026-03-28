@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ProfileAvatar from "../components/ProfileAvatar";
 import { createClient } from "@/lib/supabase/client";
+import { AVATARS_BUCKET, buildAvatarPath, createAvatarSignedUrl } from "@/lib/supabase/avatar";
 
 const navItems = [
   { href: "/mi", label: "Inicio", icon: "IN" },
@@ -18,6 +19,10 @@ export default function MiLayout({ children }: { children: React.ReactNode }) {
   const [profileName, setProfileName] = useState("Paciente");
   const [profileRole, setProfileRole] = useState("Paciente");
   const [avatarSrc, setAvatarSrc] = useState("/avatars/placeholder.svg");
+  const [userId, setUserId] = useState<string | null>(null);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [avatarError, setAvatarError] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -36,18 +41,21 @@ export default function MiLayout({ children }: { children: React.ReactNode }) {
 
       if (!mounted || !user) return;
 
+      setUserId(user.id);
+
       const [{ data: profile }, { data: patient }] = await Promise.all([
-        supabase.from("profiles").select("name, role").eq("id", user.id).maybeSingle(),
-        user.email
-          ? supabase.from("patients").select("avatar_url").eq("email", user.email).maybeSingle()
-          : Promise.resolve({ data: null }),
+        supabase.from("profiles").select("name, role, avatar_url").eq("id", user.id).maybeSingle(),
+        supabase.from("patients").select("avatar_url").eq("id", user.id).maybeSingle(),
       ]);
 
       if (!mounted) return;
 
       setProfileName(profile?.name?.trim() || user.email || "Paciente");
       setProfileRole(profile?.role === "paciente" ? "Paciente" : "Usuario");
-      setAvatarSrc(patient?.avatar_url || "/avatars/placeholder.svg");
+      const avatarPath = patient?.avatar_url || profile?.avatar_url || null;
+      const signedUrl = await createAvatarSignedUrl(supabase, avatarPath);
+      if (!mounted) return;
+      setAvatarSrc(signedUrl || "/avatars/placeholder.svg");
     }
 
     loadProfile();
@@ -56,6 +64,51 @@ export default function MiLayout({ children }: { children: React.ReactNode }) {
       mounted = false;
     };
   }, []);
+
+  async function handleAvatarChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file || !userId) return;
+
+    if (!file.type.startsWith("image/")) {
+      setAvatarError("Selecciona una imagen válida.");
+      event.target.value = "";
+      return;
+    }
+
+    const supabase = createClient();
+    const avatarPath = buildAvatarPath("paciente", userId);
+
+    setUploadingAvatar(true);
+    setAvatarError(null);
+
+    try {
+      const { error: uploadError } = await supabase.storage.from(AVATARS_BUCKET).upload(avatarPath, file, {
+        upsert: true,
+        contentType: file.type || "image/jpeg",
+      });
+
+      if (uploadError) {
+        setAvatarError(uploadError.message);
+        return;
+      }
+
+      const [{ error: patientError }, { error: profileError }] = await Promise.all([
+        supabase.from("patients").update({ avatar_url: avatarPath }).eq("id", userId),
+        supabase.from("profiles").update({ avatar_url: avatarPath }).eq("id", userId),
+      ]);
+
+      if (patientError || profileError) {
+        setAvatarError(patientError?.message ?? profileError?.message ?? "No se pudo guardar el avatar.");
+        return;
+      }
+
+      const signedUrl = await createAvatarSignedUrl(supabase, avatarPath);
+      setAvatarSrc(signedUrl || "/avatars/placeholder.svg");
+    } finally {
+      setUploadingAvatar(false);
+      event.target.value = "";
+    }
+  }
 
   return (
     <div className="min-h-screen bg-[linear-gradient(180deg,#ffffff_0%,#f7fbff_42%,#ffffff_100%)] text-slate-900">
@@ -87,6 +140,19 @@ export default function MiLayout({ children }: { children: React.ReactNode }) {
                   <p className="text-sm font-semibold text-[#1f2d45]">{profileName}</p>
                   <p className="mt-0.5 text-[11px] text-[#7086a2]">{profileRole}</p>
                 </div>
+              </div>
+
+              <div className="mt-3">
+                <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
+                <button
+                  type="button"
+                  onClick={() => inputRef.current?.click()}
+                  disabled={uploadingAvatar}
+                  className="w-full rounded-2xl border border-[#d8e4ef] bg-white px-3 py-2.5 text-sm font-medium text-[#1f304b] transition hover:bg-[#f8fbff] disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {uploadingAvatar ? "Subiendo foto..." : "Cambiar foto"}
+                </button>
+                {avatarError && <p className="mt-2 text-xs text-red-600">{avatarError}</p>}
               </div>
             </div>
 
